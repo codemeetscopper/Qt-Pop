@@ -1,0 +1,184 @@
+{
+    "configuration": {
+        "user": {
+            "accent": {
+                "name": "Accent Colour",
+                "value": "#0a734b",
+                "values": [
+                    "#a52b2b",
+                    "#b52b2b",
+                    "#0c4d35",
+                    "#ccff00",
+                    "#7d8be0",
+                    "#55aa7f",
+                    "#aa0000",
+                    "#aa00ff",
+                    "#efce0e",
+                    "#f98886",
+                    "#730a32",
+                    "#0a734b"
+                ],
+                "description": "A sample drop down setting.",
+                "type": "dropdown",
+                "accessibility": "user",
+                "group": "Appearance Settings",
+                "icon": "images/size.svg"
+            },
+            "support": {
+                "name": "Support Colour",
+                "value": "#730a32",
+                "values": [
+                    "#a52b2b",
+                    "#b52b2b",
+                    "#0c4d35",
+                    "#ccff00",
+                    "#189bcc",
+                    "#a8581e",
+                    "#730a32",
+                    "#0a734b"
+                ],
+                "description": "A sample drop down setting.",
+                "type": "dropdown",
+                "accessibility": "user",
+                "group": "Appearance Settings",
+                "icon": "images/size.svg"
+            },
+            "neutral": {
+                "name": "Neutral Colour",
+                "value": "#3a5a8f",
+                "values": [
+                    "#a52b2b",
+                    "#b52b2b",
+                    "#0c4d35",
+                    "#ccff00",
+                    "#7d8be0",
+                    "#03565e",
+                    "#3a5a8f",
+                    "#730a32"
+                ],
+                "description": "A sample drop down setting.",
+                "type": "dropdown",
+                "accessibility": "user",
+                "group": "Appearance Settings",
+                "icon": "images/size.svg"
+            },
+            "theme": {
+                "name": "Colour Theme",
+                "value": "light",
+                "values": [
+                    "dark",
+                    "light"
+                ],
+                "description": "A sample drop down setting.",
+                "type": "dropdown",
+                "accessibility": "user",
+                "group": "Appearance Settings",
+                "icon": "images/size.svg"
+            },
+            "sample_text_input": {
+                "name": "Sample Text Input",
+                "value": "New Value",
+                "values": [],
+                "description": "A sample text input setting.",
+                "type": "text",
+                "accessibility": "user",
+                "group": "Sample Group 1",
+                "icon": "images/size.svg"
+            },
+            "sample_dropdown_input": {
+                "name": "Sample DropDown Input",
+                "value": "Option 1",
+                "values": [
+                    "Option 1",
+                    "Option 2"
+                ],
+                "description": "A sample drop down setting.",
+                "type": "dropdown",
+                "accessibility": "user",
+                "group": "Sample Group 1",
+                "icon": "images/size.svg"
+            },
+            "sample_file_browse": {
+                "name": "Sample File Browse",
+                "value": "D:/Development/Python/Python-Desktop-Application/config/configuration.json",
+                "values": [],
+                "description": "A sample file browse setting.",
+                "type": "file_browse",
+                "accessibility": "user",
+                "group": "Sample Group 1",
+                "icon": "images/size.svg"
+            },
+            "sample_folder_browse": {
+                "name": "Sample File Browse",
+                "value": "D:/Development/Python/Python-Desktop-Application",
+                "values": [],
+                "description": "A sample folder browse setting.",
+                "type": "folder_browse",
+                "accessibility": "user",
+                "group": "Sample Group 1",
+                "icon": "images/size.svg"
+            }
+        },
+        "static": {
+            "sdk_ip_address": "127.0.0.1",
+            "sdk_tcp_port": 5000,
+            "sdk_tcp_timeout": 300,
+            "icon_path": "resources/images/meterialicons",
+            "font_path": "resources/fonts"
+        }
+    },
+    "page_mapping": {
+        "defaults": {
+            "Home": {
+                "widget_ref": "frontend.core.pages.home.home_c",
+                "enabled": true,
+                "index": 1,
+                "icon": "images/dashboard.svg",
+                "selectable": true,
+                "license_required": true
+            },
+            "Logs": {
+                "widget_ref": "frontend.core.pages.log.log_c",
+                "enabled": true,
+                "index": 2,
+                "icon": "images/log.svg",
+                "selectable": true,
+                "license_required": true
+            },
+            "Settings": {
+                "widget_ref": "frontend.core.pages.settings.settings_c",
+                "enabled": true,
+                "index": 4,
+                "icon": "images/settings.svg",
+                "selectable": true,
+                "license_required": true
+            },
+            "License": {
+                "widget_ref": "frontend.core.pages.license.license_c",
+                "enabled": true,
+                "index": 5,
+                "icon": "images/license.svg",
+                "selectable": true,
+                "license_required": true
+            },
+            "About": {
+                "widget_ref": "frontend.core.pages.about.about_c",
+                "enabled": true,
+                "index": 6,
+                "icon": "images/about.svg",
+                "selectable": true,
+                "license_required": true
+            }
+        },
+        "plugins": {
+            "Sample Plugin": {
+                "widget_ref": "frontend.core.pages.plugin.sample_plugin_c",
+                "enabled": true,
+                "index": 3,
+                "icon": "images/plugin.svg",
+                "selectable": true,
+                "license_required": true
+            }
+        }
+    }
+}
