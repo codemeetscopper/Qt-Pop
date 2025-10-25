@@ -15,12 +15,12 @@ class QtPop:
     _config_path = ""
 
     def __init__(self):
-        self.config = None
-        self.font = None
-        self.style = None
-        self.icon = None
-        self.qss = None
-        self.log = None
+        self.config: ConfigurationManager = None
+        self.font: FontManager = None
+        self.style: StyleManager = None
+        self.icon: IconManager = None
+        self.qss: QSSManager = None
+        self.log: QtPopLogger = None
 
     @debug_log
     def initialise(self, config_path: str):
