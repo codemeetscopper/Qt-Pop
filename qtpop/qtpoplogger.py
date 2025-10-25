@@ -15,7 +15,7 @@ except ImportError:
     class Style:
         BRIGHT = RESET_ALL = ""
 
-
+#
 # --------------------------------------------
 # Qt Signal Emitter for Log Messages
 # --------------------------------------------
@@ -28,8 +28,8 @@ class QtLogEmitter(QObject):
 # --------------------------------------------
 class ColorFormatter(logging.Formatter):
     LEVEL_COLOURS = {
-        logging.DEBUG: Fore.CYAN,
-        logging.INFO: Fore.GREEN,
+        logging.DEBUG: Fore.LIGHTBLACK_EX,
+        logging.INFO: Fore.LIGHTGREEN_EX,
         logging.WARNING: Fore.YELLOW,
         logging.ERROR: Fore.RED,
         logging.CRITICAL: Fore.MAGENTA + Style.BRIGHT,
@@ -41,8 +41,8 @@ class ColorFormatter(logging.Formatter):
         record.message = record.getMessage()
 
         color = self.LEVEL_COLOURS.get(record.levelno, "")
-        level = f"{color}{record.levelname:<8}{Style.RESET_ALL}"
-        formatted = f"|  {level} | {record.asctime} | {record.message}"
+        level = f"{color}{record.levelname:<6}{Style.RESET_ALL}"
+        formatted = f"| {level} | {color}{record.asctime} {Style.RESET_ALL}| {color}{record.message}"
         return formatted
 
 
