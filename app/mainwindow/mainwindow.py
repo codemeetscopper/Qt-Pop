@@ -26,13 +26,11 @@ class MainWindow(QMainWindow):
         def load_controls():
             def on_combo_change(combo, index):
                 self.qt_pop.log.info(f"Combo {combo.objectName()} changed to {combo.itemText(index)}")
-
             def add_colored_item(combo, hex_color):
                 combo.addItem(hex_color)
                 index = combo.findText(hex_color)
                 if index >= 0:
                     combo.setItemData(index, QBrush(QColor(hex_color)), role=Qt.ItemDataRole.BackgroundRole)
-
             def on_button_click(button):
                 color = QColorDialog.getColor()
                 if not color.isValid():
