@@ -35,19 +35,11 @@ class MainWindow(QMainWindow):
                     combo.setItemData(index, QBrush(QColor(hex_color)), role=Qt.ItemDataRole.BackgroundRole)
 
             def on_button_click(button):
-                """Open color dialog and sync with combo and button."""
                 color = QColorDialog.getColor()
                 if not color.isValid():
                     return
 
-                print(button.objectName())
-
-                # hex_color = color.name()
-                # # Add to combo if missing
-                # if combo.findText(hex_color) == -1:
-                #     combo.addItem(hex_color)
-                #     combo.setItemData(combo.findText(hex_color), QBrush(QColor(hex_color)), role=Qt.BackgroundRole)
-                # combo.setCurrentText(hex_color)
+                self.qt_pop.log.info(f"Button {button.objectName()} clicked, selected color: {color.name()}")
 
             combos = {
                 "accent": self.ui.accent_combo,
@@ -78,47 +70,23 @@ class MainWindow(QMainWindow):
             for item in theme.values:
                 self.ui.theme_combo.addItem(item)
 
-            self.ui.accent_combo.currentIndexChanged.connect(lambda index, c=self.ui.accent_combo: on_combo_change(c, index))
-            self.ui.support_combo.currentIndexChanged.connect(
-                lambda index, c=self.ui.support_combo: on_combo_change(c, index)
-            )
-            self.ui.neutral_combo.currentIndexChanged.connect(
-                lambda index, c=self.ui.neutral_combo: on_combo_change(c, index)
-            )
-            self.ui.theme_combo.currentIndexChanged.connect(
-                lambda index, c=self.ui.theme_combo: on_combo_change(c, index)
-            )
+            for combo in combos.values():
+                combo.currentIndexChanged.connect(lambda index, c=combo: on_combo_change(c, index))
+
+            # self.ui.accent_combo.currentIndexChanged.connect(lambda index, c=self.ui.accent_combo: on_combo_change(c, index))
+            # self.ui.support_combo.currentIndexChanged.connect(
+            #     lambda index, c=self.ui.support_combo: on_combo_change(c, index)
+            # )
+            # self.ui.neutral_combo.currentIndexChanged.connect(
+            #     lambda index, c=self.ui.neutral_combo: on_combo_change(c, index)
+            # )
+            # self.ui.theme_combo.currentIndexChanged.connect(
+            #     lambda index, c=self.ui.theme_combo: on_combo_change(c, index)
+            # )
 
             for button in buttons.values():
                 button.clicked.connect(lambda _, b=button: on_button_click(b))
 
-            # for combo, button in controls:
-            #     def make_pick_handler(c=combo):
-            #         def handler():
-            #             color = QColorDialog.getColor()
-            #             if color.isValid():
-            #                 hex_color = color.name()
-            #                 # Add to combo if not already present
-            #                 if c.findText(hex_color) == -1:
-            #                     c.addItem(hex_color)
-            #                 # Select the new color
-            #                 index = c.findText(hex_color)
-            #                 c.setCurrentIndex(index)
-            #         return handler
-            #     button.clicked.connect(make_pick_handler())
-            #
-            #     # Handle combo selection change
-            #     def make_combo_handler(role):
-            #         def handler(index):
-            #             hex_color = combo.itemText(index)
-            #             self.qt_pop.log.info(f"{role} color changed to {hex_color}")
-            #             # Here you can also broadcast or update style
-            #             self.qt_pop.data.broadcast_message(f"{role}_color_changed", hex_color)
-            #         return handler
-            #
-            #     # Determine role name based on combo object
-            #     role_name = combo.objectName().replace("_combo", "")
-            #     combo.currentIndexChanged.connect(make_combo_handler(role_name))
         def load_palette():
             grid = QGridLayout()
             grid.setSpacing(5)
