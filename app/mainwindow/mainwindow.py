@@ -16,12 +16,11 @@ class MainWindow(QMainWindow):
         self.qt_pop = qt_pop
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setWindowTitle("My QtPop App")
-        self.qt_pop.log.info("MainWindow initialized successfully.")
-        self.qt_pop.data.broadcast_message("main_window_opened", True)
+        self.setWindowTitle(self.qt_pop.config.get_value('name'))
 
         self.setup_palette()
-
+        self.qt_pop.log.info("MainWindow initialized successfully.")
+        self.qt_pop.data.broadcast_message("main_window_opened", True)
 
     def setup_palette(self):
         def load_controls():
