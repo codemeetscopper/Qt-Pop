@@ -85,8 +85,8 @@ class ConfigurationManager:
         if setting_obj is None:
             raise SettingNotFoundError(setting_key)
 
-        value = getattr(setting_obj, 'value', setting_obj)
-        return self._serialize(value) if as_string else value
+        # value = getattr(setting_obj, 'value', setting_obj)
+        return self._serialize(setting_obj) if as_string else setting_obj
 
     @debug_log
     def set_value(self, setting_key: str, value):

@@ -92,49 +92,70 @@
           <property name="frameShadow">
            <enum>QFrame::Shadow::Raised</enum>
           </property>
-          <layout class="QGridLayout" name="gridLayout_2">
+          <layout class="QGridLayout" name="gridLayout_2" columnstretch="10,5,2">
            <property name="verticalSpacing">
             <number>2</number>
            </property>
            <item row="0" column="0">
-            <widget class="QLabel" name="label">
+            <widget class="QLabel" name="sl1">
              <property name="text">
               <string>Accent</string>
              </property>
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QComboBox" name="comboBox"/>
+            <widget class="QComboBox" name="accent_combo"/>
+           </item>
+           <item row="0" column="2">
+            <widget class="QPushButton" name="accent_pick">
+             <property name="text">
+              <string>Pick</string>
+             </property>
+            </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QLabel" name="label_2">
+            <widget class="QLabel" name="sl2">
              <property name="text">
               <string>Neutral</string>
              </property>
             </widget>
            </item>
            <item row="1" column="1">
-            <widget class="QComboBox" name="comboBox_2"/>
+            <widget class="QComboBox" name="neutral_combo"/>
+           </item>
+           <item row="1" column="2">
+            <widget class="QPushButton" name="neutral_pick">
+             <property name="text">
+              <string>Pick</string>
+             </property>
+            </widget>
            </item>
            <item row="2" column="0">
-            <widget class="QLabel" name="label_3">
+            <widget class="QLabel" name="sl3">
              <property name="text">
               <string>Support</string>
              </property>
             </widget>
            </item>
            <item row="2" column="1">
-            <widget class="QComboBox" name="comboBox_3"/>
+            <widget class="QComboBox" name="support_combo"/>
+           </item>
+           <item row="2" column="2">
+            <widget class="QPushButton" name="support_pick">
+             <property name="text">
+              <string>Pick</string>
+             </property>
+            </widget>
            </item>
            <item row="3" column="0">
-            <widget class="QLabel" name="label_4">
+            <widget class="QLabel" name="sl4">
              <property name="text">
               <string>Theme</string>
              </property>
             </widget>
            </item>
            <item row="3" column="1">
-            <widget class="QComboBox" name="comboBox_4"/>
+            <widget class="QComboBox" name="theme_combo"/>
            </item>
           </layout>
          </widget>

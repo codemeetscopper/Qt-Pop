@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwindowVncFjC.ui'
+## Form generated from reading UI file 'mainwindowwAtnow.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.9.2
 ##
@@ -17,8 +17,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QGridLayout,
     QHBoxLayout, QLabel, QMainWindow, QMenuBar,
-    QSizePolicy, QStatusBar, QTabWidget, QVBoxLayout,
-    QWidget)
+    QPushButton, QSizePolicy, QStatusBar, QTabWidget,
+    QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -67,46 +67,64 @@ class Ui_MainWindow(object):
         self.gridLayout_2 = QGridLayout(self.palette_top_frame)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.gridLayout_2.setVerticalSpacing(2)
-        self.label = QLabel(self.palette_top_frame)
-        self.label.setObjectName(u"label")
+        self.sl1 = QLabel(self.palette_top_frame)
+        self.sl1.setObjectName(u"sl1")
 
-        self.gridLayout_2.addWidget(self.label, 0, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.sl1, 0, 0, 1, 1)
 
-        self.comboBox = QComboBox(self.palette_top_frame)
-        self.comboBox.setObjectName(u"comboBox")
+        self.accent_combo = QComboBox(self.palette_top_frame)
+        self.accent_combo.setObjectName(u"accent_combo")
 
-        self.gridLayout_2.addWidget(self.comboBox, 0, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.accent_combo, 0, 1, 1, 1)
 
-        self.label_2 = QLabel(self.palette_top_frame)
-        self.label_2.setObjectName(u"label_2")
+        self.accent_pick = QPushButton(self.palette_top_frame)
+        self.accent_pick.setObjectName(u"accent_pick")
 
-        self.gridLayout_2.addWidget(self.label_2, 1, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.accent_pick, 0, 2, 1, 1)
 
-        self.comboBox_2 = QComboBox(self.palette_top_frame)
-        self.comboBox_2.setObjectName(u"comboBox_2")
+        self.sl2 = QLabel(self.palette_top_frame)
+        self.sl2.setObjectName(u"sl2")
 
-        self.gridLayout_2.addWidget(self.comboBox_2, 1, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.sl2, 1, 0, 1, 1)
 
-        self.label_3 = QLabel(self.palette_top_frame)
-        self.label_3.setObjectName(u"label_3")
+        self.neutral_combo = QComboBox(self.palette_top_frame)
+        self.neutral_combo.setObjectName(u"neutral_combo")
 
-        self.gridLayout_2.addWidget(self.label_3, 2, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.neutral_combo, 1, 1, 1, 1)
 
-        self.comboBox_3 = QComboBox(self.palette_top_frame)
-        self.comboBox_3.setObjectName(u"comboBox_3")
+        self.neutral_pick = QPushButton(self.palette_top_frame)
+        self.neutral_pick.setObjectName(u"neutral_pick")
 
-        self.gridLayout_2.addWidget(self.comboBox_3, 2, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.neutral_pick, 1, 2, 1, 1)
 
-        self.label_4 = QLabel(self.palette_top_frame)
-        self.label_4.setObjectName(u"label_4")
+        self.sl3 = QLabel(self.palette_top_frame)
+        self.sl3.setObjectName(u"sl3")
 
-        self.gridLayout_2.addWidget(self.label_4, 3, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.sl3, 2, 0, 1, 1)
 
-        self.comboBox_4 = QComboBox(self.palette_top_frame)
-        self.comboBox_4.setObjectName(u"comboBox_4")
+        self.support_combo = QComboBox(self.palette_top_frame)
+        self.support_combo.setObjectName(u"support_combo")
 
-        self.gridLayout_2.addWidget(self.comboBox_4, 3, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.support_combo, 2, 1, 1, 1)
 
+        self.support_pick = QPushButton(self.palette_top_frame)
+        self.support_pick.setObjectName(u"support_pick")
+
+        self.gridLayout_2.addWidget(self.support_pick, 2, 2, 1, 1)
+
+        self.sl4 = QLabel(self.palette_top_frame)
+        self.sl4.setObjectName(u"sl4")
+
+        self.gridLayout_2.addWidget(self.sl4, 3, 0, 1, 1)
+
+        self.theme_combo = QComboBox(self.palette_top_frame)
+        self.theme_combo.setObjectName(u"theme_combo")
+
+        self.gridLayout_2.addWidget(self.theme_combo, 3, 1, 1, 1)
+
+        self.gridLayout_2.setColumnStretch(0, 10)
+        self.gridLayout_2.setColumnStretch(1, 5)
+        self.gridLayout_2.setColumnStretch(2, 2)
 
         self.gridLayout.addWidget(self.palette_top_frame, 0, 0, 1, 1)
 
@@ -141,10 +159,13 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.titlelabel.setText(QCoreApplication.translate("MainWindow", u"Qt-Pop Demo ", None))
-        self.label.setText(QCoreApplication.translate("MainWindow", u"Accent", None))
-        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Neutral", None))
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Support", None))
-        self.label_4.setText(QCoreApplication.translate("MainWindow", u"Theme", None))
+        self.sl1.setText(QCoreApplication.translate("MainWindow", u"Accent", None))
+        self.accent_pick.setText(QCoreApplication.translate("MainWindow", u"Pick", None))
+        self.sl2.setText(QCoreApplication.translate("MainWindow", u"Neutral", None))
+        self.neutral_pick.setText(QCoreApplication.translate("MainWindow", u"Pick", None))
+        self.sl3.setText(QCoreApplication.translate("MainWindow", u"Support", None))
+        self.support_pick.setText(QCoreApplication.translate("MainWindow", u"Pick", None))
+        self.sl4.setText(QCoreApplication.translate("MainWindow", u"Theme", None))
         self.mainTW.setTabText(self.mainTW.indexOf(self.palette), QCoreApplication.translate("MainWindow", u"Palette", None))
         self.mainTW.setTabText(self.mainTW.indexOf(self.fonts), QCoreApplication.translate("MainWindow", u"Fonts", None))
     # retranslateUi

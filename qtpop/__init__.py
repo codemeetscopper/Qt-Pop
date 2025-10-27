@@ -46,7 +46,7 @@ class QtPop:
         neutral = self.config.get_value('neutral')
         theme = self.config.get_value('theme')
         self.style = StyleManager()
-        self.style.initialise(accent, support, neutral, theme)
+        self.style.initialise(accent.value, support.value, neutral.value, theme.value)
 
         self.qss = QSSManager(self.icon, self.style, self.log)
         self._initialized = True

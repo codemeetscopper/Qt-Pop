@@ -1,5 +1,8 @@
 import sys
-from PySide6.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget
+
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QBrush, QColor
+from PySide6.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QColorDialog
 
 from app.helpers.paletteitem import ColorDisplayWidget
 from app.mainwindow.ui_mainwindow import Ui_MainWindow
@@ -21,20 +24,120 @@ class MainWindow(QMainWindow):
 
 
     def setup_palette(self):
-        grid = QGridLayout()
-        grid.setSpacing(5)
-        grid.setContentsMargins(5, 5, 5, 5)
-        columns = 4
+        def load_controls():
+            def on_combo_change(combo, index):
+                self.qt_pop.log.info(f"Combo {combo.objectName()} changed to {combo.itemText(index)}")
 
-        for i, (item, hex_val) in enumerate(self.qt_pop.style.colour_map().items()):
-            row = i // columns
-            col = i % columns
-            grid.addWidget(ColorDisplayWidget(hex_val, item), row, col)
+            def add_colored_item(combo, hex_color):
+                combo.addItem(hex_color)
+                index = combo.findText(hex_color)
+                if index >= 0:
+                    combo.setItemData(index, QBrush(QColor(hex_color)), role=Qt.ItemDataRole.BackgroundRole)
 
-        old_layout = self.ui.palette_bottom_frame.layout()
-        if old_layout is not None:
-            QWidget().setLayout(old_layout)
+            def on_button_click(button):
+                """Open color dialog and sync with combo and button."""
+                color = QColorDialog.getColor()
+                if not color.isValid():
+                    return
 
-        self.ui.palette_bottom_frame.setLayout(grid)
+                print(button.objectName())
+
+                # hex_color = color.name()
+                # # Add to combo if missing
+                # if combo.findText(hex_color) == -1:
+                #     combo.addItem(hex_color)
+                #     combo.setItemData(combo.findText(hex_color), QBrush(QColor(hex_color)), role=Qt.BackgroundRole)
+                # combo.setCurrentText(hex_color)
+
+            combos = {
+                "accent": self.ui.accent_combo,
+                "support": self.ui.support_combo,
+                "neutral": self.ui.neutral_combo,
+                "theme": self.ui.theme_combo,
+            }
+            buttons = {
+                "accent": self.ui.accent_pick,
+                "support": self.ui.support_pick,
+                "neutral": self.ui.neutral_pick,
+            }
+
+            accent = self.qt_pop.config.get_value('accent')
+            support = self.qt_pop.config.get_value('support')
+            neutral = self.qt_pop.config.get_value('neutral')
+            theme = self.qt_pop.config.get_value('theme')
+
+            for item in accent.values:
+                add_colored_item(self.ui.accent_combo, item)
+
+            for item in support.values:
+                add_colored_item(self.ui.support_combo, item)
+
+            for item in neutral.values:
+                add_colored_item(self.ui.neutral_combo, item)
+
+            for item in theme.values:
+                self.ui.theme_combo.addItem(item)
+
+            self.ui.accent_combo.currentIndexChanged.connect(lambda index, c=self.ui.accent_combo: on_combo_change(c, index))
+            self.ui.support_combo.currentIndexChanged.connect(
+                lambda index, c=self.ui.support_combo: on_combo_change(c, index)
+            )
+            self.ui.neutral_combo.currentIndexChanged.connect(
+                lambda index, c=self.ui.neutral_combo: on_combo_change(c, index)
+            )
+            self.ui.theme_combo.currentIndexChanged.connect(
+                lambda index, c=self.ui.theme_combo: on_combo_change(c, index)
+            )
+
+            for button in buttons.values():
+                button.clicked.connect(lambda _, b=button: on_button_click(b))
+
+            # for combo, button in controls:
+            #     def make_pick_handler(c=combo):
+            #         def handler():
+            #             color = QColorDialog.getColor()
+            #             if color.isValid():
+            #                 hex_color = color.name()
+            #                 # Add to combo if not already present
+            #                 if c.findText(hex_color) == -1:
+            #                     c.addItem(hex_color)
+            #                 # Select the new color
+            #                 index = c.findText(hex_color)
+            #                 c.setCurrentIndex(index)
+            #         return handler
+            #     button.clicked.connect(make_pick_handler())
+            #
+            #     # Handle combo selection change
+            #     def make_combo_handler(role):
+            #         def handler(index):
+            #             hex_color = combo.itemText(index)
+            #             self.qt_pop.log.info(f"{role} color changed to {hex_color}")
+            #             # Here you can also broadcast or update style
+            #             self.qt_pop.data.broadcast_message(f"{role}_color_changed", hex_color)
+            #         return handler
+            #
+            #     # Determine role name based on combo object
+            #     role_name = combo.objectName().replace("_combo", "")
+            #     combo.currentIndexChanged.connect(make_combo_handler(role_name))
+        def load_palette():
+            grid = QGridLayout()
+            grid.setSpacing(5)
+            grid.setContentsMargins(5, 5, 5, 5)
+            columns = 4
+
+            for i, (item, hex_val) in enumerate(self.qt_pop.style.colour_map().items()):
+                row = i // columns
+                col = i % columns
+                grid.addWidget(ColorDisplayWidget(hex_val, item), row, col)
+
+            old_layout = self.ui.palette_bottom_frame.layout()
+            if old_layout is not None:
+                QWidget().setLayout(old_layout)
+
+            self.ui.palette_bottom_frame.setLayout(grid)
+
+        load_controls()
+        load_palette()
+
 
 
