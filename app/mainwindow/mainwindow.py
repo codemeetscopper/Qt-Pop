@@ -73,17 +73,6 @@ class MainWindow(QMainWindow):
             for combo in combos.values():
                 combo.currentIndexChanged.connect(lambda index, c=combo: on_combo_change(c, index))
 
-            # self.ui.accent_combo.currentIndexChanged.connect(lambda index, c=self.ui.accent_combo: on_combo_change(c, index))
-            # self.ui.support_combo.currentIndexChanged.connect(
-            #     lambda index, c=self.ui.support_combo: on_combo_change(c, index)
-            # )
-            # self.ui.neutral_combo.currentIndexChanged.connect(
-            #     lambda index, c=self.ui.neutral_combo: on_combo_change(c, index)
-            # )
-            # self.ui.theme_combo.currentIndexChanged.connect(
-            #     lambda index, c=self.ui.theme_combo: on_combo_change(c, index)
-            # )
-
             for button in buttons.values():
                 button.clicked.connect(lambda _, b=button: on_button_click(b))
 
