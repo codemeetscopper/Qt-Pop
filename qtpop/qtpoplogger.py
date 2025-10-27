@@ -137,12 +137,16 @@ def debug_log(func):
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        # Determine class name (if method of a class)
+        # Determine class name correctly
         cls_name = ""
-        if args and hasattr(args[0], "__class__") and not inspect.isfunction(args[0]):
-            cls_name = args[0].__class__.__name__ + "."
+        if args:
+            first = args[0]
+            if inspect.isclass(first):  # classmethod
+                cls_name = f"{first.__name__}."
+            elif hasattr(first, "__class__") and not inspect.isfunction(first) and not inspect.ismethod(first):
+                cls_name = f"{first.__class__.__name__}."
 
-        # Get function arguments
+        # Get function signature
         sig = inspect.signature(func)
         bound = sig.bind_partial(*args, **kwargs)
         bound.apply_defaults()
@@ -154,8 +158,11 @@ def debug_log(func):
                 return f"<{type(v).__name__}>"
 
         formatted_args = ", ".join(f"{k}={format_value(v)}" for k, v in bound.arguments.items())
+
         qt_logger.debug(f"{cls_name}{func.__name__}({formatted_args}) called")
+
         result = func(*args, **kwargs)
+
         qt_logger.debug(f"{cls_name}{func.__name__} → {format_value(result)}")
         return result
 
