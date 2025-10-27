@@ -6,6 +6,7 @@ from typing import Dict, Optional, Union
 from PySide6.QtGui import QColor, QPalette
 from PySide6.QtWidgets import QApplication
 
+from qtpop.qtpoplogger import debug_log
 from qtpop.appearance.iconmanager import IconManager
 
 ColourLike = Union[str, QColor]
@@ -34,6 +35,7 @@ class StyleManager:
 
     # ---- Public API ----------------------------------------------------------
     @classmethod
+    @debug_log
     def initialise(
             cls,
             accent_hex: str,
@@ -113,6 +115,7 @@ class StyleManager:
             return False
 
     @classmethod
+    @debug_log
     def get_colour(cls, colour_key: str, to_str: bool = True) -> Union[str, QColor]:
         """
         Return a named colour by key.
@@ -136,16 +139,19 @@ class StyleManager:
 
     # (Optional) You can use this to apply to the app:
     @classmethod
+    @debug_log
     def get_palette(cls) -> QPalette:
         if not cls._initialised:
             raise RuntimeError("StyleManager is not initialised.")
         return cls._palette
 
     @classmethod
+    @debug_log
     def is_initialised(cls) -> bool:
         return cls._initialised
 
     @classmethod
+    @debug_log
     def mode(cls) -> str:
         """Returns the resolved theme mode: 'light' or 'dark'."""
         return cls._resolved_mode

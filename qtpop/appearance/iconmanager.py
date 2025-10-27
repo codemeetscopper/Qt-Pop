@@ -6,6 +6,8 @@ from PySide6.QtCore import QObject, Signal, Qt, QThreadPool, QRunnable
 from PySide6.QtGui import QPixmap, QPainter, QColor, QImage
 from PySide6.QtSvg import QSvgRenderer
 
+from qtpop.qtpoplogger import debug_log
+
 
 # ------------------------------
 # Internal async worker
@@ -67,6 +69,7 @@ class IconManager:
     # --------------------------
 
     @staticmethod
+    @debug_log
     def search_icons(query: str, icons: List[str]) -> List[str]:
         """Search for icons in the list, prioritizing matches in the core icon name."""
         query_lower = query.lower().replace(' ', '_')
@@ -103,6 +106,7 @@ class IconManager:
         return sorted(exact_matches) + sorted(exact_core_matches) + sorted(core_matches) + sorted(substring_matches)
 
     @classmethod
+    @debug_log
     def get_pixmap(
         cls,
         name: str,
@@ -162,6 +166,7 @@ class IconManager:
             cls._icon_cache.clear()
 
     @classmethod
+    @debug_log
     def list_icons(cls) -> List[str]:
         """Lists all SVG icons in the configured image path."""
         if not os.path.isdir(cls._images_path):
@@ -175,6 +180,7 @@ class IconManager:
         return cls._icon_list
 
     @classmethod
+    @debug_log
     def set_images_path(cls, path: str):
         """Sets the path where SVG icons are stored and clears caches."""
         cls._images_path = path
@@ -182,10 +188,12 @@ class IconManager:
         cls.list_icons()
 
     @classmethod
+    @debug_log
     def get_images_path(cls) -> str:
         return cls._images_path
 
     @classmethod
+    @debug_log
     def preload_common_icons(cls, icon_names: List[str], color: str = "#FFFFFF", size: int = 24):
         """Preload a batch of icons asynchronously for performance."""
         for name in icon_names:

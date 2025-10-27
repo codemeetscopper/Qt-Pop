@@ -4,6 +4,8 @@ import time
 import uuid
 from pathlib import Path
 
+from qtpop.qtpoplogger import debug_log
+
 
 class QSSManager:
     """
@@ -27,6 +29,7 @@ class QSSManager:
 
 
     @classmethod
+    @debug_log
     def process(cls, raw_qss: str) -> str:
         # First replace image tokens
         def image_replacer(m):
@@ -119,6 +122,7 @@ class QSSManager:
         return processed
 
     @classmethod
+    @debug_log
     def make_qt_svg_temp(cls, svg_content: str, delay_delete: float = 1.0) -> str:
         """
         Creates a temporary SVG file in the current working directory (or a 'tmp_qss_icons' folder),

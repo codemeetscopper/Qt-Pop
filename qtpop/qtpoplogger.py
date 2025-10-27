@@ -133,14 +133,30 @@ qt_logger = QtPopLogger()
 # Decorator for function tracing
 # --------------------------------------------
 def debug_log(func):
-    """Decorator to log function arguments and return value at debug level."""
+    """Decorator to log function calls with class name, arguments, and return value."""
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        arg_names = inspect.getfullargspec(func).args
-        args_dict = dict(zip(arg_names, args))
-        args_dict.update(kwargs)
-        qt_logger.debug(f"{func.__name__} | args: {args_dict}")
+        # Determine class name (if method of a class)
+        cls_name = ""
+        if args and hasattr(args[0], "__class__") and not inspect.isfunction(args[0]):
+            cls_name = args[0].__class__.__name__ + "."
+
+        # Get function arguments
+        sig = inspect.signature(func)
+        bound = sig.bind_partial(*args, **kwargs)
+        bound.apply_defaults()
+
+        def format_value(v):
+            if isinstance(v, (list, tuple, set, dict, int, float, str, bool, type(None))):
+                return repr(v)
+            else:
+                return f"<{type(v).__name__}>"
+
+        formatted_args = ", ".join(f"{k}={format_value(v)}" for k, v in bound.arguments.items())
+        qt_logger.debug(f"{cls_name}{func.__name__}({formatted_args}) called")
         result = func(*args, **kwargs)
-        qt_logger.debug(f"{func.__name__} | return: {result}")
+        qt_logger.debug(f"{cls_name}{func.__name__} → {format_value(result)}")
         return result
+
     return wrapper
