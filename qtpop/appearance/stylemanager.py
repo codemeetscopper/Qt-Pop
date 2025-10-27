@@ -156,6 +156,12 @@ class StyleManager:
         """Returns the resolved theme mode: 'light' or 'dark'."""
         return cls._resolved_mode
 
+    @classmethod
+    @debug_log
+    def colour_map(cls) -> dict[str, QColor]:
+        """Returns the resolved theme mode: 'light' or 'dark'."""
+        return cls._colours
+
     # ---- Internal helpers ----------------------------------------------------
     @classmethod
     def _auto_mode(cls) -> str:

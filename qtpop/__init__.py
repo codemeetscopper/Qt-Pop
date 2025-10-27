@@ -5,6 +5,7 @@ from qtpop.appearance.iconmanager import IconManager
 from qtpop.appearance.qssmanager import QSSManager
 from qtpop.appearance.stylemanager import StyleManager
 from qtpop.configuration.parser import ConfigurationManager
+from qtpop.qtpopdatalayer import QtPopDataLayer
 from qtpop.qtpoplogger import QtPopLogger, debug_log, qt_logger
 
 
@@ -21,6 +22,7 @@ class QtPop:
         self.icon: IconManager = None
         self.qss: QSSManager = None
         self.log: QtPopLogger = None
+        self.data: QtPopDataLayer = None
 
     @debug_log
     def initialise(self, config_path: str):
@@ -30,6 +32,7 @@ class QtPop:
 
         # Initialize all managers
         self.log = qt_logger
+        self.data = QtPopDataLayer().instance()
         self.config = ConfigurationManager(json_path=config_path)
 
         self.font = FontManager()
