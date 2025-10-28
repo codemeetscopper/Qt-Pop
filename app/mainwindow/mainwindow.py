@@ -58,7 +58,7 @@ class MainWindow(QMainWindow):
 
         for key, value in self.qt_pop.config.data.configuration.static.items():
             self.qt_pop.log.info(f"Loading setting {key}, value: {value}")
-            item = SettingItem(key, value, [], "application static setting", "text", "user", "General", "")
+            item = SettingItem(key, value, [], "application static setting", "text", "user", "Static", "")
             custom_widget = SettingItemWidget(item)
             list_item = QListWidgetItem(self.ui.settingsLW)
             hint = custom_widget.sizeHint()
