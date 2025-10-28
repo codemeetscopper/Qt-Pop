@@ -1,9 +1,9 @@
 import re
 import sys
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QFile
 from PySide6.QtGui import QBrush, QColor
 from PySide6.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QColorDialog, QListWidgetItem, \
-    QVBoxLayout, QListWidget, QSizePolicy
+    QVBoxLayout, QListWidget, QSizePolicy, QFileDialog
 
 from app.widgets.colordisplaywidget import ColorDisplayWidget
 from app.mainwindow.ui_mainwindow import Ui_MainWindow
@@ -26,6 +26,7 @@ class MainWindow(QMainWindow):
         self.setup_logging()
         self.setup_palette()
         self.setup_settings()
+        self.setup_qss()
         self.qt_pop.log.info("MainWindow initialized successfully.")
         self.qt_pop.data.broadcast_message("main_window_opened", True)
 
@@ -174,3 +175,52 @@ class MainWindow(QMainWindow):
         self.qt_pop.log.info("This is an info message.")
         self.qt_pop.log.debug("This is a debug message.")
         self.qt_pop.log.critical("This is a critical message.")
+
+    from PySide6.QtWidgets import QFileDialog, QApplication
+    from PySide6.QtCore import QFile
+
+    def setup_qss(self):
+        """Setup QSS editor with load and apply buttons."""
+        qss_path = self.qt_pop.config.get_value('qss_path')
+        file = QFile(qss_path.value)
+        default_qss = ""
+
+        if file.open(QFile.ReadOnly | QFile.Text):
+            default_qss = file.readAll().data().decode("utf-8")
+            file.close()
+
+        # Set initial QSS in code editor
+        self.ui.cqss.setText(default_qss)
+
+        # Process and apply default QSS
+        translated_qss = self.qt_pop.qss.process(default_qss)
+        self.ui.tqss.setText(translated_qss)
+        self.setStyleSheet(translated_qss)
+
+        # ---- Button Connections ----
+        def on_apply_clicked():
+            """Apply QSS from cqss."""
+            raw_qss = self.ui.cqss.toPlainText()
+            translated = self.qt_pop.qss.process(raw_qss)
+            self.ui.tqss.setText(translated)
+            self.setStyleSheet(translated)
+            self.qt_pop.log.info("Applied translated QSS.")
+
+        def on_load_clicked():
+            """Load QSS file into cqss."""
+            file_path, _ = QFileDialog.getOpenFileName(
+                self,
+                "Open QSS File",
+                "",
+                "QSS Files (*.qss);;All Files (*)"
+            )
+            if not file_path:
+                return
+            with open(file_path, "r", encoding="utf-8") as f:
+                qss_content = f.read()
+            self.ui.cqss.setText(qss_content)
+            self.qt_pop.log.info(f"Loaded QSS file: {file_path}")
+
+        # Connect buttons
+        self.ui.applybtn.clicked.connect(on_apply_clicked)
+        self.ui.loadbtn.clicked.connect(on_load_clicked)

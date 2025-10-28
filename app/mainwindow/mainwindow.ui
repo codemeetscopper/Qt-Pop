@@ -52,7 +52,7 @@
     <item>
      <widget class="QTabWidget" name="mainTW">
       <property name="currentIndex">
-       <number>2</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="palette">
        <attribute name="title">
@@ -106,14 +106,56 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>341</height>
+             <width>98</width>
+             <height>28</height>
             </rect>
            </property>
            <attribute name="label">
             <string>Page 2</string>
            </attribute>
           </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="qss">
+       <attribute name="title">
+        <string>Qss Editor</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_4" stretch="20,0,1">
+        <item>
+         <widget class="QFrame" name="frame">
+          <property name="frameShape">
+           <enum>QFrame::Shape::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Shadow::Raised</enum>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QTextEdit" name="cqss"/>
+           </item>
+           <item>
+            <widget class="QTextEdit" name="tqss"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="loadbtn">
+          <property name="text">
+           <string>load Qss</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="applybtn">
+          <property name="text">
+           <string>Apply</string>
+          </property>
+          <property name="flat">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
        </layout>

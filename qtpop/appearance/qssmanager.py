@@ -4,7 +4,9 @@ import time
 import uuid
 from pathlib import Path
 
-from qtpop.qtpoplogger import debug_log
+from qtpop.appearance.iconmanager import IconManager
+from qtpop.appearance.stylemanager import StyleManager
+from qtpop.qtpoplogger import debug_log, QtPopLogger
 
 
 class QSSManager:
@@ -22,10 +24,11 @@ class QSSManager:
     _image_token_re = re.compile(r"<img:\s*(.+?);\s*color:(.+?)>", flags=re.IGNORECASE)
     _colour_token_re = re.compile(r"<\s*([a-zA-Z0-9_]+)\s*>")
 
-    def __init__(self, icon_manager, style_manager, logger):
-        self._icon_manager = icon_manager
-        self._styler = style_manager
-        self._logger = logger
+    @classmethod
+    def __init__(cls, icon_manager: IconManager, style_manager: StyleManager, logger: QtPopLogger):
+        cls._icon_manager = icon_manager
+        cls._styler = style_manager
+        cls._log = logger
 
 
     @classmethod

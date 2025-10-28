@@ -1,0 +1,240 @@
+/*
+   Use key inside <> to insert colors from the current palette.
+   Examples: <accent>, <support>, <neutral>, <bg>, <fg> * Lightness modifiers are also available:
+   e.g., <accent_l1>,<accent_l2>,<accent_l3>,<accent_d1>,<accent_d2>,<accent_d3>,
+   <support_l1>,<support_l2>,<support_l3>,<support_d1>,<support_d2>,<support_d3>,
+   <neutral_l1>,<neutral_l2>,<neutral_l3>,<neutral_d1>,<neutral_d2>,<neutral_d3>,
+   <bg1>,<bg2>,
+   <fg1>,<fg2>,
+*/
+
+/* ===========================
+   BUTTONS
+   =========================== */
+QWidget {
+    background-color: <bg2>;
+    color: <support_d3>;
+}
+
+QPushButton {
+    background-color: <support>;
+    color: white;
+    border: 0px solid <accent_d1>;
+    padding: 5px 10px;
+    border-radius: 4px;
+    min-height: 25px;
+    min-width: 75px;
+    max-width: 150px;
+}
+QPushButton:hover {
+    background-color: <accent_l1>;
+}
+QPushButton:pressed {
+    background-color: <accent_d1>;
+}
+QPushButton:disabled {
+    background-color: <bg2>;
+    color: <fg2>;
+}
+
+/* ===========================
+   INPUTS & TEXT
+=========================== */
+QLineEdit, QTextEdit, QPlainTextEdit {
+    border: 1px solid <neutral>;
+    border-radius: 4px;
+    padding: 4px;
+}
+QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {
+    border: 1px solid <accent>;
+}
+QLabel {
+    color: <fg>;
+    background: transparent;
+}
+
+/* ===========================
+   COMBOBOX
+=========================== */
+QComboBox {
+    border: 1px solid <neutral>;
+    border-radius: 4px;
+    padding: 3px 6px;
+}
+QComboBox:hover {
+    border: 1px solid <accent>;
+}
+QComboBox::drop-down {
+    width: 20px;
+    border-left: 1px solid <neutral>;
+}
+QComboBox::down-arrow {
+    image: <img: hardware keyboard arrow down; color:accent>;
+    width: 10px;
+    height: 10px;
+}
+
+/* ===========================
+   TAB WIDGET
+=========================== */
+QTabWidget::pane {
+    border-top: 2px solid <accent>;
+}
+QTabBar::tab {
+    padding: 8px 12px;
+    border: 0;
+}
+QTabBar::tab:selected, QTabBar::tab:hover {
+    background: <accent>;
+    color: white;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+/* ===========================
+   SCROLLBARS
+=========================== */
+QScrollBar:horizontal, QScrollBar:vertical {
+    border: none;
+    margin: 0px;
+    border-radius: 4px;
+}
+QScrollBar::handle {
+    background: <neutral>;
+    border-radius: 4px;
+}
+QScrollBar::handle:hover {
+    background: <neutral_d1>;
+}
+QScrollBar::add-line, QScrollBar::sub-line {
+    border: none;
+    width: 0;
+    height: 0;
+}
+
+/* ===========================
+   CHECKBOX & RADIO
+=========================== */
+QCheckBox, QRadioButton {
+    spacing: 6px;
+}
+QCheckBox::indicator, QRadioButton::indicator {
+    width: 16px;
+    height: 16px;
+    border: 1px solid <neutral>;
+    border-radius: 3px;
+    background: <bg1>;
+}
+QCheckBox::indicator:checked, QRadioButton::indicator:checked {
+    background: <accent>;
+    border: 1px solid <accent>;
+}
+QRadioButton::indicator {
+    border-radius: 8px;
+}
+QCheckBox::indicator:hover, QRadioButton::indicator:hover {
+    border: 1px solid <accent>;
+}
+
+/* ===========================
+   MENU & TOOLBUTTON
+=========================== */
+QMenuBar {
+    background: <bg>;
+    color: <fg>;
+}
+QMenuBar::item {
+    padding: 4px 10px;
+    background: transparent;
+}
+QMenuBar::item:selected {
+    background: <accent_l1>;
+    color: <bg>;
+}
+QMenu {
+    background: <bg1>;
+    border: 1px solid <neutral>;
+}
+QMenu::item {
+    padding: 5px 20px;
+    color: <fg>;
+}
+QMenu::item:selected {
+    background: <accent>;
+    color: <bg>;
+}
+QToolButton {
+    background: transparent;
+    border: none;
+    color: <fg>;
+    padding: 4px;
+}
+QToolButton:hover {
+    background: <bg2>;
+}
+QToolButton:checked {
+    background: <accent>;
+    color: <bg>;
+    border-radius: 4px;
+}
+
+/* ===========================
+   SLIDERS
+=========================== */
+QSlider::groove:horizontal {
+    height: 6px;
+    background: <bg2>;
+    border-radius: 3px;
+}
+QSlider::handle:horizontal {
+    background: <accent>;
+    width: 14px;
+    margin: -5px 0;
+    border-radius: 7px;
+}
+QSlider::handle:horizontal:hover {
+    background: <accent_l1>;
+}
+QSlider::groove:vertical {
+    width: 6px;
+    background: <bg2>;
+    border-radius: 3px;
+}
+QSlider::handle:vertical {
+    background: <accent>;
+    height: 14px;
+    margin: 0 -5px;
+    border-radius: 7px;
+}
+
+/* ===========================
+   PROGRESS BAR
+=========================== */
+QProgressBar {
+    border: 1px solid <neutral>;
+    border-radius: 4px;
+    text-align: center;
+    height: 18px;
+}
+QProgressBar::chunk {
+    background-color: <accent>;
+    border-radius: 4px;
+}
+
+/* ===========================
+   TABLES & LISTS
+=========================== */
+QTableView, QListView, QTreeView {
+    border: 1px solid <neutral>;
+    gridline-color: <neutral>;
+}
+QHeaderView::section {
+    background: <bg2>;
+    color: <fg>;
+    padding: 4px;
+    border: 1px solid <neutral>;
+}
+QTableView::item:selected, QListView::item:selected, QTreeView::item:selected {
+    background: <accent>;
+    color: <bg>;
+}

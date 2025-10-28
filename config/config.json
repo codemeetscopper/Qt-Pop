@@ -50,13 +50,23 @@
             },
             "theme": {
                 "name": "Colour Theme",
-                "value": "light",
+                "value": "dark",
                 "values": [
                     "dark",
                     "light"
                 ],
                 "description": "A sample drop down setting.",
                 "type": "dropdown",
+                "accessibility": "user",
+                "group": "Appearance Settings",
+                "icon": "images/size.svg"
+            },
+            "qss_path": {
+                "name": "Qss Style",
+                "value": "resources/qss/default.qss",
+                "values": [],
+                "description": "Qss Style Sheet for the application.",
+                "type": "filebrowse",
                 "accessibility": "user",
                 "group": "Appearance Settings",
                 "icon": "images/size.svg"

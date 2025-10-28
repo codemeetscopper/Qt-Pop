@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwindowNYUSkK.ui'
+## Form generated from reading UI file 'mainwindowGqfnSE.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.9.2
 ##
@@ -16,9 +16,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QHBoxLayout,
-    QLabel, QMainWindow, QMenuBar, QSizePolicy,
-    QStatusBar, QTabWidget, QTextBrowser, QToolBox,
-    QVBoxLayout, QWidget)
+    QLabel, QMainWindow, QMenuBar, QPushButton,
+    QSizePolicy, QStatusBar, QTabWidget, QTextBrowser,
+    QTextEdit, QToolBox, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -79,6 +79,43 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.settingsTB)
 
         self.mainTW.addTab(self.settings, "")
+        self.qss = QWidget()
+        self.qss.setObjectName(u"qss")
+        self.verticalLayout_4 = QVBoxLayout(self.qss)
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.frame = QFrame(self.qss)
+        self.frame.setObjectName(u"frame")
+        self.frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.horizontalLayout_2 = QHBoxLayout(self.frame)
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.cqss = QTextEdit(self.frame)
+        self.cqss.setObjectName(u"cqss")
+
+        self.horizontalLayout_2.addWidget(self.cqss)
+
+        self.tqss = QTextEdit(self.frame)
+        self.tqss.setObjectName(u"tqss")
+
+        self.horizontalLayout_2.addWidget(self.tqss)
+
+
+        self.verticalLayout_4.addWidget(self.frame)
+
+        self.loadbtn = QPushButton(self.qss)
+        self.loadbtn.setObjectName(u"loadbtn")
+
+        self.verticalLayout_4.addWidget(self.loadbtn)
+
+        self.applybtn = QPushButton(self.qss)
+        self.applybtn.setObjectName(u"applybtn")
+        self.applybtn.setFlat(True)
+
+        self.verticalLayout_4.addWidget(self.applybtn)
+
+        self.verticalLayout_4.setStretch(0, 20)
+        self.verticalLayout_4.setStretch(2, 1)
+        self.mainTW.addTab(self.qss, "")
 
         self.verticalLayout.addWidget(self.mainTW)
 
@@ -110,7 +147,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.mainTW.setCurrentIndex(2)
+        self.mainTW.setCurrentIndex(3)
         self.settingsTB.setCurrentIndex(0)
 
 
@@ -124,5 +161,8 @@ class Ui_MainWindow(object):
         self.mainTW.setTabText(self.mainTW.indexOf(self.fonts), QCoreApplication.translate("MainWindow", u"Fonts", None))
         self.settingsTB.setItemText(self.settingsTB.indexOf(self.page_2), QCoreApplication.translate("MainWindow", u"Page 2", None))
         self.mainTW.setTabText(self.mainTW.indexOf(self.settings), QCoreApplication.translate("MainWindow", u"Settings", None))
+        self.loadbtn.setText(QCoreApplication.translate("MainWindow", u"load Qss", None))
+        self.applybtn.setText(QCoreApplication.translate("MainWindow", u"Apply", None))
+        self.mainTW.setTabText(self.mainTW.indexOf(self.qss), QCoreApplication.translate("MainWindow", u"Qss Editor", None))
     # retranslateUi
 

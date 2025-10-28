@@ -1,0 +1,85 @@
+/*
+   Use key inside <> to insert colors from the current palette.
+   Examples: <accent>, <support>, <neutral>, <bg>, <fg> * Lightness modifiers are also available:
+   e.g., <accent_l1>,<accent_l2>,<accent_l3>,<accent_d1>,<accent_d2>,<accent_d3>,
+   <support_l1>,<support_l2>,<support_l3>,<support_d1>,<support_d2>,<support_d3>,
+   <neutral_l1>,<neutral_l2>,<neutral_l3>,<neutral_d1>,<neutral_d2>,<neutral_d3>,
+   <bg1>,<bg2>,
+   <fg1>,<fg2>,
+*/
+
+QWidget {
+    background-color: <bg>;
+    color: <fg>;
+}
+
+QPushButton {
+    background-color: <support>;
+    color: white;
+    border: 0px solid <accent_d1>;
+    padding: 5px 10px;
+    border-radius: 4px;
+    min-height: 25px;
+    min-width: 75px;
+    max-width: 150px;
+}
+QPushButton:hover {
+    background-color: <accent_l1>;
+}
+QPushButton:pressed {
+    background-color: <accent_d1>;
+}
+QPushButton:disabled {
+    background-color: <bg2>;
+    color: <fg2>;
+}
+
+QLineEdit, QTextEdit, QPlainTextEdit {
+    border: 1px solid <neutral>;
+    border-radius: 4px;
+    padding: 4px;
+}
+QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {
+    border: 1px solid <accent>;
+}
+
+QTabWidget::pane {
+    border-top: 2px solid <accent>;
+}
+QTabBar::tab {
+    padding: 8px 12px;
+    border: 0;
+}
+QTabBar::tab:selected, QTabBar::tab:hover {
+    background: <accent>;
+    color: white;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+QToolBox {
+}
+QToolBox::tab {
+    background-color: <neutral_l3>;
+    color: <fg>;
+}
+
+QToolBox::tab:selected {
+    background-color: <neutral>;
+    color: white;
+    border-bottom: none;
+}
+
+QToolBox::tab:hover {
+    background-color: <accent_l1>;
+    color: white;
+}
+
+QComboBox {
+    border: 1px solid <neutral>;
+    border-radius: 4px;
+    padding: 3px 6px;
+}
+QComboBox:hover {
+    border: 1px solid <accent>;
+}
