@@ -8,7 +8,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, Q
 from app.widgets.colordisplaywidget import ColorDisplayWidget
 from app.mainwindow.ui_mainwindow import Ui_MainWindow
 from app.widgets.settingsitemwidget import SettingItemWidget
-from qtpop import QtPop
+from qtpop import QtPop, debug_log
 from qtpop.configuration.models import SettingItem
 
 
@@ -29,6 +29,7 @@ class MainWindow(QMainWindow):
         self.qt_pop.log.info("MainWindow initialized successfully.")
         self.qt_pop.data.broadcast_message("main_window_opened", True)
 
+    @debug_log
     def setup_palette(self):
         def load_palette():
             grid = QGridLayout()
@@ -48,6 +49,7 @@ class MainWindow(QMainWindow):
             self.ui.p_frame.setLayout(grid)
         load_palette()
 
+    @debug_log
     def setup_settings(self):
         toolbox = self.ui.settingsTB
         while toolbox.count() > 0:
@@ -92,8 +94,7 @@ class MainWindow(QMainWindow):
 
         toolbox.addItem(static_widget, "Static Settings")
 
-    import re
-
+    @debug_log
     def setup_logging(self):
         ansi_regex = re.compile(r'\x1b\[(?:38;5;(\d{1,3})|9[0-7]|3[0-7]|0)m')
 
@@ -132,7 +133,7 @@ class MainWindow(QMainWindow):
             }
             return mapping.get(code, "#FFFFFF")
 
-        def ansi256_to_hex(code: int) -> str:
+        def ansi256_to_hex(code: int) -> str | None:
             """Convert 256-color ANSI code (0-255) to hex string."""
             if code < 16:
                 # standard colors
@@ -150,6 +151,7 @@ class MainWindow(QMainWindow):
             elif 232 <= code <= 255:
                 gray = (code - 232) * 10 + 8
                 return f"#{gray:02X}{gray:02X}{gray:02X}"
+            return None
 
         def strip_ansi_codes(text):
             """Remove ANSI codes but keep the color info for HTML."""
@@ -166,6 +168,7 @@ class MainWindow(QMainWindow):
 
         self.qt_pop.log.signal.connect(on_log)
 
+        self.qt_pop.log.info("Running log test messages...")
         self.qt_pop.log.warning("This is a warning message.")
         self.qt_pop.log.error("This is an error message.")
         self.qt_pop.log.info("This is an info message.")
