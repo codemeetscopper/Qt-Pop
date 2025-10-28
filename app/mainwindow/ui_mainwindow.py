@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwindowiOlulK.ui'
+## Form generated from reading UI file 'mainwindowNYUSkK.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.9.2
 ##
@@ -16,8 +16,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QHBoxLayout,
-    QLabel, QListWidget, QListWidgetItem, QMainWindow,
-    QMenuBar, QSizePolicy, QStatusBar, QTabWidget,
+    QLabel, QMainWindow, QMenuBar, QSizePolicy,
+    QStatusBar, QTabWidget, QTextBrowser, QToolBox,
     QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
@@ -69,17 +69,36 @@ class Ui_MainWindow(object):
         self.settings.setObjectName(u"settings")
         self.verticalLayout_2 = QVBoxLayout(self.settings)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.settingsLW = QListWidget(self.settings)
-        self.settingsLW.setObjectName(u"settingsLW")
+        self.settingsTB = QToolBox(self.settings)
+        self.settingsTB.setObjectName(u"settingsTB")
+        self.page_2 = QWidget()
+        self.page_2.setObjectName(u"page_2")
+        self.page_2.setGeometry(QRect(0, 0, 776, 341))
+        self.settingsTB.addItem(self.page_2, u"Page 2")
 
-        self.verticalLayout_2.addWidget(self.settingsLW)
+        self.verticalLayout_2.addWidget(self.settingsTB)
 
         self.mainTW.addTab(self.settings, "")
 
         self.verticalLayout.addWidget(self.mainTW)
 
+        self.log_frame = QFrame(self.centralwidget)
+        self.log_frame.setObjectName(u"log_frame")
+        self.log_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.log_frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout_3 = QVBoxLayout(self.log_frame)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.logTB = QTextBrowser(self.log_frame)
+        self.logTB.setObjectName(u"logTB")
+
+        self.verticalLayout_3.addWidget(self.logTB)
+
+
+        self.verticalLayout.addWidget(self.log_frame)
+
         self.verticalLayout.setStretch(0, 1)
         self.verticalLayout.setStretch(1, 20)
+        self.verticalLayout.setStretch(2, 4)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
@@ -91,7 +110,8 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.mainTW.setCurrentIndex(0)
+        self.mainTW.setCurrentIndex(2)
+        self.settingsTB.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -102,6 +122,7 @@ class Ui_MainWindow(object):
         self.titlelabel.setText(QCoreApplication.translate("MainWindow", u"Qt-Pop Demo ", None))
         self.mainTW.setTabText(self.mainTW.indexOf(self.palette), QCoreApplication.translate("MainWindow", u"Palette", None))
         self.mainTW.setTabText(self.mainTW.indexOf(self.fonts), QCoreApplication.translate("MainWindow", u"Fonts", None))
+        self.settingsTB.setItemText(self.settingsTB.indexOf(self.page_2), QCoreApplication.translate("MainWindow", u"Page 2", None))
         self.mainTW.setTabText(self.mainTW.indexOf(self.settings), QCoreApplication.translate("MainWindow", u"Settings", None))
     # retranslateUi
 

@@ -1,7 +1,9 @@
+import re
 import sys
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QBrush, QColor
-from PySide6.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QColorDialog, QListWidgetItem
+from PySide6.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QColorDialog, QListWidgetItem, \
+    QVBoxLayout, QListWidget, QSizePolicy
 
 from app.widgets.colordisplaywidget import ColorDisplayWidget
 from app.mainwindow.ui_mainwindow import Ui_MainWindow
@@ -21,6 +23,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         self.setWindowTitle(self.qt_pop.config.get_value('name'))
 
+        self.setup_logging()
         self.setup_palette()
         self.setup_settings()
         self.qt_pop.log.info("MainWindow initialized successfully.")
@@ -46,23 +49,125 @@ class MainWindow(QMainWindow):
         load_palette()
 
     def setup_settings(self):
+        toolbox = self.ui.settingsTB
+        while toolbox.count() > 0:
+            toolbox.removeItem(0)  # remove existing pages, if any
+
+        # --- Group user settings by 'group' ---
+        grouped_settings = {}
         for key, item in self.qt_pop.config.data.configuration.user.items():
-            self.qt_pop.log.info(f"Loading setting {item.name}, value: {item.value}")
-            custom_widget = SettingItemWidget(item)
-            list_item = QListWidgetItem(self.ui.settingsLW)
-            hint = custom_widget.sizeHint()
-            hint.setHeight(hint.height() + 10)
-            list_item.setSizeHint(hint)
-            self.ui.settingsLW.addItem(list_item)
-            self.ui.settingsLW.setItemWidget(list_item, custom_widget)
+            grouped_settings.setdefault(item.group, []).append(item)
+
+        # --- Create a QListWidget per group ---
+        for group_name, items in grouped_settings.items():
+            list_widget = QListWidget()
+            list_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+
+            for item in items:
+                self.qt_pop.log.info(f"Loading setting {item.name}, value: {item.value}")
+                custom_widget = SettingItemWidget(item)
+                list_item = QListWidgetItem(list_widget)
+                hint = custom_widget.sizeHint()
+                hint.setHeight(hint.height() + 10)
+                list_item.setSizeHint(hint)
+                list_widget.addItem(list_item)
+                list_widget.setItemWidget(list_item, custom_widget)
+
+            toolbox.addItem(list_widget, group_name)
+
+        # --- Add static settings as separate page ---
+        static_widget = QListWidget()
+        # static_widget.setAlternatingRowColors(True)
 
         for key, value in self.qt_pop.config.data.configuration.static.items():
-            self.qt_pop.log.info(f"Loading setting {key}, value: {value}")
-            item = SettingItem(key, value, [], "application static setting", "text", "user", "Static", "")
+            self.qt_pop.log.info(f"Loading static setting {key}, value: {value}")
+            item = SettingItem(key, value, [], "Application static setting", "text", "user", "Static", "")
             custom_widget = SettingItemWidget(item)
-            list_item = QListWidgetItem(self.ui.settingsLW)
+            list_item = QListWidgetItem(static_widget)
             hint = custom_widget.sizeHint()
             hint.setHeight(hint.height() + 10)
             list_item.setSizeHint(hint)
-            self.ui.settingsLW.addItem(list_item)
-            self.ui.settingsLW.setItemWidget(list_item, custom_widget)
+            static_widget.addItem(list_item)
+            static_widget.setItemWidget(list_item, custom_widget)
+
+        toolbox.addItem(static_widget, "Static Settings")
+
+    import re
+
+    def setup_logging(self):
+        ansi_regex = re.compile(r'\x1b\[(?:38;5;(\d{1,3})|9[0-7]|3[0-7]|0)m')
+
+        def ansi_to_hex(match):
+            """Convert ANSI escape match to hex color."""
+            code = match.group(1)
+            if code is not None:
+                # 256-color mode
+                code = int(code)
+                return ansi256_to_hex(code)
+            else:
+                # 16-color / classic ANSI
+                ansi_code = match.group(0)
+                return ansi16_to_hex(ansi_code)
+
+        def ansi16_to_hex(code):
+            """16-color ANSI mapping"""
+            mapping = {
+                "\x1b[30m": "#000000",
+                "\x1b[31m": "#FF0000",
+                "\x1b[32m": "#00FF00",
+                "\x1b[33m": "#FFFF00",
+                "\x1b[34m": "#0000FF",
+                "\x1b[35m": "#FF00FF",
+                "\x1b[36m": "#00FFFF",
+                "\x1b[37m": "#FFFFFF",
+                "\x1b[90m": "#808080",
+                "\x1b[91m": "#FF5555",
+                "\x1b[92m": "#55FF55",
+                "\x1b[93m": "#FFFF55",
+                "\x1b[94m": "#5555FF",
+                "\x1b[95m": "#FF55FF",
+                "\x1b[96m": "#55FFFF",
+                "\x1b[97m": "#FFFFFF",
+                "\x1b[0m": "#FFFFFF",  # reset
+            }
+            return mapping.get(code, "#FFFFFF")
+
+        def ansi256_to_hex(code: int) -> str:
+            """Convert 256-color ANSI code (0-255) to hex string."""
+            if code < 16:
+                # standard colors
+                standard = [
+                    0x000000, 0x800000, 0x008000, 0x808000, 0x000080, 0x800080, 0x008080, 0xc0c0c0,
+                    0x808080, 0xff0000, 0x00ff00, 0xffff00, 0x0000ff, 0xff00ff, 0x00ffff, 0xffffff
+                ]
+                return f"#{standard[code]:06X}"
+            elif 16 <= code <= 231:
+                code -= 16
+                r = (code // 36) * 51
+                g = ((code % 36) // 6) * 51
+                b = (code % 6) * 51
+                return f"#{r:02X}{g:02X}{b:02X}"
+            elif 232 <= code <= 255:
+                gray = (code - 232) * 10 + 8
+                return f"#{gray:02X}{gray:02X}{gray:02X}"
+
+        def strip_ansi_codes(text):
+            """Remove ANSI codes but keep the color info for HTML."""
+            return ansi_regex.sub("", text)
+
+        def on_log(timestamp, msg, level, color):
+            # Convert color ANSI to hex
+            hex_color = ansi16_to_hex(color) if not color.startswith("\x1b[38;5;") else ansi256_to_hex(int(color[7:-1]))
+            # Strip all ANSI codes from message
+            clean_msg = strip_ansi_codes(msg)
+            html_msg = f'<span style="color:{hex_color};"><b> | {level} | </b> {timestamp} | {clean_msg}</span>'
+            self.ui.logTB.append(html_msg)
+            # self.ui.logTB.moveCursor(self.ui.logTB.textCursor().atEnd())
+
+        self.qt_pop.log.signal.connect(on_log)
+
+        self.qt_pop.log.warning("This is a warning message.")
+        self.qt_pop.log.error("This is an error message.")
+        self.qt_pop.log.info("This is an info message.")
+        self.qt_pop.log.debug("This is a debug message.")
+        self.qt_pop.log.critical("This is a critical message.")

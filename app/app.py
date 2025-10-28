@@ -9,5 +9,5 @@ from qtpop import QtPop
 def run(qt_pop: QtPop):
     app = QApplication(sys.argv)
     window = MainWindow(qt_pop)
-    window.show()
+    window.showMaximized()
     sys.exit(app.exec())

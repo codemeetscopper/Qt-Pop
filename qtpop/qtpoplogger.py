@@ -20,27 +20,27 @@ except ImportError:
 # Qt Signal Emitter for Log Messages
 # --------------------------------------------
 class QtLogEmitter(QObject):
-    log_emitted = Signal(str, str)  # message, level
+    log_emitted = Signal(str, str, str, str)  # timestamp, message, level, color
 
-
-# --------------------------------------------
-# Custom Formatter with Colour Support
-# --------------------------------------------
-class ColorFormatter(logging.Formatter):
-    LEVEL_COLOURS = {
+LEVEL_COLOURS = {
         logging.DEBUG: Fore.LIGHTBLACK_EX,
         logging.INFO: Fore.LIGHTGREEN_EX,
         logging.WARNING: Fore.YELLOW,
         logging.ERROR: Fore.RED,
         logging.CRITICAL: Fore.MAGENTA + Style.BRIGHT,
     }
+# --------------------------------------------
+# Custom Formatter with Colour Support
+# --------------------------------------------
+class ColorFormatter(logging.Formatter):
 
     def format(self, record):
+        global LEVEL_COLOURS
         # compute asctime safely
         record.asctime = self.formatTime(record, self.datefmt)
         record.message = record.getMessage()
 
-        color = self.LEVEL_COLOURS.get(record.levelno, "")
+        color = LEVEL_COLOURS.get(record.levelno, "")
         level = f"{color}{record.levelname:<6}{Style.RESET_ALL}"
         formatted = f"| {level} | {color}{record.asctime} {Style.RESET_ALL}| {color}{record.message}"
         return formatted
@@ -88,9 +88,12 @@ class QtPopLogger:
                 self.emitter = emitter
 
             def emit(self, record):
-                msg = self.format(record)
+                global LEVEL_COLOURS
+                msg = record.msg
                 level = record.levelname
-                self.emitter.log_emitted.emit(msg, level)
+                color = LEVEL_COLOURS.get(record.levelno, "")
+                time = record.asctime
+                self.emitter.log_emitted.emit(time, msg, level, color)
 
         signal_handler = SignalHandler(self._emitter)
         signal_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
