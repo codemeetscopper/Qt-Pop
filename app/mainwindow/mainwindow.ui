@@ -58,7 +58,7 @@
        <attribute name="title">
         <string>Palette</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout" rowstretch="3,7" rowminimumheight="0,0" columnminimumwidth="0">
+       <layout class="QGridLayout" name="gridLayout" rowstretch="3">
         <property name="leftMargin">
          <number>0</number>
         </property>
@@ -74,90 +74,14 @@
         <property name="spacing">
          <number>5</number>
         </property>
-        <item row="1" column="0">
-         <widget class="QFrame" name="palette_bottom_frame">
-          <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Shadow::Raised</enum>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="0">
-         <widget class="QFrame" name="palette_top_frame">
+         <widget class="QFrame" name="p_frame">
           <property name="frameShape">
            <enum>QFrame::Shape::StyledPanel</enum>
           </property>
           <property name="frameShadow">
            <enum>QFrame::Shadow::Raised</enum>
           </property>
-          <layout class="QGridLayout" name="gridLayout_2" columnstretch="10,5,2">
-           <property name="verticalSpacing">
-            <number>2</number>
-           </property>
-           <item row="0" column="0">
-            <widget class="QLabel" name="sl1">
-             <property name="text">
-              <string>Accent</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QComboBox" name="accent_combo"/>
-           </item>
-           <item row="0" column="2">
-            <widget class="QPushButton" name="accent_pick">
-             <property name="text">
-              <string>Pick</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="sl2">
-             <property name="text">
-              <string>Neutral</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QComboBox" name="neutral_combo"/>
-           </item>
-           <item row="1" column="2">
-            <widget class="QPushButton" name="neutral_pick">
-             <property name="text">
-              <string>Pick</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="sl3">
-             <property name="text">
-              <string>Support</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QComboBox" name="support_combo"/>
-           </item>
-           <item row="2" column="2">
-            <widget class="QPushButton" name="support_pick">
-             <property name="text">
-              <string>Pick</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="sl4">
-             <property name="text">
-              <string>Theme</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QComboBox" name="theme_combo"/>
-           </item>
-          </layout>
          </widget>
         </item>
        </layout>
@@ -166,6 +90,16 @@
        <attribute name="title">
         <string>Fonts</string>
        </attribute>
+      </widget>
+      <widget class="QWidget" name="settings">
+       <attribute name="title">
+        <string>Settings</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QListWidget" name="settingsLW"/>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>

@@ -200,7 +200,7 @@ class IconManager:
             cls.get_pixmap(name, color, size, async_load=True)
 
     # --------------------------
-    # Internal helpers
+    # Internal widgets
     # --------------------------
 
     @classmethod

@@ -162,7 +162,7 @@ class StyleManager:
         """Returns the resolved theme mode: 'light' or 'dark'."""
         return cls._colours
 
-    # ---- Internal helpers ----------------------------------------------------
+    # ---- Internal widgets ----------------------------------------------------
     @classmethod
     def _auto_mode(cls) -> str:
         """Infer light/dark from QApplication's current palette; fallback to light."""

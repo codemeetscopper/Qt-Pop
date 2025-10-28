@@ -13,7 +13,7 @@
                     "#55aa7f"
                 ],
                 "description": "A sample drop down setting.",
-                "type": "dropdown",
+                "type": "colorpicker",
                 "accessibility": "user",
                 "group": "Appearance Settings",
                 "icon": "images/size.svg"
@@ -28,7 +28,7 @@
                     "#ccff00"
                 ],
                 "description": "A sample drop down setting.",
-                "type": "dropdown",
+                "type": "colorpicker",
                 "accessibility": "user",
                 "group": "Appearance Settings",
                 "icon": "images/size.svg"
@@ -43,7 +43,7 @@
                     "#ccff00"
                 ],
                 "description": "A sample drop down setting.",
-                "type": "dropdown",
+                "type": "colorpicker",
                 "accessibility": "user",
                 "group": "Appearance Settings",
                 "icon": "images/size.svg"
@@ -89,7 +89,7 @@
                 "value": "D:/Development/Python/Python-Desktop-Application/config/configuration.json",
                 "values": [],
                 "description": "A sample file browse setting.",
-                "type": "file_browse",
+                "type": "filebrowse",
                 "accessibility": "user",
                 "group": "Sample Group 1",
                 "icon": "images/size.svg"
@@ -99,7 +99,7 @@
                 "value": "D:/Development/Python/Python-Desktop-Application",
                 "values": [],
                 "description": "A sample folder browse setting.",
-                "type": "folder_browse",
+                "type": "folderbrowse",
                 "accessibility": "user",
                 "group": "Sample Group 1",
                 "icon": "images/size.svg"
