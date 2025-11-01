@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwindowiLjuEW.ui'
+## Form generated from reading UI file 'mainwindowJHTXhp.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.9.2
 ##
@@ -16,9 +16,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QHBoxLayout,
-    QMainWindow, QMenuBar, QPushButton, QSizePolicy,
-    QStatusBar, QTabWidget, QTextBrowser, QTextEdit,
-    QToolBox, QVBoxLayout, QWidget)
+    QListWidget, QListWidgetItem, QMainWindow, QMenuBar,
+    QPushButton, QSizePolicy, QStatusBar, QTabWidget,
+    QTextBrowser, QTextEdit, QToolBox, QVBoxLayout,
+    QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -109,6 +110,26 @@ class Ui_MainWindow(object):
         self.mainTW.addTab(self.qss, "")
         self.fonts = QWidget()
         self.fonts.setObjectName(u"fonts")
+        self.verticalLayout_5 = QVBoxLayout(self.fonts)
+        self.verticalLayout_5.setSpacing(0)
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
+        self.font_bottom = QFrame(self.fonts)
+        self.font_bottom.setObjectName(u"font_bottom")
+        self.font_bottom.setFrameShape(QFrame.Shape.StyledPanel)
+        self.font_bottom.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout_6 = QVBoxLayout(self.font_bottom)
+        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
+        self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
+        self.fontLW = QListWidget(self.font_bottom)
+        self.fontLW.setObjectName(u"fontLW")
+
+        self.verticalLayout_6.addWidget(self.fontLW)
+
+
+        self.verticalLayout_5.addWidget(self.font_bottom)
+
+        self.verticalLayout_5.setStretch(0, 10)
         self.mainTW.addTab(self.fonts, "")
 
         self.verticalLayout.addWidget(self.mainTW)
@@ -140,7 +161,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.mainTW.setCurrentIndex(0)
+        self.mainTW.setCurrentIndex(4)
         self.settingsTB.setCurrentIndex(0)
 
 

@@ -1,4 +1,4 @@
-from app.widgets.fontpreview import FontPreviewWidget
+from app.widgets.fontcard import FontPreviewWidget
 from qtpop import FontManager
 
 if __name__ == "__main__":
