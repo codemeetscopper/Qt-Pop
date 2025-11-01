@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwindowGqfnSE.ui'
+## Form generated from reading UI file 'mainwindowkICSuH.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.9.2
 ##
@@ -73,10 +73,15 @@ class Ui_MainWindow(object):
         self.settingsTB.setObjectName(u"settingsTB")
         self.page_2 = QWidget()
         self.page_2.setObjectName(u"page_2")
-        self.page_2.setGeometry(QRect(0, 0, 776, 341))
+        self.page_2.setGeometry(QRect(0, 0, 776, 311))
         self.settingsTB.addItem(self.page_2, u"Page 2")
 
         self.verticalLayout_2.addWidget(self.settingsTB)
+
+        self.saveBtn = QPushButton(self.settings)
+        self.saveBtn.setObjectName(u"saveBtn")
+
+        self.verticalLayout_2.addWidget(self.saveBtn)
 
         self.mainTW.addTab(self.settings, "")
         self.qss = QWidget()
@@ -147,7 +152,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.mainTW.setCurrentIndex(3)
+        self.mainTW.setCurrentIndex(2)
         self.settingsTB.setCurrentIndex(0)
 
 
@@ -160,6 +165,7 @@ class Ui_MainWindow(object):
         self.mainTW.setTabText(self.mainTW.indexOf(self.palette), QCoreApplication.translate("MainWindow", u"Palette", None))
         self.mainTW.setTabText(self.mainTW.indexOf(self.fonts), QCoreApplication.translate("MainWindow", u"Fonts", None))
         self.settingsTB.setItemText(self.settingsTB.indexOf(self.page_2), QCoreApplication.translate("MainWindow", u"Page 2", None))
+        self.saveBtn.setText(QCoreApplication.translate("MainWindow", u"Save", None))
         self.mainTW.setTabText(self.mainTW.indexOf(self.settings), QCoreApplication.translate("MainWindow", u"Settings", None))
         self.loadbtn.setText(QCoreApplication.translate("MainWindow", u"load Qss", None))
         self.applybtn.setText(QCoreApplication.translate("MainWindow", u"Apply", None))

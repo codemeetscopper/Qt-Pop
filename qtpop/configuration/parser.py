@@ -96,13 +96,16 @@ class ConfigurationManager:
 
         setting_obj = self.data.configuration.user.get(setting_key)
         if not setting_obj:
-            raise SettingNotFoundError(setting_key)
+            setting_obj = self.data.configuration.static.get(setting_key)
+            if setting_obj is None:
+                raise SettingNotFoundError(setting_key)
+            else:
+                self.data.configuration.static[setting_key] = value
+                q_settings_key = f"configuration/static/{setting_key}/value"
+        else:
+            setting_obj.value = value
+            q_settings_key = f"configuration/user/{setting_key}/value"
 
-        # Update dataclass
-        setting_obj.value = value
-
-        # Update QSettings
-        q_settings_key = f"configuration/user/{setting_key}/value"
         self.settings.setValue(q_settings_key, self._serialize(value))
         self.settings.sync()
 

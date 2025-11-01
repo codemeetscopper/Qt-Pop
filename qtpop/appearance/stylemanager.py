@@ -106,8 +106,6 @@ class StyleManager:
             return True
 
         except Exception as ex:
-            print(ex)
-            return False
             cls._initialised = False
             cls._colours = {}
             cls._palette = None

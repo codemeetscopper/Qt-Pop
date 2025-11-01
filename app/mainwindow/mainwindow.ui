@@ -52,7 +52,7 @@
     <item>
      <widget class="QTabWidget" name="mainTW">
       <property name="currentIndex">
-       <number>3</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="palette">
        <attribute name="title">
@@ -106,14 +106,21 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>98</width>
-             <height>28</height>
+             <width>776</width>
+             <height>311</height>
             </rect>
            </property>
            <attribute name="label">
             <string>Page 2</string>
            </attribute>
           </widget>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="saveBtn">
+          <property name="text">
+           <string>Save</string>
+          </property>
          </widget>
         </item>
        </layout>

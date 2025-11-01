@@ -3,7 +3,8 @@
         "user": {
             "accent": {
                 "name": "Accent Colour",
-                "value": "#0a734b",
+                "shortname": "accent",
+                "value": "#0055ff",
                 "values": [
                     "#a52b2b",
                     "#b52b2b",
@@ -20,7 +21,8 @@
             },
             "support": {
                 "name": "Support Colour",
-                "value": "#730a32",
+                "shortname": "support",
+                "value": "#aa007f",
                 "values": [
                     "#a52b2b",
                     "#b52b2b",
@@ -35,7 +37,8 @@
             },
             "neutral": {
                 "name": "Neutral Colour",
-                "value": "#3a5a8f",
+                "shortname": "neutral",
+                "value": "#005500",
                 "values": [
                     "#a52b2b",
                     "#b52b2b",
@@ -50,6 +53,7 @@
             },
             "theme": {
                 "name": "Colour Theme",
+                "shortname": "theme",
                 "value": "light",
                 "values": [
                     "dark",
@@ -63,6 +67,7 @@
             },
             "qss_path": {
                 "name": "Qss Style",
+                "shortname": "qss_path",
                 "value": "resources/qss/default.qss",
                 "values": [],
                 "description": "Qss Style Sheet for the application.",
@@ -73,6 +78,7 @@
             },
             "sample_text_input": {
                 "name": "Sample Text Input",
+                "shortname": "sample_text_input",
                 "value": "New Value",
                 "values": [],
                 "description": "A sample text input setting.",
@@ -83,6 +89,7 @@
             },
             "sample_dropdown_input": {
                 "name": "Sample DropDown Input",
+                "shortname": "sample_dropdown_input",
                 "value": "Option 1",
                 "values": [
                     "Option 1",
@@ -96,6 +103,7 @@
             },
             "sample_file_browse": {
                 "name": "Sample File Browse",
+                "shortname": "sample_file_browse",
                 "value": "D:/Development/Python/Python-Desktop-Application/config/configuration.json",
                 "values": [],
                 "description": "A sample file browse setting.",
@@ -106,6 +114,7 @@
             },
             "sample_folder_browse": {
                 "name": "Sample File Browse",
+                "shortname": "sample_folder_browse",
                 "value": "D:/Development/Python/Python-Desktop-Application",
                 "values": [],
                 "description": "A sample folder browse setting.",

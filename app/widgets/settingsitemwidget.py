@@ -5,6 +5,7 @@ from PySide6.QtWidgets import (
     QPushButton, QFileDialog, QColorDialog, QComboBox
 )
 
+from app.widgets.colordisplaywidget import ColorDisplayWidget
 from qtpop.configuration.models import SettingItem
 
 
@@ -12,6 +13,7 @@ class SettingItemWidget(QWidget):
     """A single-line, Material-like QWidget for editing a SettingItem."""
     def __init__(self, item: SettingItem, parent=None):
         super().__init__(parent)
+        self.colour_display = None
         self.item = item
         self.init_ui()
 
@@ -70,9 +72,10 @@ class SettingItemWidget(QWidget):
             control_layout.addWidget(browse_btn)
 
         elif self.item.type == "colorpicker":
-            self.control = QPushButton()
-            self._update_color_button(QColor(self.item.value))
+            self.control = QPushButton('Pick')
+            self.colour_display = ColorDisplayWidget(QColor(self.item.value), "Selected Color")
             self.control.clicked.connect(self._pick_color)
+            control_layout.addWidget(self.colour_display)
             control_layout.addWidget(self.control)
 
         elif self.item.type == "dropdown":
@@ -125,6 +128,4 @@ class SettingItemWidget(QWidget):
         # Use palette color fill instead of stylesheet
         pal = self.control.palette()
         pal.setColor(self.control.backgroundRole(), color)
-        self.control.setAutoFillBackground(True)
-        self.control.setPalette(pal)
-        self.control.setText(color.name())
+        self.colour_display = ColorDisplayWidget(color, "Selected Color")

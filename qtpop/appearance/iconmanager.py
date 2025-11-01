@@ -49,7 +49,7 @@ class IconManager:
     _icon_cache: Dict[str, QImage] = {}  # Cache QImage, not QPixmap
     _svg_cache: Dict[str, str] = {}      # Cache generated SVG strings
     _icon_lock = threading.Lock()
-    _images_path: str = r"../../resources/images/meterialicons/"
+    _images_path: str = r"resources/images/"
     _icon_list: List[str] = []
     _thread_pool = QThreadPool.globalInstance()
     _notifier = _IconNotifier()  # Holds the actual Qt signal object

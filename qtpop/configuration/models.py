@@ -5,6 +5,7 @@ from typing import Any, Dict
 @dataclass
 class SettingItem:
     name: str
+    shortname: str
     value: Any
     values: Any
     description: str

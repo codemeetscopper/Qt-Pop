@@ -4,6 +4,8 @@ import time
 import uuid
 from pathlib import Path
 
+from PySide6.QtWidgets import QApplication
+
 from qtpop.appearance.iconmanager import IconManager
 from qtpop.appearance.stylemanager import StyleManager
 from qtpop.qtpoplogger import debug_log, QtPopLogger
@@ -23,6 +25,7 @@ class QSSManager:
     _log = None
     _image_token_re = re.compile(r"<img:\s*(.+?);\s*color:(.+?)>", flags=re.IGNORECASE)
     _colour_token_re = re.compile(r"<\s*([a-zA-Z0-9_]+)\s*>")
+    _style_sheet: str = ""
 
     @classmethod
     def __init__(cls, icon_manager: IconManager, style_manager: StyleManager, logger: QtPopLogger):
@@ -123,6 +126,49 @@ class QSSManager:
 
         processed = cls._colour_token_re.sub(colour_replacer, intermediate)
         return processed
+
+    @classmethod
+    @debug_log
+    def clear_temp_svgs(cls):
+        """
+        Clears all temporary SVG files in the 'tmp_qss_icons' directory.
+        """
+        temp_dir = Path.cwd() / "tmp_qss_icons"
+        if not temp_dir.exists():
+            return
+
+        for temp_file in temp_dir.glob("icon_*.svg"):
+            try:
+                temp_file.unlink()
+            except Exception as e:
+                cls._log.warning(f"Failed to delete temp SVG file {temp_file}: {e}")
+
+    @classmethod
+    @debug_log
+    def set_style(cls, style_sheet: str = ""):
+        """
+        Sets the application's style sheet after processing it.
+
+        Args:
+            style_sheet (str): The raw QSS string with custom tokens.
+        """
+        if not style_sheet:
+            style_sheet = cls._style_sheet
+
+        processed_qss = ""
+        if '<accent>' in  style_sheet:
+            processed_qss = cls.process(style_sheet)
+        else:
+            processed_qss = style_sheet
+        cls._stylesheet = processed_qss
+        app = QApplication.instance()
+        if app:
+            palette = cls._styler.get_palette()
+            app.setPalette(palette)
+            app.setStyleSheet(processed_qss)
+        else:
+            cls._log.warning("No QApplication instance found to set style sheet.")
+
 
     @classmethod
     @debug_log
