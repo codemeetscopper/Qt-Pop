@@ -74,6 +74,7 @@ class SettingItemWidget(QWidget):
         elif self.item.type == "colorpicker":
             self.control = QPushButton('Pick')
             self.colour_display = ColorDisplayWidget(QColor(self.item.value), self.item.shortname)
+            self.colour_display.setMaximumHeight(35)
             self.control.clicked.connect(self._pick_color)
             self.control_layout.addWidget(self.colour_display)
             self.control_layout.addWidget(self.control)

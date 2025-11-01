@@ -23,7 +23,7 @@ class ColorCard(QFrame):
         self._hover_opacity = 0.0
         self._border_alpha = 40
         # self.setFixedHeight(height)
-        self.setMinimumWidth(240)
+        # self.setMinimumWidth(240)
 
         # Animation for hover
         self._hover_anim = QPropertyAnimation(self, b"hover_opacity", self)

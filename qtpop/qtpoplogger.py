@@ -24,8 +24,8 @@ class QtLogEmitter(QObject):
 
 LEVEL_COLOURS = {
         logging.DEBUG: Fore.LIGHTBLACK_EX,
-        logging.INFO: Fore.LIGHTGREEN_EX,
-        logging.WARNING: Fore.YELLOW,
+        logging.INFO: Fore.BLUE,
+        logging.WARNING: Fore.CYAN,
         logging.ERROR: Fore.RED,
         logging.CRITICAL: Fore.MAGENTA + Style.BRIGHT,
     }

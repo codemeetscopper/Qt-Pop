@@ -15,12 +15,14 @@ QWidget {
 
 QPushButton {
     background-color: <bg1>;
-    border: 1px solid <neutral>;
+    border-bottom: 1px solid <neutral>;
     padding: 5px 10px;
     border-radius: 5px;
     min-height: 25px;
     min-width: 150px;
+    max-width: 150px;
     font-size: 14px;
+    font-weight: bold;
 }
 QPushButton:hover {
     background-color: <support_l1>;
@@ -50,9 +52,12 @@ QTabWidget::pane {
 QTabBar::tab {
     padding: 8px 12px;
     border: 0;
+    min-width: 100px;
 }
 QTabBar::tab:selected, QTabBar::tab:hover {
     color: <neutral_d3>;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 QToolBox{
@@ -87,4 +92,65 @@ QComboBox {
 }
 QComboBox:hover {
     border: 1px solid <accent>;
+}
+/*
+   Minimal QScrollBar style (keeps working default buttons)
+*/
+
+QScrollBar:horizontal {
+    background: <bg1>;
+    height: 10px;
+    margin: 0 20px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:horizontal {
+    background: <accent>;
+    min-width: 20px;
+    border-radius: 5px;
+}
+QScrollBar::handle:horizontal:hover {
+    background: <accent_l1>;
+}
+
+/* keep platform's default buttons */
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal {
+    background: none;
+    border: none;
+    width: 16px;
+}
+QScrollBar::add-page:horizontal,
+QScrollBar::sub-page:horizontal {
+    background: none;
+}
+
+/* --- Vertical Scrollbar --- */
+
+QScrollBar:vertical {
+    background: <bg1>;
+    width: 10px;
+    margin: 20px 0;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:vertical {
+    background: <accent>;
+    min-height: 20px;
+    border-radius: 5px;
+}
+QScrollBar::handle:vertical:hover {
+    background: <accent_l1>;
+}
+
+/* keep platform's default buttons */
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    background: none;
+    border: none;
+    height: 16px;
+}
+QScrollBar::add-page:vertical,
+QScrollBar::sub-page:vertical {
+    background: none;
 }
