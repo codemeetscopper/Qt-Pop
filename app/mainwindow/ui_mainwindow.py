@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwindowkICSuH.ui'
+## Form generated from reading UI file 'mainwindowRDkpxN.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.9.2
 ##
@@ -81,7 +81,7 @@ class Ui_MainWindow(object):
         self.saveBtn = QPushButton(self.settings)
         self.saveBtn.setObjectName(u"saveBtn")
 
-        self.verticalLayout_2.addWidget(self.saveBtn)
+        self.verticalLayout_2.addWidget(self.saveBtn, 0, Qt.AlignmentFlag.AlignRight)
 
         self.mainTW.addTab(self.settings, "")
         self.qss = QWidget()
@@ -110,13 +110,13 @@ class Ui_MainWindow(object):
         self.loadbtn = QPushButton(self.qss)
         self.loadbtn.setObjectName(u"loadbtn")
 
-        self.verticalLayout_4.addWidget(self.loadbtn)
+        self.verticalLayout_4.addWidget(self.loadbtn, 0, Qt.AlignmentFlag.AlignRight)
 
         self.applybtn = QPushButton(self.qss)
         self.applybtn.setObjectName(u"applybtn")
         self.applybtn.setFlat(True)
 
-        self.verticalLayout_4.addWidget(self.applybtn)
+        self.verticalLayout_4.addWidget(self.applybtn, 0, Qt.AlignmentFlag.AlignRight)
 
         self.verticalLayout_4.setStretch(0, 20)
         self.verticalLayout_4.setStretch(2, 1)
@@ -152,7 +152,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.mainTW.setCurrentIndex(2)
+        self.mainTW.setCurrentIndex(3)
         self.settingsTB.setCurrentIndex(0)
 
 

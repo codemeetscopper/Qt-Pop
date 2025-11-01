@@ -14,17 +14,17 @@ QWidget {
 }
 
 QPushButton {
-    background-color: <support>;
-    color: white;
+    background-color: <support_l3>;
+    color: <support_d3>;
     border: 0px solid <accent_d1>;
     padding: 5px 10px;
-    border-radius: 4px;
+    border-radius: 5px;
     min-height: 25px;
-    min-width: 75px;
-    max-width: 150px;
+    min-width: 150px;
+    font-size: 14px;
 }
 QPushButton:hover {
-    background-color: <accent_l1>;
+    background-color: <support_l1>;
 }
 QPushButton:pressed {
     background-color: <accent_d1>;
@@ -35,7 +35,7 @@ QPushButton:disabled {
 }
 
 QLineEdit, QTextEdit, QPlainTextEdit {
-    border: 1px solid <neutral>;
+    border: 2px solid <neutral>;
     border-radius: 4px;
     padding: 4px;
 }
@@ -58,8 +58,9 @@ QTabBar::tab:selected, QTabBar::tab:hover {
 }
 
 QToolBox{
-    icon-size: 40px;
-    }
+    icon-size: 30px;
+    spacing: 5px;
+}
 QToolBox::tab {
     background-color: <neutral_l3>;
     color: <fg>;
@@ -79,7 +80,7 @@ QToolBox::tab:hover {
 }
 
 QComboBox {
-    border: 1px solid <neutral>;
+    border: 2px solid <neutral>;
     border-radius: 4px;
     padding: 3px 6px;
 }

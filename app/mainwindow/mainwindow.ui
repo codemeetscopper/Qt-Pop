@@ -52,7 +52,7 @@
     <item>
      <widget class="QTabWidget" name="mainTW">
       <property name="currentIndex">
-       <number>2</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="palette">
        <attribute name="title">
@@ -116,7 +116,7 @@
           </widget>
          </widget>
         </item>
-        <item>
+        <item alignment="Qt::AlignmentFlag::AlignRight">
          <widget class="QPushButton" name="saveBtn">
           <property name="text">
            <string>Save</string>
@@ -148,14 +148,14 @@
           </layout>
          </widget>
         </item>
-        <item>
+        <item alignment="Qt::AlignmentFlag::AlignRight">
          <widget class="QPushButton" name="loadbtn">
           <property name="text">
            <string>load Qss</string>
           </property>
          </widget>
         </item>
-        <item>
+        <item alignment="Qt::AlignmentFlag::AlignRight">
          <widget class="QPushButton" name="applybtn">
           <property name="text">
            <string>Apply</string>

@@ -279,3 +279,7 @@ class MainWindow(QMainWindow):
         self.ui.loadbtn.clicked.disconnect() if hasattr(self.ui.loadbtn, "clicked") else None
         self.ui.applybtn.clicked.connect(on_apply_clicked)
         self.ui.loadbtn.clicked.connect(on_load_clicked)
+
+    def resizeEvent(self, event, /):
+        super().resizeEvent(event)
+        self.ui.statusbar.showMessage(f"{self.width()} x {self.height()}")

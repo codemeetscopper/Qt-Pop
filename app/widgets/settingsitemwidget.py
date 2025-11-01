@@ -14,6 +14,7 @@ class SettingItemWidget(QWidget):
     def __init__(self, item: SettingItem, parent=None):
         super().__init__(parent)
         self.colour_display = None
+        self.control_layout = QHBoxLayout()
         self.item = item
         self.init_ui()
 
@@ -44,39 +45,38 @@ class SettingItemWidget(QWidget):
         label_layout.addWidget(label_desc)
 
         # --- Right side: Value control(s) ---
-        control_layout = QHBoxLayout()
-        control_layout.setContentsMargins(0, 0, 0, 0)
-        control_layout.setSpacing(6)
+        self.control_layout.setContentsMargins(0, 0, 0, 0)
+        self.control_layout.setSpacing(6)
 
         self.control = None
 
         if self.item.type == "text":
             self.control = QLineEdit(str(self.item.value))
             self.control.textChanged.connect(self._on_text_changed)
-            control_layout.addWidget(self.control)
+            self.control_layout.addWidget(self.control)
 
         elif self.item.type == "filebrowse":
             self.control = QLineEdit(str(self.item.value))
             browse_btn = QPushButton("Browse…")
             browse_btn.clicked.connect(self._browse_file)
             self.control.textChanged.connect(self._on_text_changed)
-            control_layout.addWidget(self.control)
-            control_layout.addWidget(browse_btn)
+            self.control_layout.addWidget(self.control)
+            self.control_layout.addWidget(browse_btn)
 
         elif self.item.type == "folderbrowse":
             self.control = QLineEdit(str(self.item.value))
             browse_btn = QPushButton("Browse…")
             browse_btn.clicked.connect(self._browse_folder)
             self.control.textChanged.connect(self._on_text_changed)
-            control_layout.addWidget(self.control)
-            control_layout.addWidget(browse_btn)
+            self.control_layout.addWidget(self.control)
+            self.control_layout.addWidget(browse_btn)
 
         elif self.item.type == "colorpicker":
             self.control = QPushButton('Pick')
             self.colour_display = ColorDisplayWidget(QColor(self.item.value), "Selected Color")
             self.control.clicked.connect(self._pick_color)
-            control_layout.addWidget(self.colour_display)
-            control_layout.addWidget(self.control)
+            self.control_layout.addWidget(self.colour_display)
+            self.control_layout.addWidget(self.control)
 
         elif self.item.type == "dropdown":
             self.control = QComboBox()
@@ -85,14 +85,14 @@ class SettingItemWidget(QWidget):
             if self.item.value in self.item.values:
                 self.control.setCurrentText(str(self.item.value))
             self.control.currentTextChanged.connect(self._on_dropdown_changed)
-            control_layout.addWidget(self.control)
+            self.control_layout.addWidget(self.control)
 
         else:
-            control_layout.addWidget(QLabel(f"Unknown type: {self.item.type}"))
+            self.control_layout.addWidget(QLabel(f"Unknown type: {self.item.type}"))
 
         # --- Combine sections ---
         main_layout.addLayout(label_layout, 2)
-        main_layout.addLayout(control_layout, 3)
+        main_layout.addLayout(self.control_layout, 3)
         main_layout.addStretch()
 
         # Slight elevation hint (material-like spacing)
@@ -128,4 +128,11 @@ class SettingItemWidget(QWidget):
         # Use palette color fill instead of stylesheet
         pal = self.control.palette()
         pal.setColor(self.control.backgroundRole(), color)
-        self.colour_display = ColorDisplayWidget(color, "Selected Color")
+        self.control_layout.removeWidget(self.colour_display)
+        self.control_layout.removeWidget(self.control)
+
+        self.colour_display.deleteLater()
+        self.colour_display = ColorDisplayWidget(color, self.item.shortname)
+
+        self.control_layout.addWidget(self.colour_display)
+        self.control_layout.addWidget(self.control)
