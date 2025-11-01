@@ -10,16 +10,10 @@ class FontManager:
 
     def __init__(self):
         self._family_cycle = None
-
-    # def __new__(cls):
-    #     if cls._instance is None:
-    #         cls._instance = super(FontManager, cls).__new__(cls)
-    #         cls._instance._init()
-    #     return cls._instance
+        self._loaded_families = []  # List of loaded font families
+        self._font_map = {}  # Maps tags like 'h1' to font info
 
     def _init(self):
-        self._font_map = {}           # Maps tags like 'h1' to font info
-        self._loaded_families = []    # List of loaded font families
         self._family_cycle = None     # Iterator for round-robin font assignment
 
     @debug_log

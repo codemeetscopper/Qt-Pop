@@ -1,12 +1,13 @@
 import re
 import sys
 from PySide6.QtCore import Qt, QFile, Slot
-from PySide6.QtGui import QBrush, QColor
+from PySide6.QtGui import QBrush, QColor, QFont
 from PySide6.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QColorDialog, QListWidgetItem, \
     QVBoxLayout, QListWidget, QSizePolicy, QFileDialog
 
 from app.widgets.colordisplaywidget import ColorDisplayWidget
 from app.mainwindow.ui_mainwindow import Ui_MainWindow
+from app.widgets.fontpreview import FontPreviewWidget, FontCard
 from app.widgets.settingsitemwidget import SettingItemWidget
 from qtpop import QtPop, debug_log
 from qtpop.configuration.models import SettingItem
@@ -31,6 +32,7 @@ class MainWindow(QMainWindow):
         self.setup_palette()
         self.setup_settings()
         self.setup_qss()
+        self.setup_fonts()
 
         self.apply_style()
 
@@ -284,3 +286,27 @@ class MainWindow(QMainWindow):
     def resizeEvent(self, event, /):
         super().resizeEvent(event)
         self.ui.statusbar.showMessage(f"{self.width()} x {self.height()}")
+
+    def setup_fonts(self):
+        self.qt_pop.font.load_font("resources/fonts/RobotoCondensed-VariableFont_wght.ttf", "h1", 18)
+        self.qt_pop.font.load_font("resources/fonts/RobotoCondensed-VariableFont_wght.ttf", "h2", 14)
+        self.qt_pop.font.load_font("resources/fonts/Roboto-VariableFont_wdth,wght.ttf", "p", 11)
+        self.qt_pop.font.load_font("resources/fonts/RobotoCondensed-VariableFont_wght.ttf", "pc", 11)
+        self.qt_pop.font.load_font("resources/fonts/Inconsolata-VariableFont_wdth,wght.ttf", "log", 11)
+
+        layout = QVBoxLayout()
+        font_map = self.qt_pop.font.get_font_map()
+        for tag, info in font_map.items():
+            family = info['family']
+            size = info['size']
+            card = FontCard(family, tag, size, self.set_application_font)
+            layout.addWidget(card)
+        self.ui.fonts.setLayout(layout)
+        self.set_application_font('pc')
+
+    def set_application_font(self, tag: str):
+        """Sets the application-wide font."""
+        font = self.qt_pop.font.get_font(tag)
+        app = QApplication.instance()
+        app.setFont(font)
+        self.apply_style()

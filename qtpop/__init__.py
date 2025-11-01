@@ -37,6 +37,7 @@ class QtPop:
 
         self.font = FontManager()
 
+
         icons_path = self.config.get_value('icon_path')
         self.icon = IconManager()
         self.icon.set_images_path(icons_path)
