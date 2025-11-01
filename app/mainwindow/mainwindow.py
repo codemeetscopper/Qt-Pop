@@ -119,11 +119,6 @@ class MainWindow(QMainWindow):
         self.setStyleSheet(translated_qss)
         self.setPalette(self.qt_pop.style.get_palette())
 
-        self.ui.titlelabel.setText(f"{self.qt_pop.config.get_value('name')}")
-        self.ui.titlelabel.setStyleSheet(f"color: {self.qt_pop.style.get_colour('accent')}; "
-                                         f"font-weight: bold; "
-                                         f"font-size: 14pt;")
-
 
     @Slot()
     @debug_log
