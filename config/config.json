@@ -68,7 +68,7 @@
             "qss_path": {
                 "name": "Qss Style",
                 "shortname": "qss_path",
-                "value": "resources/qss/default.qss",
+                "value": "D:/Development/Python/Qt-Pop/resources/qss/test.qss",
                 "values": [],
                 "description": "Qss Style Sheet for the application.",
                 "type": "filebrowse",

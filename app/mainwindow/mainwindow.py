@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
 
         self.apply_style()
 
-        self.ui.saveBtn.clicked.disconnect() if hasattr(self.ui.saveBtn, "clicked") else None
+        # self.ui.saveBtn.clicked.disconnect() if hasattr(self.ui.saveBtn, "clicked") else None
         self.ui.saveBtn.clicked.connect(self.save_settings)
 
 
@@ -101,8 +101,9 @@ class MainWindow(QMainWindow):
 
         toolbox.addItem(static_widget, "Static Settings")
 
+        icon_color = self.qt_pop.style.get_colour('accent')
         for i in range(toolbox.count()):
-            toolbox.setItemIcon(i, self.qt_pop.icon.get_pixmap("action"))
+            toolbox.setItemIcon(i, self.qt_pop.icon.get_pixmap("action", icon_color))
 
         # --- Connect save button ---
 
@@ -275,8 +276,8 @@ class MainWindow(QMainWindow):
             self.qt_pop.log.info(f"Loaded QSS file: {file_path}")
 
         # Connect buttons
-        self.ui.applybtn.clicked.disconnect()
-        self.ui.loadbtn.clicked.disconnect() if hasattr(self.ui.loadbtn, "clicked") else None
+        # self.ui.applybtn.clicked.disconnect()
+        # self.ui.loadbtn.clicked.disconnect() if hasattr(self.ui.loadbtn, "clicked") else None
         self.ui.applybtn.clicked.connect(on_apply_clicked)
         self.ui.loadbtn.clicked.connect(on_load_clicked)
 
