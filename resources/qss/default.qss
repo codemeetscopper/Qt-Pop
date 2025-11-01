@@ -57,16 +57,20 @@ QTabBar::tab:selected, QTabBar::tab:hover {
     border-top-right-radius: 4px;
 }
 
-QToolBox{ icon-size: 40px; }
+QToolBox{
+    icon-size: 40px;
+    }
 QToolBox::tab {
     background-color: <neutral_l3>;
     color: <fg>;
+    padding-left: 5px;
 }
 
 QToolBox::tab:selected {
     background-color: <neutral>;
     color: white;
     border-bottom: none;
+    padding-left: 5px;
 }
 
 QToolBox::tab:hover {

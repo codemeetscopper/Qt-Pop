@@ -44,7 +44,7 @@ class MainWindow(QMainWindow):
             grid = QGridLayout()
             grid.setSpacing(5)
             grid.setContentsMargins(5, 5, 5, 5)
-            columns = 4
+            columns = 5
 
             for i, (item, hex_val) in enumerate(self.qt_pop.style.colour_map().items()):
                 row = i // columns
