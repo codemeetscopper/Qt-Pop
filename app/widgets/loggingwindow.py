@@ -152,7 +152,7 @@ class QLogWidget(QWidget):
         self.search_edit = QLineEdit()
         self.search_edit.setPlaceholderText("Search/Regex")
         self.search_edit.setClearButtonEnabled(True)
-        # self.search_edit.setFixedWidth(380)
+        self.search_edit.setFixedWidth(380)
         top.addWidget(self.search_edit)
 
         # Pause toggle

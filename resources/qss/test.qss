@@ -14,13 +14,13 @@ QWidget {
 }
 
 QPushButton {
-    background-color: <bg1>;
-    border-bottom: 1px solid <neutral>;
-    border-radius: 5px;
-    font-size: 14px;
-    font-weight: bold;
-    min-height: 30px;
-    min-width: 100px;
+    background-color: <accent_l3>;
+    color: <accent_d3>;
+/*    border-bottom: 1px solid <neutral>;*/
+    border-radius: 2px;
+/*    font-size: 14px;*/
+/*    font-weight: bold;*/
+    padding: 5px 10px;
 }
 QPushButton:hover {
     background-color: <support_l1>;
@@ -34,11 +34,10 @@ QPushButton:disabled {
 }
 
 QLineEdit, QTextEdit, QPlainTextEdit {
-    border-bottom: 1px solid <neutral>;
-    border-radius: 4px;
-    background-color: <bg1>;
-    min-height: 30px;
-    padding-left: 5px;
+    background-color: <accent_l3>;
+    color: <accent_d3>;
+    border-radius: 2px;
+    padding: 5px 10px;
 }
 QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {
     background-color: <support_l3>;
@@ -83,10 +82,10 @@ QToolBox::tab:hover {
 }
 
 QComboBox {
-    border-bottom: 1px solid <neutral>;
-    border-radius: 4px;
-    padding: 3px 6px;
-    min-height: 25px;
+    background-color: <accent_l3>;
+    color: <accent_d3>;
+    border-radius: 2px;
+    padding: 5px 10px;
 }
 QComboBox:hover {
     border: 1px solid <accent>;
@@ -214,12 +213,14 @@ QSpinBox::down-button:disabled {
 
 /* QToolButton */
 QToolButton {
-    background-color: <bg1>;
-    border-bottom: 1px solid <neutral>;
-    border-radius: 5px;
-    font-size: 14px;
-    min-width: 100px;
-    padding: 4px 5px;
+    background-color: <accent_l3>;
+    color: <accent_d3>;
+/*    border-bottom: 1px solid <neutral>;*/
+    border-radius: 2px;
+/*    font-size: 14px;*/
+/*    font-weight: bold;*/
+    padding: 4px 10px;
+    border-radius: 2px;
 }
 
 QToolButton:hover {
@@ -232,7 +233,7 @@ QToolButton:pressed {
 }
 
 QToolButton:checked {
-    background-color: <accent>;
+    background-color: <accent_l1>;
     color: white;
 }
 
@@ -317,8 +318,8 @@ QTableView::item:hover:!selected {
 
 /* Selected row state */
 QTableView::item:selected {
-    background-color: <accent>;
-    color: <fg>;
+    background-color: <accent_l3>;
+    color: <accent_d3>;
 }
 
 /* Disabled state */
