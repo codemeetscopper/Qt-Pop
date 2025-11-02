@@ -110,7 +110,7 @@ class QLogWidget(QWidget):
       - hover tooltip with full raw log
     Integration: widget.connect_logger(qt_logger.signal) or widget.append_log(...)
     """
-    def __init__(self, parent=None, max_rows: int = 20000):
+    def __init__(self, parent=None, max_rows: int = 2000):
         super().__init__(parent)
         self.max_rows = max_rows
         self.buffer = deque(maxlen=max_rows)  # store tuples (ts, level, msg, raw, color)
@@ -150,7 +150,7 @@ class QLogWidget(QWidget):
 
         # top.addWidget(QLabel("Filter"))
         self.search_edit = QLineEdit()
-        self.search_edit.setPlaceholderText("regex or substring (message/timestamp)")
+        self.search_edit.setPlaceholderText("Search/Regex")
         self.search_edit.setClearButtonEnabled(True)
         # self.search_edit.setFixedWidth(380)
         top.addWidget(self.search_edit)

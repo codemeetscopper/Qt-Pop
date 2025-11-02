@@ -38,6 +38,7 @@ QLineEdit, QTextEdit, QPlainTextEdit {
     border-radius: 4px;
     background-color: <bg1>;
     min-height: 30px;
+    padding-left: 5px;
 }
 QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {
     background-color: <support_l3>;
@@ -288,3 +289,79 @@ QCheckBox::indicator:disabled {
     border-color: <neutral_l2>;
 }
 
+/* QTableView Base */
+QTableView {
+    background-color: <bg1>;
+    alternate-background-color: <bg>;
+    gridline-color: <neutral_l2>;
+    color: <fg1>;
+    border-top: 0px solid <neutral>;
+    border-radius: 6px;
+    selection-background-color: <accent>;
+    selection-color: <fg>;
+    font-size: 14px;
+    outline: none;
+}
+
+/* Remove heavy cell borders — keep subtle grid lines */
+QTableView::item {
+    padding: 6px;
+    border: none;
+}
+
+/* Row hover highlight */
+QTableView::item:hover:!selected {
+    background-color: <support_l1>;
+    color: <fg1>;
+}
+
+/* Selected row state */
+QTableView::item:selected {
+    background-color: <accent>;
+    color: <fg>;
+}
+
+/* Disabled state */
+QTableView:disabled {
+    background-color: <bg2>;
+    color: <fg2>;
+}
+
+/* Header Styling (Horizontal & Vertical) */
+QHeaderView::section {
+    background-color: <bg>;
+    color: <fg1>;
+    padding: 6px 10px;
+    border: none;
+    border-bottom: 1px solid <neutral>;
+    font-weight: bold;
+}
+
+/* Header hover */
+QHeaderView::section:hover {
+    background-color: <support_l1>;
+}
+
+/* Resize grip indicator */
+QHeaderView::section:pressed {
+    background-color: <accent_d1>;
+}
+
+/* Vertical grid line removal for cleaner look */
+QHeaderView {
+    border: none;
+}
+
+/* Scrollbars inside table (minimal style) */
+QTableView QScrollBar:vertical,
+QTableView QScrollBar:horizontal {
+    background: <bg2>;
+    border: none;
+}
+QTableView QScrollBar::handle {
+    background: <neutral>;
+    border-radius: 3px;
+}
+QTableView QScrollBar::handle:hover {
+    background: <support_l1>;
+}

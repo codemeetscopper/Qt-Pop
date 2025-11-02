@@ -26,10 +26,19 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.setWindowTitle(self.qt_pop.config.get_value('name'))
+        self.load_fonts()
         self.load_ui()
 
         self.qt_pop.log.info("MainWindow initialized successfully.")
         self.qt_pop.data.broadcast_message("main_window_opened", True)
+
+    def load_fonts(self):
+        self.qt_pop.font.load_font("resources/fonts/RobotoCondensed-VariableFont_wght.ttf", "h1", 18)
+        self.qt_pop.font.load_font("resources/fonts/RobotoCondensed-VariableFont_wght.ttf", "h2", 14)
+        self.qt_pop.font.load_font("resources/fonts/Roboto-VariableFont_wdth,wght.ttf", "p", 11)
+        self.qt_pop.font.load_font("resources/fonts/RobotoCondensed-VariableFont_wght.ttf", "pc", 10)
+        self.qt_pop.font.load_font("resources/fonts/Inconsolata-VariableFont_wdth,wght.ttf", "log", 11)
+        self.qt_pop.font.load_font("resources/fonts/JollyLodger-Regular.ttf", "style", 12)
 
     def load_ui(self):
         self.setup_logging()
@@ -39,6 +48,7 @@ class MainWindow(QMainWindow):
         self.setup_fonts()
 
         self.apply_style()
+        self.set_application_font("pc")
 
         self.ui.saveBtn.clicked.disconnect() if hasattr(self.ui.saveBtn, "clicked") else None
         self.ui.saveBtn.clicked.connect(self.save_settings)
@@ -153,17 +163,25 @@ class MainWindow(QMainWindow):
             self.qt_pop.config.save()
 
         self.qt_pop.log.info("All settings saved successfully.")
-
+        self.qt_pop.log.info("Applying settings...")
         self.apply_style()
         self.load_ui()
+        self.qt_pop.log.info("All settings applied successfully.")
 
     @debug_log
     def setup_logging(self):
+        def on_log(timestamp: str, message: str, level: str = "INFO", color: str = ""):
+            """Handle log records (for future use)."""
+            self.ui.statusbar.setStyleSheet("QStatusBar{color: " + color + "; }")
+            self.ui.statusbar.showMessage(message, 5000)
         # inside your setup_logging or after creating the widget instance:
         if self.log_widget is None:
             self.log_widget = QLogWidget()
+            self.log_widget.table.setFont(self.qt_pop.font.get_font('log'))
+            # self.log_widget.setFont(self.qt_pop.font.get_font('log'))
             self.ui.log.layout().addWidget(self.log_widget)
             self.qt_pop.log.signal.connect(self.log_widget.append_log)
+            self.qt_pop.log.signal.connect(on_log)
 
         self.qt_pop.log.info("Running log test messages...")
         self.qt_pop.log.warning("This is a warning message.")
@@ -220,18 +238,9 @@ class MainWindow(QMainWindow):
 
     def resizeEvent(self, event, /):
         super().resizeEvent(event)
-        self.ui.statusbar.showMessage(f"{self.width()} x {self.height()}")
+        # self.ui.statusbar.showMessage(f"{self.width()} x {self.height()}")
 
     def setup_fonts(self):
-        # Load defaults
-        self.qt_pop.font.load_font("resources/fonts/RobotoCondensed-VariableFont_wght.ttf", "h1", 18)
-        self.qt_pop.font.load_font("resources/fonts/RobotoCondensed-VariableFont_wght.ttf", "h2", 14)
-        self.qt_pop.font.load_font("resources/fonts/Roboto-VariableFont_wdth,wght.ttf", "p", 11)
-        self.qt_pop.font.load_font("resources/fonts/RobotoCondensed-VariableFont_wght.ttf", "pc", 11)
-        self.qt_pop.font.load_font("resources/fonts/Inconsolata-VariableFont_wdth,wght.ttf", "log", 11)
-
-        self.set_application_font("pc")
-
         lw = self.ui.fontLW
         lw.clear()
         lw.setSpacing(6)
