@@ -296,12 +296,16 @@ class MainWindow(QMainWindow):
         self.qt_pop.font.load_font("resources/fonts/RobotoCondensed-VariableFont_wght.ttf", "pc", 11)
         self.qt_pop.font.load_font("resources/fonts/Inconsolata-VariableFont_wdth,wght.ttf", "log", 11)
 
+        self.set_application_font("pc")
+
         lw = self.ui.fontLW
         lw.clear()
         lw.setSpacing(6)
+        self.load_add_font(lw)
+        self.load_font_cards(lw)
 
-        # --- Add new font card at bottom ---
-        add_card = AddFontCard(self.qt_pop.font.load_font)
+    def load_add_font(self, lw):
+        add_card = AddFontCard(self.add_font_callback)
         add_item = QListWidgetItem(lw)
         hint = add_card.sizeHint()
         hint.setHeight(hint.height() + 20)
@@ -309,6 +313,7 @@ class MainWindow(QMainWindow):
         lw.addItem(add_item)
         lw.setItemWidget(add_item, add_card)
 
+    def load_font_cards(self, lw):
         font_map = self.qt_pop.font.get_font_map()
         for tag, info in font_map.items():
             card = FontCard(info['family'], tag, info['size'], self.set_application_font)
@@ -320,8 +325,13 @@ class MainWindow(QMainWindow):
             lw.setItemWidget(item, card)
 
 
-
-        self.set_application_font("pc")
+    def add_font_callback(self, font_path, tag, size):
+        self.qt_pop.font.load_font(font_path, tag, size)
+        lw = self.ui.fontLW
+        lw.clear()
+        lw.setSpacing(6)
+        self.load_add_font(lw)
+        self.load_font_cards(lw)
 
     def set_application_font(self, tag: str, size = None):
         """Sets the application-wide font."""

@@ -67,10 +67,10 @@ class ColorCard(QFrame):
         tag_font = QFont("Segoe UI", 10, QFont.DemiBold)
         hex_font = QFont("Segoe UI", 9)
 
-        painter.setFont(tag_font)
+        # painter.setFont(tag_font)
         painter.drawText(rect.adjusted(12, 8, -8, -8), Qt.AlignLeft | Qt.AlignTop, self._tag)
 
-        painter.setFont(hex_font)
+        # painter.setFont(hex_font)
         painter.drawText(rect.adjusted(8, 8, -12, -10), Qt.AlignRight | Qt.AlignBottom, self._hex_str.upper())
 
     # --- Property for animation ---
@@ -110,24 +110,3 @@ class ColorDisplayWidget(QWidget):
         if tag:
             self._tag = tag
         self.card.set_color(self._color, self._tag, self._color.name())
-
-
-# --- Demo ---
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    w = QWidget()
-    layout = QHBoxLayout(w)
-
-    colors = [
-        ("#2196F3", "Primary"),
-        ("#4CAF50", "Success"),
-        ("#F44336", "Error"),
-        ("#FFC107", "Warning"),
-        ("#9C27B0", "Accent"),
-    ]
-    for hex_val, tag in colors:
-        layout.addWidget(ColorDisplayWidget(hex_val, tag))
-
-    w.setWindowTitle("Flat Material Color Cards")
-    w.show()
-    sys.exit(app.exec())
