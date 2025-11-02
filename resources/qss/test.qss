@@ -16,10 +16,11 @@ QWidget {
 QPushButton {
     background-color: <bg1>;
     border-bottom: 1px solid <neutral>;
-    padding: 5px 10px;
     border-radius: 5px;
     font-size: 14px;
     font-weight: bold;
+    min-height: 30px;
+    min-width: 100px;
 }
 QPushButton:hover {
     background-color: <support_l1>;
@@ -36,8 +37,7 @@ QLineEdit, QTextEdit, QPlainTextEdit {
     border-bottom: 1px solid <neutral>;
     border-radius: 4px;
     background-color: <bg1>;
-    padding: 4px;
-    min-height: 25px;
+    min-height: 30px;
 }
 QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {
     background-color: <support_l3>;
@@ -151,3 +151,140 @@ QScrollBar::add-page:vertical,
 QScrollBar::sub-page:vertical {
     background: none;
 }
+
+/* QSpinBox */
+QSpinBox {
+    background-color: <bg1>;
+    border: 1px solid <neutral>;
+    border-radius: 5px;
+    padding: 3px 6px;
+    font-size: 14px;
+    color: <fg1>;
+}
+
+/* Hover / focus effects */
+QSpinBox:hover {
+    border-color: <support_l1>;
+}
+QSpinBox:focus {
+    border-color: <accent>;
+    background-color: <bg>;
+}
+
+/* Up/Down buttons for SpinBox */
+QSpinBox::up-button,
+QSpinBox::down-button {
+    background-color: <bg1>;
+    border-left: 1px solid <neutral>;
+    width: 18px;
+}
+
+QSpinBox::up-button:hover,
+QSpinBox::down-button:hover {
+    background-color: <support_l1>;
+}
+
+QSpinBox::up-button:pressed,
+QSpinBox::down-button:pressed {
+    background-color: <accent_d1>;
+}
+
+/* Arrows */
+QSpinBox::up-arrow,
+QSpinBox::down-arrow {
+    width: 10px;
+    height: 10px;
+    image: <img: action; color: accent>;
+    border: none;
+}
+
+/* Disabled state */
+QSpinBox:disabled {
+    background-color: <bg2>;
+    color: <fg2>;
+    border-color: <neutral_l2>;
+}
+QSpinBox::up-button:disabled,
+QSpinBox::down-button:disabled {
+    background-color: <bg2>;
+    border-color: <neutral_l2>;
+}
+
+
+/* QToolButton */
+QToolButton {
+    background-color: <bg1>;
+    border-bottom: 1px solid <neutral>;
+    border-radius: 5px;
+    font-size: 14px;
+    min-width: 100px;
+    padding: 4px 5px;
+}
+
+QToolButton:hover {
+    background-color: <support_l1>;
+}
+
+QToolButton:pressed {
+    background-color: <accent_d1>;
+    color: white;
+}
+
+QToolButton:checked {
+    background-color: <accent>;
+    color: white;
+}
+
+QToolButton:disabled {
+    background-color: <bg2>;
+    color: <fg2>;
+    border-color: <neutral_l2>;
+}
+
+/* QCheckBox */
+QCheckBox {
+    spacing: 6px;
+    color: <fg1>;
+    font-size: 14px;
+}
+
+/* Hide default indicator shape — replace fully with custom */
+QCheckBox::indicator {
+    width: 16px;
+    height: 16px;
+    border: 1px solid <neutral>;
+    border-radius: 4px;
+    background-color: <bg1>;
+}
+
+/* Hover */
+QCheckBox::indicator:hover {
+    border-color: <support_l1>;
+}
+
+/* Checked */
+QCheckBox::indicator:checked {
+    background-color: <accent>;
+    border-color: <accent>;
+}
+
+/* Check mark */
+QCheckBox::indicator:checked::icon {
+    /* If you plan to use SVG check mark icons, insert here */
+    /* Otherwise Qt will draw default check mark on accent bg */
+}
+
+/* Pressed */
+QCheckBox::indicator:pressed {
+    background-color: <accent_d1>;
+}
+
+/* Disabled */
+QCheckBox:disabled {
+    color: <fg2>;
+}
+QCheckBox::indicator:disabled {
+    background-color: <bg2>;
+    border-color: <neutral_l2>;
+}
+

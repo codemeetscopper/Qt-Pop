@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout" stretch="20,4">
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="20">
     <property name="spacing">
      <number>4</number>
     </property>
@@ -33,7 +33,7 @@
     <item>
      <widget class="QTabWidget" name="mainTW">
       <property name="currentIndex">
-       <number>4</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="home">
        <attribute name="title">
@@ -197,21 +197,12 @@
         </item>
        </layout>
       </widget>
-     </widget>
-    </item>
-    <item>
-     <widget class="QFrame" name="log_frame">
-      <property name="frameShape">
-       <enum>QFrame::Shape::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Shadow::Raised</enum>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <widget class="QTextBrowser" name="logTB"/>
-       </item>
-      </layout>
+      <widget class="QWidget" name="log">
+       <attribute name="title">
+        <string>Logging</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_7"/>
+      </widget>
      </widget>
     </item>
    </layout>

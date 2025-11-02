@@ -2,6 +2,7 @@ import logging
 import functools
 import inspect
 import sys
+from multiprocessing.util import DEBUG
 
 from PySide6.QtCore import QObject, Signal
 
@@ -130,6 +131,7 @@ class QtPopLogger:
 # Global Logger Instance
 # --------------------------------------------
 qt_logger = QtPopLogger()
+DEBUG_ENABLE = False
 
 
 # --------------------------------------------
@@ -140,6 +142,8 @@ def debug_log(func):
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        if not DEBUG_ENABLE:
+            return func(*args, **kwargs)
         # Determine class name correctly
         cls_name = ""
         if args:
