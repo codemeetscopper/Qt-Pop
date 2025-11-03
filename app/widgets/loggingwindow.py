@@ -375,7 +375,7 @@ class QLogWidget(QWidget):
             # allow rows to expand moderately when wrapping
             self.table.verticalHeader().setDefaultSectionSize(28)
         else:
-            self.table.verticalHeader().setDefaultSectionSize(22)
+            self.table.verticalHeader().setDefaultSectionSize(15)
 
     def _on_timestamp_toggled(self, s: bool):
         self.table.setColumnHidden(0, not s)
