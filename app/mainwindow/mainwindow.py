@@ -207,6 +207,8 @@ class MainWindow(QMainWindow):
         translated_qss = self.qt_pop.qss.process(default_qss)
         self.ui.tqss.setText(translated_qss)
         self.qt_pop.qss.set_style(translated_qss)
+        self.ui.cqss.setFont(self.qt_pop.font.get_font('log', 10))
+        self.ui.tqss.setFont(self.qt_pop.font.get_font('log', 10))
 
         # ---- Button Connections ----
         def on_apply_clicked():

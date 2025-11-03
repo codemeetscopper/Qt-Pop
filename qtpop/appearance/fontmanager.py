@@ -52,7 +52,7 @@ class FontManager:
             raise KeyError(f"Font tag '{tag}' not found.")
 
     @debug_log
-    def get_font(self, tag: str) -> QFont:
+    def get_font(self, tag: str, size: int = 12) -> QFont:
         """
         Returns a QFont object for the given tag.
         If tag is not mapped, assigns a font from the pool.
@@ -65,7 +65,7 @@ class FontManager:
             family = next(self._family_cycle)
             self._font_map[tag] = {
                 'family': family,
-                'size': 12  # Default size
+                'size': size  # Default size
             }
 
         font_info = self._font_map[tag]

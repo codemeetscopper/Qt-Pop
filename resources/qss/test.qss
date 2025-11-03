@@ -16,7 +16,7 @@ QWidget {
 QPushButton {
     background-color: <accent_l3>;
     color: <accent_d3>;
-/*    border-bottom: 1px solid <neutral>;*/
+    border: 1px solid <accent>;
     border-radius: 2px;
 /*    font-size: 14px;*/
 /*    font-weight: bold;*/
@@ -38,9 +38,11 @@ QLineEdit, QTextEdit, QPlainTextEdit {
     color: <accent_d3>;
     border-radius: 2px;
     padding: 5px 10px;
+    border: 1px solid <accent>;
 }
 QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {
     background-color: <support_l3>;
+    border: 1px solid <accent>;
 }
 
 QTabWidget::pane {
@@ -86,9 +88,19 @@ QComboBox {
     color: <accent_d3>;
     border-radius: 2px;
     padding: 5px 10px;
+    border: 1px solid <accent>;
 }
 QComboBox:hover {
     border: 1px solid <accent>;
+}
+QComboBox::drop-down {
+    width: 20px;
+    border-left: 0px solid <neutral>;
+}
+QComboBox::down-arrow {
+    image: <img: action; color:accent>;
+    width: 10px;
+    height: 10px;
 }
 /*
    Minimal QScrollBar style (keeps working default buttons)
@@ -175,7 +187,6 @@ QSpinBox:focus {
 QSpinBox::up-button,
 QSpinBox::down-button {
     background-color: <bg1>;
-    border-left: 1px solid <neutral>;
     width: 18px;
 }
 
@@ -215,7 +226,7 @@ QSpinBox::down-button:disabled {
 QToolButton {
     background-color: <accent_l3>;
     color: <accent_d3>;
-/*    border-bottom: 1px solid <neutral>;*/
+    border: 1px solid <accent>;
     border-radius: 2px;
 /*    font-size: 14px;*/
 /*    font-weight: bold;*/
@@ -233,7 +244,7 @@ QToolButton:pressed {
 }
 
 QToolButton:checked {
-    background-color: <accent_l1>;
+    background-color: <accent>;
     color: white;
 }
 
@@ -266,7 +277,7 @@ QCheckBox::indicator:hover {
 
 /* Checked */
 QCheckBox::indicator:checked {
-    background-color: <accent>;
+    background-color: <accent_l2>;
     border-color: <accent>;
 }
 
