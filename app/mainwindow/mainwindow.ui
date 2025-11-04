@@ -33,12 +33,13 @@
     <item>
      <widget class="QTabWidget" name="mainTW">
       <property name="currentIndex">
-       <number>5</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="home">
        <attribute name="title">
         <string>Home</string>
        </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_3"/>
       </widget>
       <widget class="QWidget" name="settings">
        <attribute name="title">
@@ -56,7 +57,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>345</height>
+             <height>439</height>
             </rect>
            </property>
            <attribute name="label">

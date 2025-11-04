@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwindowviUrwP.ui'
+## Form generated from reading UI file 'mainwindowuWHMKJ.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.9.2
 ##
@@ -35,6 +35,8 @@ class Ui_MainWindow(object):
         self.mainTW.setObjectName(u"mainTW")
         self.home = QWidget()
         self.home.setObjectName(u"home")
+        self.verticalLayout_3 = QVBoxLayout(self.home)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.mainTW.addTab(self.home, "")
         self.settings = QWidget()
         self.settings.setObjectName(u"settings")
@@ -150,7 +152,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.mainTW.setCurrentIndex(5)
+        self.mainTW.setCurrentIndex(0)
         self.settingsTB.setCurrentIndex(0)
 
 

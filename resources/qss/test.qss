@@ -14,10 +14,10 @@ QWidget {
 }
 
 QPushButton {
-    background-color: <accent_l3>;
+    background-color: <accent_ln >;
     color: <accent_d3>;
     border: 1px solid <accent>;
-    border-radius: 2px;
+    border-radius: 4px;
 /*    font-size: 14px;*/
     font-weight: bold;
     padding: 5px 10px;
@@ -34,14 +34,14 @@ QPushButton:disabled {
 }
 
 QLineEdit, QTextEdit, QPlainTextEdit {
-    background-color: <accent_l3>;
+    background-color: <accent_ln>;
     color: <accent_d3>;
-    border-radius: 2px;
+    border-radius: 4px;
     padding: 5px 10px;
     border: 1px solid <accent>;
 }
 QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {
-    background-color: <support_l3>;
+    background-color: <support_ln>;
     border: 1px solid <accent>;
 }
 
@@ -53,6 +53,7 @@ QTabBar::tab {
     border: 0;
     min-width: 100px;
 }
+
 QTabBar::tab:selected, QTabBar::tab:hover {
     color: <neutral_d3>;
     font-size: 14px;
@@ -63,6 +64,7 @@ QToolBox{
     icon-size: 30px;
     spacing: 5px;
 }
+
 QToolBox::tab {
     border: 1px solid <neutral_l3>;
     background-color: <bg1>;
@@ -84,9 +86,9 @@ QToolBox::tab:hover {
 }
 
 QComboBox {
-    background-color: <accent_l3>;
+    background-color: <accent_ln>;
     color: <accent_d3>;
-    border-radius: 2px;
+    border-radius: 4px;
     padding: 5px 10px;
     border: 1px solid <accent>;
 }
@@ -224,10 +226,10 @@ QSpinBox::down-button:disabled {
 
 /* QToolButton */
 QToolButton {
-    background-color: <accent_l3>;
+    background-color: <accent_ln>;
     color: <accent_d3>;
     border: 1px solid <accent>;
-    border-radius: 2px;
+    border-radius: 4px;
 /*    font-size: 14px;*/
 /*    font-weight: bold;*/
     padding: 4px 10px;

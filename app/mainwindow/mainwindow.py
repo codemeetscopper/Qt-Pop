@@ -10,6 +10,7 @@ from app.widgets.addfontcard import AddFontCard
 from app.widgets.colordisplaywidget import ColorDisplayWidget
 from app.mainwindow.ui_mainwindow import Ui_MainWindow
 from app.widgets.fontcard import FontCard
+from app.widgets.homewidget import  MinimalAIHome
 from app.widgets.loggingwindow import QLogWidget
 from app.widgets.settingsitemwidget import SettingItemWidget
 from qtpop import QtPop, debug_log
@@ -21,6 +22,7 @@ from qtpop.configuration.models import SettingItem
 class MainWindow(QMainWindow):
     def __init__(self, qt_pop: QtPop):
         super().__init__()
+        self.home = None
         self.log_widget = None
         self.qt_pop = qt_pop
         self.ui = Ui_MainWindow()
@@ -42,10 +44,12 @@ class MainWindow(QMainWindow):
 
     def load_ui(self):
         self.setup_logging()
+
         self.setup_palette()
         self.setup_settings()
         self.setup_qss()
         self.setup_fonts()
+        self.setup_home()
 
         self.apply_style()
         self.set_application_font("pc")
@@ -286,3 +290,17 @@ class MainWindow(QMainWindow):
         app = QApplication.instance()
         app.setFont(font)
         self.apply_style()
+
+    def setup_home(self):
+        if self.home is None:
+            self.home = MinimalAIHome(
+                qt_pop=self.qt_pop,
+                app_name= self.qt_pop.config.get_value('name'),
+                tagline="Vivid tools. Joyful creation.",
+                version=self.qt_pop.config.get_value('version'),
+                description="A cutting-edge desktop application designed for creative professionals, "
+                            "offering a suite of powerful tools to bring your ideas to life with ease and precision.",
+                svg_data=None  # pass your SVG string here if you have one
+            )
+
+            self.ui.home.layout().addWidget(self.home)

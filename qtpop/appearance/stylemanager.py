@@ -69,9 +69,11 @@ class StyleManager:
                         f"{name}_l1": lighten(base, 0.15),
                         f"{name}_l2": lighten(base, 0.30),
                         f"{name}_l3": lighten(base, 0.45),
+                        f"{name}_ln": lighten(base, 0.90),
                         f"{name}_d1": darken(base, 0.15),
                         f"{name}_d2": darken(base, 0.30),
                         f"{name}_d3": darken(base, 0.45),
+                        f"{name}_dn": darken(base, 0.90),
                     }
                 else:
                     colors = {
@@ -79,9 +81,11 @@ class StyleManager:
                         f"{name}_l1": darken(base, 0.15),
                         f"{name}_l2": darken(base, 0.30),
                         f"{name}_l3": darken(base, 0.45),
+                        f"{name}_ln": darken(base, 0.90),
                         f"{name}_d1": lighten(base, 0.15),
                         f"{name}_d2": lighten(base, 0.30),
                         f"{name}_d3": lighten(base, 0.45),
+                        f"{name}_dn": lighten(base, 0.90),
                     }
                 return colors
 
