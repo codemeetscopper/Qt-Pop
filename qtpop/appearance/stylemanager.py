@@ -98,8 +98,8 @@ class StyleManager:
             # Background/Foreground based on theme
             if cls._resolved_mode == "dark":
                 bg = QColor(0, 0, 0)  # #121212
-                bg1 = lighten(bg, 0.06)
-                bg2 = lighten(bg, 0.12)
+                bg1 = lighten(bg, 0.005)
+                bg2 = lighten(bg, 0.01)
                 fg = QColor(255, 255, 255)  # light text
             else:
                 bg = QColor(255, 255, 255)  # ~#F7F7F7
