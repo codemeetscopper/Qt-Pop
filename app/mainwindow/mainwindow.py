@@ -23,6 +23,7 @@ from qtpop.configuration.models import SettingItem
 class MainWindow(QMainWindow):
     def __init__(self, qt_pop: QtPop):
         super().__init__()
+        self.icon_widget = None
         self.home = None
         self.log_widget = None
         self.qt_pop = qt_pop
@@ -308,5 +309,6 @@ class MainWindow(QMainWindow):
             self.ui.home.layout().addWidget(self.home)
 
     def setup_icons(self):
-        widget = IconBrowserWidget(qt_pop=self.qt_pop, images_path=self.qt_pop.config.get_value('icon_path'), parent=self)
-        self.ui.icons.layout().addWidget(widget)
+        if self.icon_widget is None:
+            self.icon_widget = IconBrowserWidget(qt_pop=self.qt_pop, images_path=self.qt_pop.config.get_value('icon_path'), parent=self)
+            self.ui.icons.layout().addWidget(self.icon_widget)

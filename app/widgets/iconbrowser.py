@@ -9,39 +9,64 @@ from PySide6.QtWidgets import (
 from qtpop import IconManager, QtPop
 
 
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QSizePolicy
+from PySide6.QtGui import QPixmap, QPainter
+from PySide6.QtCore import Qt
+
+
 class IconCardWidget(QWidget):
-    """Displays a single icon with its name below."""
-    def __init__(self, icon_name: str, pixmap: QPixmap, qt_pop: QtPop, parent=None):
+    """Displays a single icon with its name below, auto-wraps long names and scales card size proportionally."""
+
+    def __init__(self, icon_name: str, pixmap: QPixmap, qt_pop, parent=None, icon_size=48):
         super().__init__(parent)
         self.icon_name = icon_name
         self.pixmap = pixmap
         self.qt_pop = qt_pop
+        self.icon_size = icon_size
 
-        self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        # Base layout
         layout = QVBoxLayout(self)
         layout.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         layout.setContentsMargins(6, 6, 6, 6)
-        layout.setSpacing(4)
+        layout.setSpacing(9)
 
         # Icon display
         self.icon_label = QLabel()
         self.icon_label.setAlignment(Qt.AlignCenter)
-        self.icon_label.setFixedSize(64, 64)
-        self.icon_label.setPixmap(self.pixmap.scaled(48, 48, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        self.icon_label.setFixedSize(icon_size + 16, icon_size + 16)
+        self.icon_label.setPixmap(self.pixmap.scaled(icon_size, icon_size, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         layout.addWidget(self.icon_label, alignment=Qt.AlignCenter)
 
         # Name label
-        name_label = QLabel(icon_name)
-        name_label.setAlignment(Qt.AlignCenter)
-        name_label.setWordWrap(True)
-        layout.addWidget(name_label)
+        self.name_label = QLabel(self._split_text(icon_name))
+        self.name_label.setAlignment(Qt.AlignCenter)
+        self.name_label.setWordWrap(True)
+        layout.addWidget(self.name_label)
+
+        # Make card size proportional to icon
+        max_width = int(icon_size * 3.2)
+        max_height = int(icon_size * 3.8)
+        self.setFixedSize(max_width, max_height)
+        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
 
         self.setLayout(layout)
+
+    def _split_text(self, text: str, max_len=10):
+        """Split long text into two lines if needed."""
+        if len(text) <= max_len:
+            return text
+        words = text.split("_")
+        if len(words) > 1:
+            half = len(words) // 2
+            return " ".join(words[:half]) + "\n" + " ".join(words[half:])
+        else:
+            return text[:max_len] + "\n" + text[max_len:]
 
     def update_icon(self, pixmap: QPixmap, size: int):
         """Update the displayed icon pixmap and adjust its size."""
         self.icon_label.setPixmap(pixmap.scaled(size, size, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         self.icon_label.setFixedSize(size + 16, size + 16)
+        self.setMaximumSize(int(size * 2.2), int(size * 2.8))
 
     def paintEvent(self, event):
         """Draw subtle card background."""
@@ -52,6 +77,7 @@ class IconCardWidget(QWidget):
         painter.setPen(Qt.NoPen)
         painter.drawRoundedRect(rect, 8, 8)
         super().paintEvent(event)
+
 
 
 class IconBrowserWidget(QWidget):
@@ -86,7 +112,7 @@ class IconBrowserWidget(QWidget):
         self.color_combo = QComboBox()
         colours = self.qt_pop.style.colour_map()
         for name, hex_code in colours.items():
-            self.color_combo.addItem(name.capitalize(), hex_code)
+            self.color_combo.addItem(name, hex_code)
         self.color_combo.currentTextChanged.connect(self._on_color_change)
         top_bar.addWidget(self.color_combo)
 
@@ -169,7 +195,7 @@ class IconBrowserWidget(QWidget):
 
     def _on_color_change(self, key: str):
         color_map = self.qt_pop.style.colour_map()
-        self.current_color = color_map[key.lower()].name()
+        self.current_color = color_map[key].name()
         self._populate_icons()
 
     def _on_size_change(self, val: int):

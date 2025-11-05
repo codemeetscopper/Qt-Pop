@@ -100,7 +100,7 @@ QComboBox::drop-down {
     border-left: 0px solid <neutral>;
 }
 QComboBox::down-arrow {
-    image: <img: action; color:accent>;
+    image: <img: drop down; color:accent>;
     width: 10px;
     height: 10px;
 }
