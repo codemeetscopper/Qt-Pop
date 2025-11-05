@@ -107,6 +107,12 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="icons">
+       <attribute name="title">
+        <string>Icons</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_8"/>
+      </widget>
       <widget class="QWidget" name="qss">
        <attribute name="title">
         <string>Qss Editor</string>

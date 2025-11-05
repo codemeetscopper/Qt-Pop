@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwindowuWHMKJ.ui'
+## Form generated from reading UI file 'mainwindowafhUfM.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.9.2
 ##
@@ -72,6 +72,11 @@ class Ui_MainWindow(object):
 
         self.gridLayout.setRowStretch(0, 3)
         self.mainTW.addTab(self.palette, "")
+        self.icons = QWidget()
+        self.icons.setObjectName(u"icons")
+        self.verticalLayout_8 = QVBoxLayout(self.icons)
+        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
+        self.mainTW.addTab(self.icons, "")
         self.qss = QWidget()
         self.qss.setObjectName(u"qss")
         self.verticalLayout_4 = QVBoxLayout(self.qss)
@@ -166,6 +171,7 @@ class Ui_MainWindow(object):
         self.saveBtn.setText(QCoreApplication.translate("MainWindow", u"Save", None))
         self.mainTW.setTabText(self.mainTW.indexOf(self.settings), QCoreApplication.translate("MainWindow", u"Settings", None))
         self.mainTW.setTabText(self.mainTW.indexOf(self.palette), QCoreApplication.translate("MainWindow", u"Palette", None))
+        self.mainTW.setTabText(self.mainTW.indexOf(self.icons), QCoreApplication.translate("MainWindow", u"Icons", None))
         self.loadbtn.setText(QCoreApplication.translate("MainWindow", u"load Qss", None))
         self.applybtn.setText(QCoreApplication.translate("MainWindow", u"Apply", None))
         self.mainTW.setTabText(self.mainTW.indexOf(self.qss), QCoreApplication.translate("MainWindow", u"Qss Editor", None))

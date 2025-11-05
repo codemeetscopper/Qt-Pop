@@ -11,6 +11,7 @@ from app.widgets.colordisplaywidget import ColorDisplayWidget
 from app.mainwindow.ui_mainwindow import Ui_MainWindow
 from app.widgets.fontcard import FontCard
 from app.widgets.homewidget import  MinimalAIHome
+from app.widgets.iconbrowser import IconBrowserWidget
 from app.widgets.loggingwindow import QLogWidget
 from app.widgets.settingsitemwidget import SettingItemWidget
 from qtpop import QtPop, debug_log
@@ -50,6 +51,7 @@ class MainWindow(QMainWindow):
         self.setup_qss()
         self.setup_fonts()
         self.setup_home()
+        self.setup_icons()
 
         self.apply_style()
         self.set_application_font("pc")
@@ -304,3 +306,7 @@ class MainWindow(QMainWindow):
             )
 
             self.ui.home.layout().addWidget(self.home)
+
+    def setup_icons(self):
+        widget = IconBrowserWidget(qt_pop=self.qt_pop, images_path=self.qt_pop.config.get_value('icon_path'), parent=self)
+        self.ui.icons.layout().addWidget(widget)

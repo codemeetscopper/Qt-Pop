@@ -55,7 +55,7 @@ QTabBar::tab {
 }
 
 QTabBar::tab:selected, QTabBar::tab:hover {
-    color: <neutral_d3>;
+    color: <accent_d3>;
     font-size: 14px;
     font-weight: bold;
 }
