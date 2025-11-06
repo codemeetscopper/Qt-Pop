@@ -21,6 +21,7 @@ QPushButton {
 /*    font-size: 14px;*/
     font-weight: bold;
     padding: 5px 10px;
+    icon-size: 16px;
 }
 QPushButton:hover {
     background-color: <support_l1>;

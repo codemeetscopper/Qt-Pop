@@ -1,7 +1,7 @@
 import re
 import sys
 from PySide6.QtCore import Qt, QFile, Slot
-from PySide6.QtGui import QBrush, QColor, QFont
+from PySide6.QtGui import QBrush, QColor, QFont, QIcon
 from PySide6.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QColorDialog, QListWidgetItem, \
     QVBoxLayout, QListWidget, QSizePolicy, QFileDialog
 
@@ -14,6 +14,7 @@ from app.widgets.homewidget import  MinimalAIHome
 from app.widgets.iconbrowser import IconBrowserWidget
 from app.widgets.loggingwindow import QLogWidget
 from app.widgets.settingsitemwidget import SettingItemWidget
+from app.widgets.titlebar import CustomTitleBar
 from qtpop import QtPop, debug_log
 from qtpop.configuration.models import SettingItem
 
@@ -23,13 +24,14 @@ from qtpop.configuration.models import SettingItem
 class MainWindow(QMainWindow):
     def __init__(self, qt_pop: QtPop):
         super().__init__()
+        self.titlebar = None
         self.icon_widget = None
         self.home = None
         self.log_widget = None
         self.qt_pop = qt_pop
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setWindowTitle(self.qt_pop.config.get_value('name'))
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.Window)
         self.load_fonts()
         self.load_ui()
 
@@ -53,6 +55,10 @@ class MainWindow(QMainWindow):
         self.setup_fonts()
         self.setup_home()
         self.setup_icons()
+
+        icon = QIcon(self.qt_pop.icon.get_pixmap('action', self.qt_pop.style.get_colour('accent')))  # replace with your logo path
+        self.titlebar = CustomTitleBar(self, icon, self.qt_pop.config.get_value('name'))
+        self.ui.centralwidget.layout().insertWidget(0, self.titlebar)
 
         self.apply_style()
         self.set_application_font("pc")

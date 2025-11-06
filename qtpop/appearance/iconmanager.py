@@ -105,6 +105,7 @@ class IconManager:
 
         return sorted(exact_matches) + sorted(exact_core_matches) + sorted(core_matches) + sorted(substring_matches)
 
+
     @classmethod
     @debug_log
     def get_pixmap(

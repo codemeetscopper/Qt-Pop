@@ -29,7 +29,7 @@ class CustomTitleBar(QWidget):
         self.title_label = QLabel(app_name)
         font = QFont()
         font.setPointSize(10)
-        font.setWeight(QFont.Medium)
+        font.setWeight(QFont.Bold)
         self.title_label.setFont(font)
         self.title_label.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
 
