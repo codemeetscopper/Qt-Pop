@@ -183,7 +183,7 @@ class MainWindow(QMainWindow):
             self.ui.statusbar.showMessage(message, 5000)
         # inside your setup_logging or after creating the widget instance:
         if self.log_widget is None:
-            self.log_widget = QLogWidget()
+            self.log_widget = QLogWidget(self.qt_pop)
             self.log_widget.table.setFont(self.qt_pop.font.get_font('log'))
             # self.log_widget.setFont(self.qt_pop.font.get_font('log'))
             self.ui.log.layout().addWidget(self.log_widget)

@@ -26,6 +26,9 @@ from PySide6.QtWidgets import (
     QCheckBox, QSpinBox, QTextEdit, QDialog, QApplication, QToolTip
 )
 
+import qtpop
+from qtpop import QtPop
+
 # Roles for data storage on items
 ROLE_TIMESTAMP = Qt.UserRole + 1
 ROLE_LEVEL = Qt.UserRole + 2
@@ -110,9 +113,10 @@ class QLogWidget(QWidget):
       - hover tooltip with full raw log
     Integration: widget.connect_logger(qt_logger.signal) or widget.append_log(...)
     """
-    def __init__(self, parent=None, max_rows: int = 2000):
+    def __init__(self, qt_pop:QtPop, parent=None, max_rows: int = 2000):
         super().__init__(parent)
         self.max_rows = max_rows
+        self.qt_pop = qt_pop
         self.buffer = deque(maxlen=max_rows)  # store tuples (ts, level, msg, raw, color)
         self.paused = False
         self.autoscroll = True
@@ -174,6 +178,10 @@ class QLogWidget(QWidget):
         self.ts_chk = QCheckBox("Show Time")
         self.ts_chk.setChecked(True)
         top.addWidget(self.ts_chk)
+
+        self.debug_chk = QCheckBox("Debug")
+        self.debug_chk.setChecked(False)
+        top.addWidget(self.debug_chk)
 
 
 
@@ -238,6 +246,7 @@ class QLogWidget(QWidget):
         self.autoscroll_chk.toggled.connect(self._on_autoscroll_toggled)
         self.wrap_chk.toggled.connect(self._on_wrap_toggled)
         self.ts_chk.toggled.connect(self._on_timestamp_toggled)
+        self.debug_chk.toggled.connect(self._on_debug_toggled)
         self.clear_btn.clicked.connect(self.clear)
         self.copy_btn.clicked.connect(self.copy_selected)
         self.save_btn.clicked.connect(self.export_csv)
@@ -383,6 +392,9 @@ class QLogWidget(QWidget):
             self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         else:
             self.table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+
+    def _on_debug_toggled(self, s: bool):
+        self.qt_pop.log.enable_debug(s)
 
     def clear(self):
         self.model.removeRows(0, self.model.rowCount())

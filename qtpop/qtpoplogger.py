@@ -126,6 +126,10 @@ class QtPopLogger:
     def critical(self, msg, *args, **kwargs):
         self._logger.critical(msg, *args, **kwargs)
 
+    def enable_debug(self, enable: bool):
+        global DEBUG_ENABLE
+        DEBUG_ENABLE = enable
+
 
 # --------------------------------------------
 # Global Logger Instance
