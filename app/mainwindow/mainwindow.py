@@ -56,9 +56,10 @@ class MainWindow(QMainWindow):
         self.setup_home()
         self.setup_icons()
 
-        icon = QIcon(self.qt_pop.icon.get_pixmap('action', self.qt_pop.style.get_colour('accent')))  # replace with your logo path
-        self.titlebar = CustomTitleBar(self, icon, self.qt_pop.config.get_value('name'))
-        self.ui.centralwidget.layout().insertWidget(0, self.titlebar)
+        if self.titlebar is None:
+            icon = QIcon(self.qt_pop.icon.get_pixmap('action', self.qt_pop.style.get_colour('accent')))  # replace with your logo path
+            self.titlebar = CustomTitleBar(self, icon, self.qt_pop.config.get_value('name'))
+            self.ui.centralwidget.layout().insertWidget(0, self.titlebar)
 
         self.apply_style()
         self.set_application_font("pc")
@@ -132,7 +133,7 @@ class MainWindow(QMainWindow):
 
         icon_color = self.qt_pop.style.get_colour('accent')
         for i in range(toolbox.count()):
-            toolbox.setItemIcon(i, self.qt_pop.icon.get_pixmap("action", icon_color))
+            toolbox.setItemIcon(i, self.qt_pop.icon.get_pixmap("app settings", icon_color))
 
         # --- Connect save button ---
 

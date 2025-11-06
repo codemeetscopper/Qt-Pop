@@ -203,7 +203,7 @@ class QLogWidget(QWidget):
 
         self.table = QTableView()
         self.table.setModel(self.proxy)
-        self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.table.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.table.verticalHeader().setVisible(False)
         header = self.table.horizontalHeader()
@@ -218,7 +218,7 @@ class QLogWidget(QWidget):
         self.table.setAlternatingRowColors(True)
         self.table.setWordWrap(False)
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.table.setSortingEnabled(False)
+        self.table.setSortingEnabled(True)
         self.table.setFocusPolicy(Qt.StrongFocus)
 
         # compact row height
