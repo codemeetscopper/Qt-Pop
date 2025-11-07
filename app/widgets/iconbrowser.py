@@ -79,11 +79,20 @@ class IconCardWidget(QWidget):
         super().paintEvent(event)
 
 
+from PySide6.QtWidgets import (
+    QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QComboBox,
+    QPushButton, QSpinBox, QFrame, QListWidget, QListWidgetItem
+)
+from PySide6.QtCore import Qt, QSize
+from PySide6.QtGui import QIcon
+import os
+
 
 class IconBrowserWidget(QWidget):
-    def __init__(self, qt_pop: QtPop, parent=None, images_path="resources/images"):
+    def __init__(self, qt_pop, parent=None, images_path="resources/images"):
         super().__init__(parent)
         self.qt_pop = qt_pop
+        self.parent = parent
 
         if os.path.isdir(images_path):
             IconManager.set_images_path(images_path)
@@ -91,7 +100,7 @@ class IconBrowserWidget(QWidget):
         self.all_icons = IconManager.list_icons()
         self.current_icons = self.all_icons
         self.current_color = self.qt_pop.style.get_colour("accent")
-        self.icon_size = 48
+        self.icon_size = 60  # ✅ default icon size
 
         # ---------- Layout ----------
         main_layout = QVBoxLayout(self)
@@ -110,8 +119,7 @@ class IconBrowserWidget(QWidget):
 
         # Color selector
         self.color_combo = QComboBox()
-        colours = self.qt_pop.style.colour_map()
-        for name, hex_code in colours.items():
+        for name, hex_code in self.qt_pop.style.colour_map().items():
             self.color_combo.addItem(name, hex_code)
         self.color_combo.currentTextChanged.connect(self._on_color_change)
         top_bar.addWidget(self.color_combo)
@@ -125,8 +133,14 @@ class IconBrowserWidget(QWidget):
         top_bar.addWidget(self.size_spin)
 
         # Refresh button
-        self.refresh_btn = QPushButton("⟳")
+        self.refresh_btn = QPushButton("")
         self.refresh_btn.setFixedWidth(40)
+        self.refresh_btn.setIcon(
+            self.qt_pop.icon.get_pixmap(
+                "navigation refresh",
+                self.qt_pop.style.get_colour("accent_d3")
+            )
+        )
         self.refresh_btn.clicked.connect(self._on_refresh)
         top_bar.addWidget(self.refresh_btn)
 
@@ -138,60 +152,52 @@ class IconBrowserWidget(QWidget):
         separator.setFrameShadow(QFrame.Sunken)
         main_layout.addWidget(separator)
 
-        # --- Scrollable grid for icons ---
-        self.scroll_area = QScrollArea()
-        self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        self.scroll_area.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
+        # --- Icon View (QListWidget) ---
+        # --- Icon View (QListWidget) ---
+        self.list_widget = QListWidget()
+        self.list_widget.setViewMode(QListWidget.IconMode)
+        self.list_widget.setResizeMode(QListWidget.Adjust)
+        self.list_widget.setWrapping(True)
+        self.list_widget.setSpacing(20)  # ✅ more spacing
+        self.list_widget.setMovement(QListWidget.Static)
+        self.list_widget.setUniformItemSizes(False)  # ✅ allow variable height
+        self.list_widget.setWordWrap(True)  # ✅ allow text wrapping
+        self.list_widget.setVerticalScrollMode(QListWidget.ScrollPerPixel)
+        self.list_widget.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.list_widget.setIconSize(QSize(self.icon_size, self.icon_size))
 
-        self.scroll_content = QWidget()
-        self.grid_layout = QGridLayout(self.scroll_content)
-        self.grid_layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
-        self.grid_layout.setSpacing(10)
-
-        self.scroll_area.setWidget(self.scroll_content)
-        main_layout.addWidget(self.scroll_area)
+        main_layout.addWidget(self.list_widget)
         self.setLayout(main_layout)
 
+        # populate icons initially
         self._populate_icons()
 
     # -------------------------------
-    # UI Interaction Logic
+    # Populate Icons
     # -------------------------------
-
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        self._populate_icons()
-
     def _populate_icons(self):
-        while self.grid_layout.count():
-            item = self.grid_layout.takeAt(0)
-            w = item.widget()
-            if w:
-                w.deleteLater()
-
+        self.list_widget.clear()
         if not self.current_icons:
-            lbl = QLabel("No icons found.")
-            lbl.setAlignment(Qt.AlignCenter)
-            self.grid_layout.addWidget(lbl, 0, 0)
+            item = QListWidgetItem("No icons found")
+            self.list_widget.addItem(item)
             return
 
-        # Compute columns dynamically based on available width
-        available_width = self.scroll_area.viewport().width()
-        card_width = self.icon_size + 40  # estimate per card including spacing
-        cols = max(1, available_width // card_width)
+        self.list_widget.setIconSize(QSize(self.icon_size, self.icon_size))  # ✅ ensure correct icon size
 
-        for i, icon_name in enumerate(self.current_icons):
+        for icon_name in self.current_icons:
             pixmap = IconManager.get_pixmap(icon_name, self.current_color, size=self.icon_size)
-            card = IconCardWidget(icon_name, pixmap, self.qt_pop)
-            card.update_icon(pixmap, self.icon_size)
-            row, col = divmod(i, cols)
-            self.grid_layout.addWidget(card, row, col)
+            icon = QIcon(pixmap)
+            item = QListWidgetItem(icon, icon_name)
+            item.setSizeHint(QSize(self.icon_size + 60, self.icon_size + 60))
+            item.setTextAlignment(Qt.AlignHCenter | Qt.AlignTop)
+            self.list_widget.addItem(item)
 
+    # -------------------------------
+    # Handlers
+    # -------------------------------
     def _on_search(self, text: str):
         self.current_icons = IconManager.search_icons(text, self.all_icons)
-        self._populate_icons()
+        # self._populate_icons()
 
     def _on_color_change(self, key: str):
         color_map = self.qt_pop.style.colour_map()
@@ -199,13 +205,20 @@ class IconBrowserWidget(QWidget):
         self._populate_icons()
 
     def _on_size_change(self, val: int):
+        """Update icon and item size dynamically"""
         self.icon_size = val
-        self._populate_icons()
+        self.list_widget.setIconSize(QSize(val, val))  # ✅ updates the QListWidget view
+        for i in range(self.list_widget.count()):
+            item = self.list_widget.item(i)
+            item.setSizeHint(QSize(val + 40, val + 50))  # ✅ adjust the visual space
+        self._populate_icons()  # ✅ reload icons with new pixmaps
 
     def _on_refresh(self):
         IconManager.clear_cache()
         self.all_icons = IconManager.list_icons()
         self._populate_icons()
+
+
 
 
 # For testing

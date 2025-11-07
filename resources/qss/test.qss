@@ -229,39 +229,6 @@ QSpinBox::down-button:disabled {
     border-color: <neutral_l2>;
 }
 
-
-/* QToolButton */
-QToolButton {
-    background-color: <accent_ln>;
-    color: <accent_d3>;
-    border: 1px solid <accent>;
-    border-radius: 4px;
-/*    font-size: 14px;*/
-/*    font-weight: bold;*/
-    padding: 4px 10px;
-    border-radius: 2px;
-}
-
-QToolButton:hover {
-    background-color: <support_l1>;
-}
-
-QToolButton:pressed {
-    background-color: <accent_d1>;
-    color: white;
-}
-
-QToolButton:checked {
-    background-color: <accent>;
-    color: white;
-}
-
-QToolButton:disabled {
-    background-color: <bg2>;
-    color: <fg2>;
-    border-color: <neutral_l2>;
-}
-
 /* QCheckBox */
 QCheckBox {
     spacing: 6px;

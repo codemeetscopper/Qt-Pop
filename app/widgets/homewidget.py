@@ -13,7 +13,7 @@ def _q(hexval): return QColor(hexval)
 
 class MinimalAIHome(QWidget):
     def __init__(self, qt_pop: QtPop, app_name, tagline, version, description,
-                 icon_path=None, svg_data=None, icon_size=96, parent=None):
+                 icon_path=None, svg_data=None, icon_size=128, parent=None):
         super().__init__(parent)
         self.qt_pop = qt_pop
         self.app_name = app_name
@@ -64,36 +64,36 @@ class MinimalAIHome(QWidget):
     # -----------------------------------------
     def _build_ui(self):
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(45, 150, 45, 150)
+        layout.setContentsMargins(45, 150, 0, 150)
 
 
         col = QVBoxLayout()
         col.setSpacing(10)
 
         icon = QLabel()
-        icon.setPixmap(self.qt_pop.icon.get_pixmap('action',
+        icon.setPixmap(self.qt_pop.icon.get_pixmap('action join left',
                                                    self.qt_pop.style.get_colour('accent'),
                                                    self.icon_size))
         icon.setFixedSize(self.icon_size, self.icon_size)
         icon.setScaledContents(True)
-        col.addWidget(icon, alignment=Qt.AlignLeft)
+        col.addWidget(icon, alignment=Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
 
         title = QLabel(self.app_name)
         ft = QFont(); ft.setPointSize(26); ft.setBold(True)
         title.setFont(ft)
-        col.addWidget(title)
+        col.addWidget(title, alignment=Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
 
         tagline = QLabel(self.tagline)
         fs = QFont(); fs.setPointSize(12)
         tagline.setFont(fs)
-        col.addWidget(tagline)
+        col.addWidget(tagline, alignment=Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
 
         desc = QLabel(self.description)
         fd = QFont(); fd.setPointSize(11)
         desc.setFont(fd)
         desc.setWordWrap(True)
-        desc.setMaximumWidth(450)
-        col.addWidget(desc)
+        # desc.setMaximumWidth(800)
+        col.addWidget(desc, alignment=Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
 
         v = QLabel(f"Version {self.version}")
         fv = QFont(); fv.setPointSize(9)
@@ -102,6 +102,7 @@ class MinimalAIHome(QWidget):
 
         layout.addLayout(col, 1)
         layout.addStretch(2)
+        self.setLayout(layout)
 
     # -----------------------------------------
     def paintEvent(self, event):

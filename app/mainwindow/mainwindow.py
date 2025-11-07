@@ -56,10 +56,11 @@ class MainWindow(QMainWindow):
         self.setup_home()
         self.setup_icons()
 
-        if self.titlebar is None:
-            icon = QIcon(self.qt_pop.icon.get_pixmap('action', self.qt_pop.style.get_colour('accent')))  # replace with your logo path
-            self.titlebar = CustomTitleBar(self, icon, self.qt_pop.config.get_value('name'))
-            self.ui.centralwidget.layout().insertWidget(0, self.titlebar)
+        if self.titlebar is not None:
+            self.ui.centralwidget.layout().removeWidget(self.titlebar)
+        icon = QIcon(self.qt_pop.icon.get_pixmap('action join left', self.qt_pop.style.get_colour('accent')))  # replace with your logo path
+        self.titlebar = CustomTitleBar(self.qt_pop, self, icon, self.qt_pop.config.get_value('name'))
+        self.ui.centralwidget.layout().insertWidget(0, self.titlebar)
 
         self.apply_style()
         self.set_application_font("pc")

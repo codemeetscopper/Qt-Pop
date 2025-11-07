@@ -4,15 +4,19 @@ from PySide6.QtWidgets import (
     QWidget, QLabel, QHBoxLayout, QToolButton, QMenu, QApplication, QStyle, QSizeGrip
 )
 
+from qtpop import QtPop
+
 
 class CustomTitleBar(QWidget):
     """Professional, painter-based custom titlebar for Windows."""
-    HEIGHT = 34
+    HEIGHT = 40
 
-    def __init__(self, parent=None, app_icon: QIcon = None, app_name: str = "Application"):
+    def __init__(self, qt_pop: QtPop, parent=None, app_icon: QIcon = None, app_name: str = "Application"):
         super().__init__(parent)
         self.parent_window = parent
         self.dragging = False
+        self.icon_size = 35
+        self.qt_pop = qt_pop
         self.drag_pos = QPoint()
 
         self.setFixedHeight(self.HEIGHT)
@@ -21,54 +25,76 @@ class CustomTitleBar(QWidget):
 
         # --- App icon (your logo) ---
         self.icon_label = QLabel()
-        if app_icon:
-            self.icon_label.setPixmap(app_icon.pixmap(20, 20))
-        self.icon_label.setFixedSize(26, 26)
+        self.icon_label.setPixmap(self.qt_pop.icon.get_pixmap(
+            'action join left',
+            self.qt_pop.style.get_colour('accent'),
+            35
+        ))
+        self.icon_label.setContentsMargins(0, 0, 0, 0)
+        # self.icon_label.setFixedSize(41, 41)
 
         # --- App name ---
         self.title_label = QLabel(app_name)
         font = QFont()
-        font.setPointSize(10)
+        font.setPointSize(12)
         font.setWeight(QFont.Bold)
         self.title_label.setFont(font)
         self.title_label.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.title_label.setStyleSheet(f"color: {self.qt_pop.style.get_colour('accent')};")
 
         # --- Dropdown menu button (with ↓ arrow) ---
         self.menu_button = QToolButton()
         self.menu_button.setAutoRaise(True)
-        self.menu_button.setFixedSize(26, 26)
         self.menu_button.setToolTip("Options")
-        self.menu = QMenu()
-        self.menu.addAction("Settings")
-        self.menu.addAction("About")
-        self.menu_button.setMenu(self.menu)
+        self.menu_button.setContentsMargins(0, 0, 0, 0)
+        # self.menu = QMenu()
+        # self.menu.addAction("Settings")
+        # self.menu.addAction("About")
+        # self.menu_button.setMenu(self.menu)
         self.menu_button.setPopupMode(QToolButton.InstantPopup)
+        self.menu_button.setIcon(self.qt_pop.icon.get_pixmap(
+            'action info outline',
+            self.qt_pop.style.get_colour('fg2'),
+            self.icon_size
+        ))
 
         # --- Window control buttons ---
         self.min_button = QToolButton()
         self.min_button.setAutoRaise(True)
-        self.min_button.setIcon(self.style().standardIcon(QStyle.SP_TitleBarMinButton))
-        self.min_button.setFixedSize(26, 26)
+        self.min_button.setContentsMargins(5, 0, 0, 0)
+        self.min_button.setIcon(self.qt_pop.icon.get_pixmap(
+            'action minimize',
+            self.qt_pop.style.get_colour('fg1'),
+            self.icon_size
+        ))
         self.min_button.clicked.connect(self._minimize)
 
         self.max_button = QToolButton()
         self.max_button.setAutoRaise(True)
-        self.max_button.setIcon(self.style().standardIcon(QStyle.SP_TitleBarMaxButton))
-        self.max_button.setFixedSize(26, 26)
+        self.max_button.setContentsMargins(5, 0, 0, 0)
+        self.max_button.setIcon(self.qt_pop.icon.get_pixmap(
+            'navigation fullscreen',
+            self.qt_pop.style.get_colour('fg1'),
+            self.icon_size
+        ))
         self.max_button.clicked.connect(self._maximize_restore)
 
         self.close_button = QToolButton()
         self.close_button.setAutoRaise(True)
-        self.close_button.setIcon(self.style().standardIcon(QStyle.SP_TitleBarCloseButton))
-        self.close_button.setFixedSize(26, 26)
+        self.close_button.setContentsMargins(5, 0, 0, 0)
+        self.close_button.setIcon(self.qt_pop.icon.get_pixmap(
+            'navigation close',
+            self.qt_pop.style.get_colour('fg1'),
+            self.icon_size
+        ))
         self.close_button.clicked.connect(self._close)
 
         # --- Layout ---
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(8, 0, 4, 0)
-        layout.setSpacing(6)
-        layout.addWidget(self.icon_label)
-        layout.addWidget(self.title_label, 1)
+        layout.setContentsMargins(10, 0, 10, 0)
+        layout.setSpacing(5)
+        layout.addWidget(self.icon_label, alignment=Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter)
+        layout.addWidget(self.title_label, 1, alignment=Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         layout.addWidget(self.menu_button)
         layout.addWidget(self.min_button)
         layout.addWidget(self.max_button)
@@ -105,26 +131,26 @@ class CustomTitleBar(QWidget):
         rect = self.rect()
 
         # Background
-        painter.fillRect(rect, QColor(37, 37, 40))
+        # painter.fillRect(rect, self.qt_pop.style.get_colour('bg', to_str=False))
 
         # Bottom border line
-        painter.setPen(QPen(QColor(60, 60, 65)))
+        painter.setPen(QPen(self.qt_pop.style.get_colour('accent_l3', to_str=False)))
         painter.drawLine(0, rect.height() - 1, rect.width(), rect.height() - 1)
 
         # Draw down arrow for menu button manually (consistent look)
-        arrow_rect = self._get_widget_rect(self.menu_button)
-        if arrow_rect.isValid():
-            painter.setPen(Qt.NoPen)
-            painter.setBrush(QColor(200, 200, 200))
-            size = 6
-            x = arrow_rect.center().x()
-            y = arrow_rect.center().y() + 2
-            points = [
-                QPoint(x - size // 2, y - size // 4),
-                QPoint(x + size // 2, y - size // 4),
-                QPoint(x, y + size // 3),
-            ]
-            painter.drawPolygon(QPolygonF(points))
+        # arrow_rect = self._get_widget_rect(self.menu_button)
+        # if arrow_rect.isValid():
+        #     painter.setPen(Qt.NoPen)
+        #     painter.setBrush(QColor(200, 200, 200))
+        #     size = 6
+        #     x = arrow_rect.center().x()
+        #     y = arrow_rect.center().y() + 2
+        #     points = [
+        #         QPoint(x - size // 2, y - size // 4),
+        #         QPoint(x + size // 2, y - size // 4),
+        #         QPoint(x, y + size // 3),
+        #     ]
+        #     painter.drawPolygon(QPolygonF(points))
 
     def _get_widget_rect(self, widget: QWidget) -> QRect:
         """Get absolute geometry of a child widget in parent coordinates."""
@@ -145,10 +171,18 @@ class CustomTitleBar(QWidget):
             return
         if self.parent_window.isMaximized():
             self.parent_window.showNormal()
-            self.max_button.setIcon(self.style().standardIcon(QStyle.SP_TitleBarMaxButton))
+            self.max_button.setIcon(self.qt_pop.icon.get_pixmap(
+            'navigation fullscreen',
+            self.qt_pop.style.get_colour('fg2'),
+            self.icon_size
+        ))
         else:
             self.parent_window.showMaximized()
-            self.max_button.setIcon(self.style().standardIcon(QStyle.SP_TitleBarNormalButton))
+            self.max_button.setIcon(self.qt_pop.icon.get_pixmap(
+            'navigation fullscreen exit',
+            self.qt_pop.style.get_colour('fg2'),
+            self.icon_size
+        ))
 
     def _close(self):
         if self.parent_window:

@@ -4,7 +4,7 @@
             "accent": {
                 "name": "Accent Colour",
                 "shortname": "accent",
-                "value": "#aa0000",
+                "value": "#55aa7f",
                 "values": [
                     "#a52b2b",
                     "#b52b2b",
@@ -22,7 +22,7 @@
             "support": {
                 "name": "Support Colour",
                 "shortname": "support",
-                "value": "#55aa7f",
+                "value": "#ff9933",
                 "values": [
                     "#a52b2b",
                     "#b52b2b",
@@ -38,7 +38,7 @@
             "neutral": {
                 "name": "Neutral Colour",
                 "shortname": "neutral",
-                "value": "#ffaa00",
+                "value": "#00557f",
                 "values": [
                     "#a52b2b",
                     "#b52b2b",
