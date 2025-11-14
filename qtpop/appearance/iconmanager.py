@@ -38,6 +38,9 @@ class _IconNotifier(QObject):
     # Emit a generic object to safely pass QImage across threads
     icon_loaded = Signal(str, object)
 
+    def __init__(self) -> None:
+        super().__init__()
+
 
 # ------------------------------
 # Main IconManager class

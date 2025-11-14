@@ -7,7 +7,6 @@ from PySide6.QtGui import QColor, QPalette
 from PySide6.QtWidgets import QApplication
 
 from qtpop.qtpoplogger import debug_log
-from qtpop.appearance.iconmanager import IconManager
 
 ColourLike = Union[str, QColor]
 
@@ -28,7 +27,6 @@ class StyleManager:
 
     # ---- Singleton state -----------------------------------------------------
     _initialised: bool = False
-    _iconManager = IconManager()
     _colours: Dict[str, QColor] = {}
     _palette: Optional[QPalette] = None
     _resolved_mode: str = "light"  # "light" | "dark"

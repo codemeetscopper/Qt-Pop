@@ -4,7 +4,7 @@ from itertools import cycle
 
 from qtpop.qtpoplogger import debug_log
 
-@debug_log
+
 class FontManager:
     _instance = None
 
