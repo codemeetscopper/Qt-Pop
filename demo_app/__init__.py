@@ -1,0 +1,1 @@
+"""QtPop demonstration application package."""

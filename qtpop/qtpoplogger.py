@@ -1,8 +1,7 @@
-import logging
-import functools
 import inspect
+import logging
 import sys
-from multiprocessing.util import DEBUG
+import functools
 
 from PySide6.QtCore import QObject, Signal
 
@@ -11,9 +10,10 @@ try:
     init(autoreset=True)
 except ImportError:
     # fallback if colorama is missing
-    class Fore:
-        CYAN = GREEN = YELLOW = RED = MAGENTA = ""
-    class Style:
+    class Fore:  # type: ignore
+        CYAN = GREEN = YELLOW = RED = MAGENTA = BLUE = LIGHTBLACK_EX = ""
+
+    class Style:  # type: ignore
         BRIGHT = RESET_ALL = ""
 
 #
@@ -22,6 +22,9 @@ except ImportError:
 # --------------------------------------------
 class QtLogEmitter(QObject):
     log_emitted = Signal(str, str, str, str)  # timestamp, message, level, color
+
+    def __init__(self) -> None:
+        super().__init__()
 
 LEVEL_COLOURS = {
         logging.DEBUG: Fore.LIGHTBLACK_EX,
@@ -84,17 +87,20 @@ class QtPopLogger:
     # -------------------------------------------------
     def _attach_signal_handler(self):
         class SignalHandler(logging.Handler):
-            def __init__(self, emitter):
+            def __init__(self, emitter: QtLogEmitter):
                 super().__init__()
                 self.emitter = emitter
 
-            def emit(self, record):
+            def emit(self, record: logging.LogRecord) -> None:
                 global LEVEL_COLOURS
-                msg = record.msg
+                # Ensure formatter populates record.asctime / message
+                formatted = self.format(record)
+                _ = formatted  # satisfy linters; formatted string goes to standard handlers
+                timestamp = getattr(record, "asctime", "")
+                msg = record.getMessage()
                 level = record.levelname
                 color = LEVEL_COLOURS.get(record.levelno, "")
-                time = record.asctime
-                self.emitter.log_emitted.emit(time, msg, level, color)
+                self.emitter.log_emitted.emit(timestamp, msg, level, color)
 
         signal_handler = SignalHandler(self._emitter)
         signal_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))

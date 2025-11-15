@@ -1,0 +1,91 @@
+{
+    "configuration": {
+        "user": {
+            "accent": {
+                "name": "Accent Colour",
+                "shortname": "accent",
+                "value": "#3f51b5",
+                "values": [
+                    "#3f51b5",
+                    "#009688",
+                    "#ff5722",
+                    "#8e24aa"
+                ],
+                "description": "Primary highlight colour used across the demo.",
+                "type": "colorpicker",
+                "accessibility": "user",
+                "group": "Appearance",
+                "icon": "images/size.svg"
+            },
+            "support": {
+                "name": "Support Colour",
+                "shortname": "support",
+                "value": "#ff9800",
+                "values": [
+                    "#ff9800",
+                    "#00acc1",
+                    "#43a047",
+                    "#f06292"
+                ],
+                "description": "Secondary accent colour showcased in controls.",
+                "type": "colorpicker",
+                "accessibility": "user",
+                "group": "Appearance",
+                "icon": "images/size.svg"
+            },
+            "neutral": {
+                "name": "Neutral Colour",
+                "shortname": "neutral",
+                "value": "#546e7a",
+                "values": [
+                    "#546e7a",
+                    "#37474f",
+                    "#795548",
+                    "#1e88e5"
+                ],
+                "description": "Neutral colour used for borders and backgrounds.",
+                "type": "colorpicker",
+                "accessibility": "user",
+                "group": "Appearance",
+                "icon": "images/size.svg"
+            },
+            "theme": {
+                "name": "Colour Theme",
+                "shortname": "theme",
+                "value": "light",
+                "values": [
+                    "light",
+                    "dark"
+                ],
+                "description": "Toggle between light and dark palettes.",
+                "type": "dropdown",
+                "accessibility": "user",
+                "group": "Appearance",
+                "icon": "images/size.svg"
+            },
+            "qss_path": {
+                "name": "Demo QSS",
+                "shortname": "qss_path",
+                "value": "../qss/demo.qss",
+                "values": [
+                    "../qss/demo.qss"
+                ],
+                "description": "Location of the showcase Qt style sheet.",
+                "type": "filebrowse",
+                "accessibility": "user",
+                "group": "Appearance",
+                "icon": "images/size.svg"
+            }
+        },
+        "static": {
+            "name": "QtPop Feature Showcase",
+            "version": "1.0.0",
+            "icon_path": "../../resources/images/meterialicons",
+            "font_path": "../../resources/fonts"
+        }
+    },
+    "page_mapping": {
+        "defaults": {},
+        "plugins": {}
+    }
+}

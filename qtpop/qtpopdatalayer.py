@@ -1,11 +1,11 @@
 from __future__ import annotations
 from typing import Any, Dict
-from PySide6.QtCore import QObject, Signal, QMutex, QMutexLocker
+
+from PySide6.QtCore import QObject, Signal, QMutex
 
 from qtpop.qtpoplogger import debug_log
 
 
-@debug_log
 class QtPopDataLayer(QObject):
     """
     Singleton Data Layer for PySide6 applications.
@@ -24,9 +24,12 @@ class QtPopDataLayer(QObject):
 
     def __new__(cls) -> QtPopDataLayer:
         """Thread-safe singleton implementation."""
-        with QMutexLocker(cls._mutex):
+        cls._mutex.lock()
+        try:
             if cls._instance is None:
                 cls._instance = super().__new__(cls)
+        finally:
+            cls._mutex.unlock()
         return cls._instance
 
     def __init__(self):

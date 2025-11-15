@@ -1,7 +1,5 @@
 import json
-import logging
 from dataclasses import asdict
-from typing import Optional
 
 from PySide6.QtCore import QSettings
 from PySide6.QtGui import QColor
@@ -11,7 +9,6 @@ from .models import PageMapping, AppSettings, Configuration, SettingItem, PageIn
 from qtpop.qtpoplogger import qt_logger, debug_log
 
 
-@debug_log
 class ConfigurationManager:
     _instance = None
     _initialized = False
