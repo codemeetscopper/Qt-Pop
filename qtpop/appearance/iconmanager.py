@@ -52,7 +52,7 @@ class IconManager:
     _icon_cache: Dict[str, QImage] = {}  # Cache QImage, not QPixmap
     _svg_cache: Dict[str, str] = {}      # Cache generated SVG strings
     _icon_lock = threading.Lock()
-    _images_path: str = r"resources/images/"
+    _images_path: str = r"resources/images/meterialicons"
     _icon_list: List[str] = []
     _thread_pool = QThreadPool.globalInstance()
     _notifier = _IconNotifier()  # Holds the actual Qt signal object
@@ -173,6 +173,7 @@ class IconManager:
     @debug_log
     def list_icons(cls) -> List[str]:
         """Lists all SVG icons in the configured image path."""
+        print(os.listdir(cls._images_path))
         if not os.path.isdir(cls._images_path):
             cls._icon_list.clear()
             return []
