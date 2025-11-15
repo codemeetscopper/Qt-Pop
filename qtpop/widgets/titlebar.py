@@ -8,7 +8,6 @@ from PySide6.QtCore import QPoint, QRect, Qt
 from PySide6.QtGui import QIcon, QMouseEvent, QPainter, QPen
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QSizeGrip, QToolButton, QWidget
 
-from qtpop import QtPop
 
 
 class CustomTitleBar(QWidget):
@@ -18,7 +17,7 @@ class CustomTitleBar(QWidget):
 
     def __init__(
         self,
-        qtpop: QtPop,
+        qtpop,
         parent: QWidget | None = None,
         *,
         app_icon: Optional[QIcon] = None,

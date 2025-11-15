@@ -126,13 +126,15 @@ class IconManager:
             cls.list_icons()
 
         # Find the full icon name if a partial name is given
+        resolved_name = ''
         name_list = cls.search_icons(name, cls._icon_list)
         if name_list:
             resolved_name = name_list[0]
         elif name in cls._icon_list:
             resolved_name = name
         else:
-            raise FileNotFoundError(f"[IconManager] Icon not found: {name}")
+            print(f"Icon not found {name}")
+            # raise FileNotFoundError(f"[IconManager] Icon not found: {name}")
 
         cache_key = f"{resolved_name}|{color.lower()}|{size}"
 

@@ -168,8 +168,8 @@ class DemoWindow(QMainWindow):
     # Properties
     # ------------------------------------------------------------------
     def _window_title(self) -> str:
-        app_info = self._config.get_value("name", section="static")  # type: ignore[assignment]
-        version = self._config.get_value("version", section="static")  # type: ignore[assignment]
+        app_info = self._config.get_value("name")  # type: ignore[assignment]
+        version = self._config.get_value("version")  # type: ignore[assignment]
         return f"{getattr(app_info, 'value', app_info)} · QtPop {getattr(version, 'value', version)}"
 
     # ------------------------------------------------------------------
