@@ -147,13 +147,13 @@ class DemoWindow(QMainWindow):
         content = QWidget()
         content.setObjectName("DemoContent")
         content_layout = QVBoxLayout(content)
-        content_layout.setContentsMargins(28, 24, 28, 24)
-        content_layout.setSpacing(20)
+        content_layout.setContentsMargins(24, 20, 24, 20)
+        content_layout.setSpacing(16)
 
         header_card = QFrame()
         header_card.setObjectName("HeaderCard")
         header_layout = QVBoxLayout(header_card)
-        header_layout.setContentsMargins(24, 20, 24, 20)
+        header_layout.setContentsMargins(20, 18, 20, 18)
         header_layout.setSpacing(6)
 
         title_label = QLabel(self._window_title())
@@ -195,11 +195,29 @@ class DemoWindow(QMainWindow):
         ]
 
         for title, icon_name, builder in tabs:
-            page = builder()
+            page = self._wrap_scroll_area(builder())
             self._tab_widget.addTab(page, title)
             page.setProperty("nav-icon", icon_name)
 
         self._update_tab_icons()
+
+    def _wrap_scroll_area(self, content: QWidget) -> QScrollArea:
+        scroll = QScrollArea()
+        scroll.setObjectName("DemoScrollArea")
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.NoFrame)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        scroll.setAlignment(Qt.AlignTop | Qt.AlignLeft)
+
+        container = QWidget()
+        layout = QVBoxLayout(container)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+        layout.addWidget(content)
+
+        scroll.setWidget(container)
+        return scroll
 
     def _ordered_palette_keys(self) -> List[str]:
         colour_map = self._style.colour_map()
@@ -284,12 +302,12 @@ class DemoWindow(QMainWindow):
     def _build_overview_tab(self) -> QWidget:
         page = QWidget()
         layout = QVBoxLayout(page)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(16)
+        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setSpacing(12)
 
         hero = self._card()
         hero_layout = QVBoxLayout(hero)
-        hero_layout.setContentsMargins(26, 26, 26, 26)
+        hero_layout.setContentsMargins(22, 22, 22, 22)
         hero_layout.setSpacing(10)
 
         title = QLabel("QtPop Feature Showcase")
@@ -305,7 +323,7 @@ class DemoWindow(QMainWindow):
 
         bullets = self._card()
         bullets_layout = QVBoxLayout(bullets)
-        bullets_layout.setContentsMargins(22, 22, 22, 22)
+        bullets_layout.setContentsMargins(20, 18, 20, 18)
         bullets_layout.setSpacing(8)
 
         for line in (
@@ -328,8 +346,8 @@ class DemoWindow(QMainWindow):
     def _build_palette_tab(self) -> QWidget:
         page = QWidget()
         layout = QVBoxLayout(page)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(16)
+        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setSpacing(12)
 
         if not self._style.is_initialised():
             accent = self._config.get_value("accent").value  # type: ignore[union-attr]
@@ -340,7 +358,7 @@ class DemoWindow(QMainWindow):
 
         swatch_card = self._card()
         swatch_layout = QVBoxLayout(swatch_card)
-        swatch_layout.setContentsMargins(22, 22, 22, 22)
+        swatch_layout.setContentsMargins(20, 18, 20, 18)
         swatch_layout.setSpacing(12)
 
         label = QLabel("Resolved palette")
@@ -349,12 +367,12 @@ class DemoWindow(QMainWindow):
 
         grid = QGridLayout()
         grid.setContentsMargins(0, 0, 0, 0)
-        grid.setHorizontalSpacing(12)
-        grid.setVerticalSpacing(12)
+        grid.setHorizontalSpacing(10)
+        grid.setVerticalSpacing(10)
 
         ordered_keys = self._ordered_palette_keys()
         self._palette_swatches.clear()
-        columns = 4
+        columns = 5
         for index, key in enumerate(ordered_keys):
             title = key.replace("_", " ").upper()
             swatch = ColourSwatch(title, self._style.get_colour(key))
@@ -366,7 +384,7 @@ class DemoWindow(QMainWindow):
 
         controls_card = self._card()
         controls_layout = QVBoxLayout(controls_card)
-        controls_layout.setContentsMargins(22, 20, 22, 20)
+        controls_layout.setContentsMargins(20, 18, 20, 18)
         controls_layout.setSpacing(10)
 
         description = QLabel(
@@ -377,7 +395,7 @@ class DemoWindow(QMainWindow):
         controls_layout.addWidget(description)
 
         button_row = QHBoxLayout()
-        button_row.setSpacing(10)
+        button_row.setSpacing(8)
 
         self._accent_button = QPushButton("Cycle accent colour")
         self._accent_button.setObjectName("AccentControl")
@@ -398,8 +416,8 @@ class DemoWindow(QMainWindow):
     def _build_settings_tab(self) -> QWidget:
         page = QWidget()
         layout = QVBoxLayout(page)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(16)
+        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setSpacing(12)
 
         grouped: Dict[str, List[SettingItem]] = {}
         for item in self._config.data.configuration.user.values():  # type: ignore[union-attr]
@@ -407,7 +425,7 @@ class DemoWindow(QMainWindow):
 
         instructions = self._card()
         instructions_layout = QVBoxLayout(instructions)
-        instructions_layout.setContentsMargins(22, 20, 22, 20)
+        instructions_layout.setContentsMargins(20, 18, 20, 18)
         instructions_layout.setSpacing(8)
 
         heading = QLabel("Configuration editor")
@@ -427,8 +445,8 @@ class DemoWindow(QMainWindow):
 
         editor_card = self._card()
         editor_layout = QVBoxLayout(editor_card)
-        editor_layout.setContentsMargins(0, 0, 0, 0)
-        editor_layout.setSpacing(0)
+        editor_layout.setContentsMargins(8, 8, 8, 8)
+        editor_layout.setSpacing(8)
 
         tabs = QTabWidget()
         tabs.setObjectName("SettingsTabs")
@@ -445,8 +463,8 @@ class DemoWindow(QMainWindow):
         editor_layout.addWidget(tabs)
 
         footer = QHBoxLayout()
-        footer.setContentsMargins(24, 16, 24, 24)
-        footer.setSpacing(12)
+        footer.setContentsMargins(0, 0, 0, 0)
+        footer.setSpacing(10)
         footer.addStretch(1)
         save_button = QPushButton("Save settings")
         save_button.setObjectName("SaveSettingsButton")
@@ -468,11 +486,13 @@ class DemoWindow(QMainWindow):
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setObjectName("SettingsScroll")
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
         content = QWidget()
         content_layout = QVBoxLayout(content)
-        content_layout.setContentsMargins(20, 20, 20, 20)
-        content_layout.setSpacing(10)
+        content_layout.setContentsMargins(16, 14, 16, 16)
+        content_layout.setSpacing(8)
 
         for item in items:
             widget = SettingItemWidget(item)
@@ -489,13 +509,13 @@ class DemoWindow(QMainWindow):
     def _build_qss_tab(self) -> QWidget:
         page = QWidget()
         layout = QVBoxLayout(page)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(16)
+        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setSpacing(12)
 
         studio_card = self._card()
         studio_layout = QVBoxLayout(studio_card)
-        studio_layout.setContentsMargins(22, 22, 22, 22)
-        studio_layout.setSpacing(12)
+        studio_layout.setContentsMargins(20, 18, 20, 18)
+        studio_layout.setSpacing(10)
 
         heading = QLabel("QSS Studio")
         heading.setObjectName("SectionHeading")
@@ -524,7 +544,7 @@ class DemoWindow(QMainWindow):
         studio_layout.addWidget(splitter, 1)
 
         button_row = QHBoxLayout()
-        button_row.setSpacing(10)
+        button_row.setSpacing(8)
         load_button = QPushButton("Load from file…")
         apply_button = QPushButton("Apply style")
         copy_button = QPushButton("Copy processed")
@@ -547,13 +567,13 @@ class DemoWindow(QMainWindow):
     def _build_fonts_tab(self) -> QWidget:
         page = QWidget()
         layout = QVBoxLayout(page)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(16)
+        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setSpacing(12)
 
         card = self._card()
         card_layout = QVBoxLayout(card)
-        card_layout.setContentsMargins(22, 22, 22, 22)
-        card_layout.setSpacing(12)
+        card_layout.setContentsMargins(20, 18, 20, 18)
+        card_layout.setSpacing(10)
 
         heading = QLabel("Loaded font tags")
         heading.setObjectName("SectionHeading")
@@ -574,13 +594,13 @@ class DemoWindow(QMainWindow):
     def _build_icons_tab(self) -> QWidget:
         page = QWidget()
         layout = QVBoxLayout(page)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(16)
+        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setSpacing(12)
 
         card = self._card()
         card_layout = QVBoxLayout(card)
-        card_layout.setContentsMargins(14, 14, 14, 14)
-        card_layout.setSpacing(10)
+        card_layout.setContentsMargins(16, 16, 16, 16)
+        card_layout.setSpacing(8)
 
         icon_setting = self._config.get_value("icon_path")
         icon_path = Path(getattr(icon_setting, "value", icon_setting))
@@ -596,12 +616,12 @@ class DemoWindow(QMainWindow):
     def _build_diagnostics_tab(self) -> QWidget:
         page = QWidget()
         layout = QVBoxLayout(page)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(16)
+        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setSpacing(12)
 
         data_card = self._card()
         data_layout = QVBoxLayout(data_card)
-        data_layout.setContentsMargins(22, 22, 22, 22)
+        data_layout.setContentsMargins(20, 18, 20, 18)
         data_layout.setSpacing(10)
 
         heading = QLabel("Shared data layer")
@@ -624,7 +644,7 @@ class DemoWindow(QMainWindow):
         data_layout.addWidget(self._data_echo)
 
         row = QHBoxLayout()
-        row.setSpacing(12)
+        row.setSpacing(10)
         self._broadcast_button = QPushButton("Broadcast message")
         self._broadcast_button.setObjectName("BroadcastControl")
         row.addWidget(self._broadcast_button)
@@ -635,7 +655,7 @@ class DemoWindow(QMainWindow):
 
         log_card = self._card()
         log_layout = QVBoxLayout(log_card)
-        log_layout.setContentsMargins(12, 12, 12, 12)
+        log_layout.setContentsMargins(16, 14, 16, 14)
         log_layout.setSpacing(8)
 
         log_heading = QLabel("Runtime log stream")

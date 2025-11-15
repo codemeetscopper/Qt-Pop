@@ -32,8 +32,7 @@
 
 #HeaderCard {
     background-color: <bg1>;
-    border: 1px solid <neutral_l3>;
-    border-radius: 20px;
+    border-radius: 18px;
 }
 
 #HeaderTitle {
@@ -50,8 +49,8 @@ QTabWidget#DemoTabs {
 }
 
 QTabWidget#DemoTabs::pane {
-    border: 1px solid <neutral_l3>;
-    border-radius: 20px;
+    border: none;
+    border-radius: 18px;
     margin-top: 12px;
     background-color: <bg1>;
 }
@@ -59,9 +58,9 @@ QTabWidget#DemoTabs::pane {
 QTabWidget#DemoTabs QTabBar::tab {
     background: transparent;
     border: none;
-    padding: 10px 22px;
+    padding: 8px 18px;
     margin: 0 6px;
-    border-radius: 18px;
+    border-radius: 16px;
     font-weight: 600;
     color: <fg1>;
 }
@@ -78,13 +77,11 @@ QTabWidget#DemoTabs QTabBar::tab:hover:!selected {
 
 QFrame#SectionCard {
     background-color: <bg1>;
-    border: 1px solid <neutral_l3>;
-    border-radius: 20px;
+    border-radius: 18px;
 }
 
 QFrame#SampleSettingsFrame {
-    background-color: <bg>;
-    border: 1px solid <neutral_l3>;
+    background-color: <bg2>;
     border-radius: 16px;
 }
 
@@ -111,16 +108,16 @@ QFrame#ColourSwatch {
 }
 
 QPushButton {
-    background-color: <neutral_l3>;
+    background-color: <neutral_l2>;
     color: <fg>;
     border: none;
-    padding: 10px 18px;
-    border-radius: 14px;
+    padding: 8px 16px;
+    border-radius: 12px;
     font-weight: 500;
 }
 
 QPushButton:hover {
-    background-color: <neutral_l2>;
+    background-color: <neutral_l1>;
 }
 
 QPushButton:pressed {
@@ -161,9 +158,9 @@ QPushButton#SaveSettingsButton:pressed {
 
 QLineEdit,
 QPlainTextEdit {
-    border: 1px solid <neutral_l3>;
-    border-radius: 14px;
-    padding: 10px 14px;
+    border: 1px solid <neutral_l2>;
+    border-radius: 12px;
+    padding: 8px 14px;
     background-color: <bg>;
     color: <fg>;
     selection-background-color: <accent>;
@@ -176,12 +173,13 @@ QPlainTextEdit:focus {
 }
 
 QPlainTextEdit#QssOutput {
-    background-color: <bg2>;
+    background-color: <bg1>;
 }
 
 QSplitter::handle {
     background-color: <neutral_l2>;
-    width: 4px;
+    width: 3px;
+    border-radius: 3px;
 }
 
 QScrollArea#SettingsScroll,
@@ -190,11 +188,20 @@ QScrollArea#SettingsScroll QWidget {
     border: none;
 }
 
+QScrollArea#DemoScrollArea {
+    background: transparent;
+    border: none;
+}
+
+QScrollArea#DemoScrollArea QWidget#qt_scrollarea_viewport {
+    background: transparent;
+    border: none;
+}
+
 QWidget#SettingItem,
 QWidget#SettingItemPreview {
     background-color: <bg>;
-    border: 1px solid <neutral_l3>;
-    border-radius: 16px;
+    border-radius: 14px;
     padding: 8px 14px;
 }
 
