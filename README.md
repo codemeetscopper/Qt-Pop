@@ -3,9 +3,10 @@ modern, modular Qt styling library for desktop applications. qt-pop provides fon
 
 ## Demo application
 
-A comprehensive QtPop showcase lives in `demo_app/`. It wires together the
-configuration parser, font loader, icon utilities, live QSS token processing,
-and the shared data/logger signals. Launch it with:
+A frameless, stacked QtPop showcase lives in `demo_app/`. It highlights the
+configuration parser, font loader, icon utilities, token-aware QSS processing,
+shared data layer, logger stream, and the reusable custom title bar widget.
+Launch it with:
 
 ```bash
 python -m demo_app.main

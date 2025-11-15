@@ -14,6 +14,7 @@ from qtpop.appearance.stylemanager import StyleManager
 from qtpop.configuration.parser import ConfigurationManager
 from qtpop.qtpopdatalayer import QtPopDataLayer
 from qtpop.qtpoplogger import QtPopLogger, qt_logger
+from qtpop.widgets import CustomTitleBar, IconCardWidget
 
 __all__ = [
     "QtPop",
@@ -25,6 +26,8 @@ __all__ = [
     "QtPopDataLayer",
     "QtPopLogger",
     "qt_logger",
+    "CustomTitleBar",
+    "IconCardWidget",
 ]
 
 
