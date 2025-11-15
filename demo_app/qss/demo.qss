@@ -1,11 +1,11 @@
-/* Modern stacked demo styling showcasing QtPop token replacement. */
+/* Minimal-yet-rich styling for the QtPop demo. */
 
 #DemoContainer {
     background-color: <bg>;
     color: <fg>;
 }
 
-#DemoBody {
+#DemoContent {
     background-color: <bg>;
 }
 
@@ -16,7 +16,7 @@
 
 #QtPopTitleBar QLabel#TitleText {
     font-weight: 600;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
 }
 
 #QtPopTitleBar QToolButton#TitleControlButton {
@@ -27,50 +27,76 @@
 }
 
 #QtPopTitleBar QToolButton#TitleControlButton:hover {
-    background-color: <bg2>;
+    background-color: <neutral_l2>;
 }
 
-#QtPopTitleBar QToolButton#TitleControlButton:pressed {
-    background-color: <neutral_l3>;
-}
-
-#DemoNavigation {
+#HeaderCard {
     background-color: <bg1>;
     border: 1px solid <neutral_l2>;
-    border-radius: 20px;
-    padding: 12px;
+    border-radius: 24px;
 }
 
-#DemoNavigation::item {
-    border-radius: 12px;
-    padding: 10px 16px;
-    margin: 2px 0;
-    color: <fg>;
+#HeaderTitle {
+    font-size: 24px;
+    font-weight: 600;
 }
 
-#DemoNavigation::item:selected,
-#DemoNavigation::item:hover {
+#HeaderSubtitle {
+    color: <fg2>;
+}
+
+QTabWidget#DemoTabs {
+    background: transparent;
+}
+
+QTabWidget#DemoTabs::pane {
+    border: 1px solid <neutral_l2>;
+    border-radius: 24px;
+    margin-top: 16px;
+    background-color: <bg1>;
+}
+
+QTabWidget#DemoTabs QTabBar::tab {
+    background: transparent;
+    border: none;
+    padding: 10px 22px;
+    margin: 0 6px;
+    border-radius: 18px;
+    font-weight: 600;
+    color: <fg1>;
+}
+
+QTabWidget#DemoTabs QTabBar::tab:selected {
     background-color: <accent>;
     color: <bg>;
 }
 
-#DemoNavigation::item:selected:!active {
+QTabWidget#DemoTabs QTabBar::tab:hover:!selected {
     background-color: <accent_l1>;
-}
-
-#DemoStack {
-    background: transparent;
+    color: <bg>;
 }
 
 QFrame#SectionCard {
     background-color: <bg1>;
     border: 1px solid <neutral_l2>;
-    border-radius: 20px;
+    border-radius: 24px;
+}
+
+QLabel#HeroTitle,
+QLabel#SectionHeading {
+    font-weight: 600;
+}
+
+QLabel#HeroTitle {
+    font-size: 22px;
 }
 
 QLabel#SectionHeading {
     font-size: 16px;
-    font-weight: 600;
+}
+
+QFrame#ColourSwatch {
+    border-radius: 18px;
 }
 
 QPushButton {
@@ -78,7 +104,7 @@ QPushButton {
     color: <fg>;
     border: none;
     padding: 10px 18px;
-    border-radius: 12px;
+    border-radius: 14px;
     font-weight: 500;
 }
 
@@ -104,28 +130,33 @@ QPushButton#AccentControl:pressed {
 }
 
 QPushButton#ThemeControl,
-QPushButton#BroadcastControl {
+QPushButton#BroadcastControl,
+QPushButton#SaveSettingsButton {
     background-color: <support>;
     color: <bg>;
 }
 
 QPushButton#ThemeControl:hover,
-QPushButton#BroadcastControl:hover {
+QPushButton#BroadcastControl:hover,
+QPushButton#SaveSettingsButton:hover {
     background-color: <support_l1>;
 }
 
 QPushButton#ThemeControl:pressed,
-QPushButton#BroadcastControl:pressed {
+QPushButton#BroadcastControl:pressed,
+QPushButton#SaveSettingsButton:pressed {
     background-color: <support_d1>;
 }
 
 QLineEdit,
 QPlainTextEdit {
     border: 1px solid <neutral_l3>;
-    border-radius: 12px;
+    border-radius: 14px;
     padding: 10px 14px;
     background-color: <bg>;
     color: <fg>;
+    selection-background-color: <accent>;
+    selection-color: <bg>;
 }
 
 QLineEdit:focus,
@@ -133,38 +164,53 @@ QPlainTextEdit:focus {
     border-color: <accent>;
 }
 
-QPlainTextEdit#LogView {
-    background-color: <bg>;
-}
-
-QScrollArea#IconScroll,
-QScrollArea#IconScroll QWidget {
-    background: transparent;
-}
-
-QWidget#IconCard {
+QPlainTextEdit#QssOutput {
     background-color: <bg2>;
-    border: 1px solid <neutral_l2>;
+}
+
+QSplitter::handle {
+    background-color: <neutral_l2>;
+    width: 4px;
+}
+
+QScrollArea#SettingsScroll,
+QScrollArea#SettingsScroll QWidget {
+    background: transparent;
+    border: none;
+}
+
+QWidget#SettingItem {
+    background-color: <bg>;
+    border: 1px solid <neutral_l3>;
     border-radius: 18px;
+    padding: 10px 16px;
 }
 
-QPushButton#IconCopyButton {
-    background-color: <accent>;
-    color: <bg>;
-    border-radius: 8px;
-    padding: 2px 10px;
-    font-weight: 500;
+QWidget#SettingItem QLabel:nth-child(1) {
+    font-weight: 600;
 }
 
-QPushButton#IconCopyButton:hover {
-    background-color: <accent_l1>;
-}
-
-QPushButton#IconCopyButton:pressed {
-    background-color: <accent_d1>;
+QListWidget#FontList {
+    border: none;
+    background: transparent;
 }
 
 QLabel#MessageLabel {
     color: <support>;
     font-weight: 600;
+}
+
+QLabel#DataEcho {
+    font-weight: 500;
+}
+
+QPlainTextEdit#LogView,
+QWidget#IconBrowser {
+    background-color: transparent;
+}
+
+QToolTip {
+    background-color: <neutral_l1>;
+    color: <fg>;
+    border: 1px solid <neutral_l2>;
 }
