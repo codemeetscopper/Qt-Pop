@@ -5,6 +5,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 from typing import Dict, List
+from dataclasses import replace
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QColor, QClipboard, QGuiApplication, QIcon
@@ -51,12 +52,13 @@ class ColourSwatch(QFrame):
         self.setAttribute(Qt.WA_StyledBackground, True)
         self._title = QLabel(title)
         self._title.setObjectName("SwatchTitle")
+        self._title.setWordWrap(True)
         self._hex = QLabel(colour.upper())
         self._hex.setObjectName("SwatchHex")
 
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(16, 16, 16, 16)
-        layout.setSpacing(6)
+        layout.setContentsMargins(14, 12, 14, 12)
+        layout.setSpacing(4)
         layout.addWidget(self._title)
         layout.addStretch(1)
         layout.addWidget(self._hex)
@@ -69,12 +71,12 @@ class ColourSwatch(QFrame):
             colour = QColor("#000000")
         luminance = (colour.red() * 299 + colour.green() * 587 + colour.blue() * 114) / 1000
         text_colour = "#000000" if luminance > 160 else "#ffffff"
-        border_colour = "rgba(0, 0, 0, 40)" if luminance > 160 else "rgba(255, 255, 255, 45)"
+        border_colour = "rgba(0, 0, 0, 36)" if luminance > 160 else "rgba(255, 255, 255, 40)"
         self.setStyleSheet(
             f"background-color: {colour.name()};"
             f"color: {text_colour};"
             f"border: 1px solid {border_colour};"
-            f"border-radius: 16px;"
+            f"border-radius: 14px;"
         )
         self._hex.setText(colour.name().upper())
 
@@ -102,9 +104,7 @@ class DemoWindow(QMainWindow):
 
         self._titlebar = CustomTitleBar(qtpop, parent=self, app_name=self._window_title())
         self._tab_widget: QTabWidget | None = None
-        self._accent_swatch: ColourSwatch | None = None
-        self._support_swatch: ColourSwatch | None = None
-        self._neutral_swatch: ColourSwatch | None = None
+        self._palette_swatches: Dict[str, ColourSwatch] = {}
         self._accent_button: QPushButton | None = None
         self._theme_button: QPushButton | None = None
         self._qss_input: QPlainTextEdit | None = None
@@ -147,14 +147,14 @@ class DemoWindow(QMainWindow):
         content = QWidget()
         content.setObjectName("DemoContent")
         content_layout = QVBoxLayout(content)
-        content_layout.setContentsMargins(32, 32, 32, 32)
-        content_layout.setSpacing(24)
+        content_layout.setContentsMargins(24, 20, 24, 20)
+        content_layout.setSpacing(16)
 
         header_card = QFrame()
         header_card.setObjectName("HeaderCard")
         header_layout = QVBoxLayout(header_card)
-        header_layout.setContentsMargins(28, 24, 28, 24)
-        header_layout.setSpacing(8)
+        header_layout.setContentsMargins(20, 18, 20, 18)
+        header_layout.setSpacing(6)
 
         title_label = QLabel(self._window_title())
         title_label.setObjectName("HeaderTitle")
@@ -195,11 +195,104 @@ class DemoWindow(QMainWindow):
         ]
 
         for title, icon_name, builder in tabs:
-            page = builder()
+            page = self._wrap_scroll_area(builder())
             self._tab_widget.addTab(page, title)
             page.setProperty("nav-icon", icon_name)
 
         self._update_tab_icons()
+
+    def _wrap_scroll_area(self, content: QWidget) -> QScrollArea:
+        scroll = QScrollArea()
+        scroll.setObjectName("DemoScrollArea")
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.NoFrame)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        scroll.setAlignment(Qt.AlignTop | Qt.AlignLeft)
+
+        container = QWidget()
+        layout = QVBoxLayout(container)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+        layout.addWidget(content)
+
+        scroll.setWidget(container)
+        return scroll
+
+    def _ordered_palette_keys(self) -> List[str]:
+        colour_map = self._style.colour_map()
+        order: List[str] = []
+        background_keys = ["bg", "bg1", "bg2", "fg", "fg1", "fg2"]
+        for key in background_keys:
+            if key in colour_map:
+                order.append(key)
+
+        tier_suffixes = ["", "_l1", "_l2", "_l3", "_ln", "_d1", "_d2", "_d3", "_dn"]
+        for prefix in ("accent", "support", "neutral"):
+            for suffix in tier_suffixes:
+                key = f"{prefix}{suffix}"
+                if key in colour_map:
+                    order.append(key)
+
+        for key in sorted(colour_map.keys()):
+            if key not in order:
+                order.append(key)
+        return order
+
+    def _settings_preview(self, grouped: Dict[str, List[SettingItem]]) -> QWidget | None:
+        if not grouped and not self._config.data.configuration.user:  # type: ignore[union-attr]
+            sample_items = [
+                SettingItem(
+                    "Theme mode",
+                    "sample_theme",
+                    "Light",
+                    ["Light", "Dark"],
+                    "Demonstrates a dropdown preference.",
+                    "dropdown",
+                    "user",
+                    "Sample",
+                    "",
+                ),
+                SettingItem(
+                    "Accent colour",
+                    "sample_accent",
+                    "#3F51B5",
+                    ["#3F51B5", "#FF9800"],
+                    "Sample colour picker entry.",
+                    "colorpicker",
+                    "user",
+                    "Sample",
+                    "",
+                ),
+            ]
+            preview_group = "Sample"
+        else:
+            ordered_groups = sorted(grouped.keys())
+            if not ordered_groups:
+                return None
+            preview_group = ordered_groups[0]
+            preview_items = grouped[preview_group][:2]
+            if not preview_items:
+                return None
+            sample_items = [replace(item) for item in preview_items]
+
+        frame = QFrame()
+        frame.setObjectName("SampleSettingsFrame")
+        frame_layout = QVBoxLayout(frame)
+        frame_layout.setContentsMargins(16, 12, 16, 12)
+        frame_layout.setSpacing(6)
+
+        title = QLabel(f"{preview_group} group preview")
+        title.setObjectName("SampleSettingsTitle")
+        title.setWordWrap(True)
+        frame_layout.addWidget(title)
+
+        for item in sample_items:
+            widget = SettingItemWidget(item)
+            widget.setObjectName("SettingItemPreview")
+            frame_layout.addWidget(widget)
+
+        return frame
 
     def _card(self, parent: QWidget | None = None) -> QFrame:
         card = QFrame(parent)
@@ -209,13 +302,13 @@ class DemoWindow(QMainWindow):
     def _build_overview_tab(self) -> QWidget:
         page = QWidget()
         layout = QVBoxLayout(page)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(24)
+        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setSpacing(12)
 
         hero = self._card()
         hero_layout = QVBoxLayout(hero)
-        hero_layout.setContentsMargins(32, 32, 32, 32)
-        hero_layout.setSpacing(12)
+        hero_layout.setContentsMargins(22, 22, 22, 22)
+        hero_layout.setSpacing(10)
 
         title = QLabel("QtPop Feature Showcase")
         title.setObjectName("HeroTitle")
@@ -230,8 +323,8 @@ class DemoWindow(QMainWindow):
 
         bullets = self._card()
         bullets_layout = QVBoxLayout(bullets)
-        bullets_layout.setContentsMargins(24, 24, 24, 24)
-        bullets_layout.setSpacing(10)
+        bullets_layout.setContentsMargins(20, 18, 20, 18)
+        bullets_layout.setSpacing(8)
 
         for line in (
             "Flexible configuration management with group-aware editors.",
@@ -253,37 +346,46 @@ class DemoWindow(QMainWindow):
     def _build_palette_tab(self) -> QWidget:
         page = QWidget()
         layout = QVBoxLayout(page)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(24)
+        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setSpacing(12)
+
+        if not self._style.is_initialised():
+            accent = self._config.get_value("accent").value  # type: ignore[union-attr]
+            support = self._config.get_value("support").value  # type: ignore[union-attr]
+            neutral = self._config.get_value("neutral").value  # type: ignore[union-attr]
+            theme = str(self._config.get_value("theme").value).lower()  # type: ignore[union-attr]
+            self._style.initialise(accent, support, neutral, theme)
 
         swatch_card = self._card()
         swatch_layout = QVBoxLayout(swatch_card)
-        swatch_layout.setContentsMargins(24, 24, 24, 24)
-        swatch_layout.setSpacing(18)
+        swatch_layout.setContentsMargins(20, 18, 20, 18)
+        swatch_layout.setSpacing(12)
 
-        label = QLabel("Active palette")
+        label = QLabel("Resolved palette")
         label.setObjectName("SectionHeading")
         swatch_layout.addWidget(label)
 
         grid = QGridLayout()
-        grid.setSpacing(18)
+        grid.setContentsMargins(0, 0, 0, 0)
+        grid.setHorizontalSpacing(10)
+        grid.setVerticalSpacing(10)
 
-        self._accent_swatch = ColourSwatch("Accent", self._style.get_colour("accent"))
-        self._support_swatch = ColourSwatch("Support", self._style.get_colour("support"))
-        self._neutral_swatch = ColourSwatch("Neutral", self._style.get_colour("neutral"))
-
-        grid.addWidget(self._accent_swatch, 0, 0)
-        grid.addWidget(self._support_swatch, 0, 1)
-        grid.addWidget(self._neutral_swatch, 1, 0)
-        grid.setColumnStretch(0, 1)
-        grid.setColumnStretch(1, 1)
+        ordered_keys = self._ordered_palette_keys()
+        self._palette_swatches.clear()
+        columns = 5
+        for index, key in enumerate(ordered_keys):
+            title = key.replace("_", " ").upper()
+            swatch = ColourSwatch(title, self._style.get_colour(key))
+            self._palette_swatches[key] = swatch
+            row, column = divmod(index, columns)
+            grid.addWidget(swatch, row, column)
 
         swatch_layout.addLayout(grid)
 
         controls_card = self._card()
         controls_layout = QVBoxLayout(controls_card)
-        controls_layout.setContentsMargins(24, 24, 24, 24)
-        controls_layout.setSpacing(14)
+        controls_layout.setContentsMargins(20, 18, 20, 18)
+        controls_layout.setSpacing(10)
 
         description = QLabel(
             "Adjust values stored in the configuration manager. QtPop refreshes the palette, re-applies "
@@ -293,7 +395,7 @@ class DemoWindow(QMainWindow):
         controls_layout.addWidget(description)
 
         button_row = QHBoxLayout()
-        button_row.setSpacing(12)
+        button_row.setSpacing(8)
 
         self._accent_button = QPushButton("Cycle accent colour")
         self._accent_button.setObjectName("AccentControl")
@@ -314,13 +416,17 @@ class DemoWindow(QMainWindow):
     def _build_settings_tab(self) -> QWidget:
         page = QWidget()
         layout = QVBoxLayout(page)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(24)
+        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setSpacing(12)
+
+        grouped: Dict[str, List[SettingItem]] = {}
+        for item in self._config.data.configuration.user.values():  # type: ignore[union-attr]
+            grouped.setdefault(item.group, []).append(item)
 
         instructions = self._card()
         instructions_layout = QVBoxLayout(instructions)
-        instructions_layout.setContentsMargins(24, 24, 24, 24)
-        instructions_layout.setSpacing(10)
+        instructions_layout.setContentsMargins(20, 18, 20, 18)
+        instructions_layout.setSpacing(8)
 
         heading = QLabel("Configuration editor")
         heading.setObjectName("SectionHeading")
@@ -333,18 +439,18 @@ class DemoWindow(QMainWindow):
         instructions_layout.addWidget(heading)
         instructions_layout.addWidget(blurb)
 
+        preview = self._settings_preview(grouped)
+        if preview:
+            instructions_layout.addWidget(preview)
+
         editor_card = self._card()
         editor_layout = QVBoxLayout(editor_card)
-        editor_layout.setContentsMargins(0, 0, 0, 0)
-        editor_layout.setSpacing(0)
+        editor_layout.setContentsMargins(8, 8, 8, 8)
+        editor_layout.setSpacing(8)
 
         tabs = QTabWidget()
         tabs.setObjectName("SettingsTabs")
         self._settings_widgets = []
-
-        grouped: Dict[str, List[SettingItem]] = {}
-        for item in self._config.data.configuration.user.values():  # type: ignore[union-attr]
-            grouped.setdefault(item.group, []).append(item)
 
         for group_name, items in grouped.items():
             tabs.addTab(self._settings_group_page(items), group_name)
@@ -357,8 +463,8 @@ class DemoWindow(QMainWindow):
         editor_layout.addWidget(tabs)
 
         footer = QHBoxLayout()
-        footer.setContentsMargins(24, 16, 24, 24)
-        footer.setSpacing(12)
+        footer.setContentsMargins(0, 0, 0, 0)
+        footer.setSpacing(10)
         footer.addStretch(1)
         save_button = QPushButton("Save settings")
         save_button.setObjectName("SaveSettingsButton")
@@ -380,11 +486,13 @@ class DemoWindow(QMainWindow):
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setObjectName("SettingsScroll")
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
         content = QWidget()
         content_layout = QVBoxLayout(content)
-        content_layout.setContentsMargins(24, 24, 24, 24)
-        content_layout.setSpacing(12)
+        content_layout.setContentsMargins(16, 14, 16, 16)
+        content_layout.setSpacing(8)
 
         for item in items:
             widget = SettingItemWidget(item)
@@ -401,13 +509,13 @@ class DemoWindow(QMainWindow):
     def _build_qss_tab(self) -> QWidget:
         page = QWidget()
         layout = QVBoxLayout(page)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(24)
+        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setSpacing(12)
 
         studio_card = self._card()
         studio_layout = QVBoxLayout(studio_card)
-        studio_layout.setContentsMargins(24, 24, 24, 24)
-        studio_layout.setSpacing(16)
+        studio_layout.setContentsMargins(20, 18, 20, 18)
+        studio_layout.setSpacing(10)
 
         heading = QLabel("QSS Studio")
         heading.setObjectName("SectionHeading")
@@ -436,7 +544,7 @@ class DemoWindow(QMainWindow):
         studio_layout.addWidget(splitter, 1)
 
         button_row = QHBoxLayout()
-        button_row.setSpacing(12)
+        button_row.setSpacing(8)
         load_button = QPushButton("Load from file…")
         apply_button = QPushButton("Apply style")
         copy_button = QPushButton("Copy processed")
@@ -459,13 +567,13 @@ class DemoWindow(QMainWindow):
     def _build_fonts_tab(self) -> QWidget:
         page = QWidget()
         layout = QVBoxLayout(page)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(24)
+        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setSpacing(12)
 
         card = self._card()
         card_layout = QVBoxLayout(card)
-        card_layout.setContentsMargins(24, 24, 24, 24)
-        card_layout.setSpacing(16)
+        card_layout.setContentsMargins(20, 18, 20, 18)
+        card_layout.setSpacing(10)
 
         heading = QLabel("Loaded font tags")
         heading.setObjectName("SectionHeading")
@@ -486,13 +594,13 @@ class DemoWindow(QMainWindow):
     def _build_icons_tab(self) -> QWidget:
         page = QWidget()
         layout = QVBoxLayout(page)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(24)
+        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setSpacing(12)
 
         card = self._card()
         card_layout = QVBoxLayout(card)
-        card_layout.setContentsMargins(12, 12, 12, 12)
-        card_layout.setSpacing(12)
+        card_layout.setContentsMargins(16, 16, 16, 16)
+        card_layout.setSpacing(8)
 
         icon_setting = self._config.get_value("icon_path")
         icon_path = Path(getattr(icon_setting, "value", icon_setting))
@@ -508,13 +616,13 @@ class DemoWindow(QMainWindow):
     def _build_diagnostics_tab(self) -> QWidget:
         page = QWidget()
         layout = QVBoxLayout(page)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(24)
+        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setSpacing(12)
 
         data_card = self._card()
         data_layout = QVBoxLayout(data_card)
-        data_layout.setContentsMargins(24, 24, 24, 24)
-        data_layout.setSpacing(14)
+        data_layout.setContentsMargins(20, 18, 20, 18)
+        data_layout.setSpacing(10)
 
         heading = QLabel("Shared data layer")
         heading.setObjectName("SectionHeading")
@@ -536,7 +644,7 @@ class DemoWindow(QMainWindow):
         data_layout.addWidget(self._data_echo)
 
         row = QHBoxLayout()
-        row.setSpacing(12)
+        row.setSpacing(10)
         self._broadcast_button = QPushButton("Broadcast message")
         self._broadcast_button.setObjectName("BroadcastControl")
         row.addWidget(self._broadcast_button)
@@ -547,7 +655,7 @@ class DemoWindow(QMainWindow):
 
         log_card = self._card()
         log_layout = QVBoxLayout(log_card)
-        log_layout.setContentsMargins(12, 12, 12, 12)
+        log_layout.setContentsMargins(16, 14, 16, 14)
         log_layout.setSpacing(8)
 
         log_heading = QLabel("Runtime log stream")
@@ -637,12 +745,10 @@ class DemoWindow(QMainWindow):
             self._icon_browser.color_combo.setCurrentIndex(0)
 
     def _refresh_palette_swatches(self) -> None:
-        if self._accent_swatch:
-            self._accent_swatch.update_colour(self._style.get_colour("accent"))
-        if self._support_swatch:
-            self._support_swatch.update_colour(self._style.get_colour("support"))
-        if self._neutral_swatch:
-            self._neutral_swatch.update_colour(self._style.get_colour("neutral"))
+        if not self._palette_swatches:
+            return
+        for key, swatch in self._palette_swatches.items():
+            swatch.update_colour(self._style.get_colour(key))
 
     def _update_theme_button_text(self) -> None:
         if not self._theme_button:
