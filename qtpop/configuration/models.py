@@ -1,5 +1,9 @@
+"""Dataclasses that model the QtPop configuration schema."""
+
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 
 @dataclass
@@ -7,7 +11,7 @@ class SettingItem:
     name: str
     shortname: str
     value: Any
-    values: Any
+    values: List[Any]
     description: str
     type: str
     accessibility: str

@@ -1,0 +1,103 @@
+/* QtPop demonstration style sheet showcasing colour and icon tokens. */
+
+#RootPanel {
+    background-color: <bg>;
+    color: <fg>;
+}
+
+QGroupBox {
+    border: 2px solid <neutral_l2>;
+    border-radius: 8px;
+    margin-top: 12px;
+    padding: 12px;
+    background-color: <bg1>;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    padding: 4px 8px;
+    margin-left: 8px;
+    background-color: <accent>;
+    color: <bg>;
+    border-radius: 4px;
+}
+
+QLabel#AccentIcon,
+QLabel#SupportIcon {
+    border: 1px solid <neutral_l3>;
+    border-radius: 24px;
+    min-width: 48px;
+    min-height: 48px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+QLabel#AccentIcon {
+    background-image: <img: action_favorite; color:<accent>>;
+}
+
+QLabel#SupportIcon {
+    background-image: <img: action_thumb_up; color:<support>>;
+}
+
+QPushButton#AccentButton {
+    background-color: <accent>;
+    color: <bg>;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+}
+
+QPushButton#AccentButton:hover {
+    background-color: <accent_l1>;
+}
+
+QPushButton#AccentButton:pressed {
+    background-color: <accent_d1>;
+}
+
+QPushButton#SupportButton {
+    background-color: <support>;
+    color: <bg>;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+}
+
+QPushButton#SupportButton:hover {
+    background-color: <support_l1>;
+}
+
+QPushButton#SupportButton:pressed {
+    background-color: <support_d1>;
+}
+
+QListWidget {
+    background-color: <bg1>;
+    border: 1px solid <neutral_l3>;
+    border-radius: 6px;
+}
+
+QPlainTextEdit {
+    border: 1px solid <neutral_l3>;
+    border-radius: 6px;
+    background-color: <bg1>;
+    color: <fg>;
+}
+
+QLineEdit {
+    border: 1px solid <neutral_l2>;
+    border-radius: 4px;
+    padding: 4px 8px;
+    background-color: <bg>;
+}
+
+QLineEdit:focus {
+    border-color: <accent>;
+}
+
+QLabel#MessageLabel {
+    color: <support>;
+    font-weight: bold;
+}
