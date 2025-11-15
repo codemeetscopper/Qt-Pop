@@ -11,7 +11,7 @@
 
 #QtPopTitleBar {
     background-color: <bg1>;
-    border-bottom: 1px solid <neutral_l2>;
+    border-bottom: 1px solid <neutral_l3>;
 }
 
 #QtPopTitleBar QLabel#TitleText {
@@ -32,8 +32,8 @@
 
 #HeaderCard {
     background-color: <bg1>;
-    border: 1px solid <neutral_l2>;
-    border-radius: 24px;
+    border: 1px solid <neutral_l3>;
+    border-radius: 20px;
 }
 
 #HeaderTitle {
@@ -50,9 +50,9 @@ QTabWidget#DemoTabs {
 }
 
 QTabWidget#DemoTabs::pane {
-    border: 1px solid <neutral_l2>;
-    border-radius: 24px;
-    margin-top: 16px;
+    border: 1px solid <neutral_l3>;
+    border-radius: 20px;
+    margin-top: 12px;
     background-color: <bg1>;
 }
 
@@ -78,8 +78,19 @@ QTabWidget#DemoTabs QTabBar::tab:hover:!selected {
 
 QFrame#SectionCard {
     background-color: <bg1>;
-    border: 1px solid <neutral_l2>;
-    border-radius: 24px;
+    border: 1px solid <neutral_l3>;
+    border-radius: 20px;
+}
+
+QFrame#SampleSettingsFrame {
+    background-color: <bg>;
+    border: 1px solid <neutral_l3>;
+    border-radius: 16px;
+}
+
+QLabel#SampleSettingsTitle {
+    font-weight: 600;
+    color: <fg1>;
 }
 
 QLabel#HeroTitle,
@@ -179,11 +190,12 @@ QScrollArea#SettingsScroll QWidget {
     border: none;
 }
 
-QWidget#SettingItem {
+QWidget#SettingItem,
+QWidget#SettingItemPreview {
     background-color: <bg>;
     border: 1px solid <neutral_l3>;
-    border-radius: 18px;
-    padding: 10px 16px;
+    border-radius: 16px;
+    padding: 8px 14px;
 }
 
 QWidget#SettingItem QLabel:nth-child(1) {
