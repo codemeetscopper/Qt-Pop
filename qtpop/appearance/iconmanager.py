@@ -6,7 +6,7 @@ from PySide6.QtCore import QObject, Signal, Qt, QThreadPool, QRunnable
 from PySide6.QtGui import QPixmap, QPainter, QColor, QImage
 from PySide6.QtSvg import QSvgRenderer
 
-from qtpop.qtpoplogger import debug_log
+from qtpop.qtpoplogger import debug_log, qt_logger
 
 
 # ------------------------------
@@ -125,16 +125,10 @@ class IconManager:
         if not cls._icon_list:
             cls.list_icons()
 
-        # Find the full icon name if a partial name is given
-        resolved_name = ''
-        name_list = cls.search_icons(name, cls._icon_list)
-        if name_list:
-            resolved_name = name_list[0]
-        elif name in cls._icon_list:
-            resolved_name = name
-        else:
-            print(f"Icon not found {name}")
-            # raise FileNotFoundError(f"[IconManager] Icon not found: {name}")
+        resolved_name = cls._resolve_icon_name(name)
+        if not resolved_name:
+            qt_logger.warning(f"Icon not found: {name}")
+            return None if async_load else QPixmap()
 
         cache_key = f"{resolved_name}|{color.lower()}|{size}"
 
@@ -152,8 +146,8 @@ class IconManager:
 
         file_path = os.path.join(cls._images_path, f"{resolved_name}.svg")
         if not os.path.exists(file_path):
-            print(f"[IconManager] Missing icon file: {file_path}")
-            return QPixmap()
+            qt_logger.warning(f"[IconManager] Missing icon file: {file_path}")
+            return None if async_load else QPixmap()
 
         if async_load:
             # Run background worker to produce a QImage
@@ -170,13 +164,14 @@ class IconManager:
     def clear_cache(cls):
         with cls._icon_lock:
             cls._icon_cache.clear()
+            cls._svg_cache.clear()
 
     @classmethod
     @debug_log
     def list_icons(cls) -> List[str]:
         """Lists all SVG icons in the configured image path."""
-        print(os.listdir(cls._images_path))
         if not os.path.isdir(cls._images_path):
+            qt_logger.warning(f"Icon directory does not exist: {cls._images_path}")
             cls._icon_list.clear()
             return []
         cls._icon_list = [
@@ -198,6 +193,38 @@ class IconManager:
     @debug_log
     def get_images_path(cls) -> str:
         return cls._images_path
+
+    @classmethod
+    def _resolve_icon_name(cls, name: str) -> str:
+        candidates = cls._build_name_candidates(name)
+        for candidate in candidates:
+            matches = cls.search_icons(candidate, cls._icon_list)
+            if matches:
+                return matches[0]
+            if candidate in cls._icon_list:
+                return candidate
+        return ""
+
+    @classmethod
+    def _build_name_candidates(cls, name: str) -> List[str]:
+        normalized = cls._normalise_query(name)
+        candidates: List[str] = []
+        raw = name.strip().lower()
+        if raw:
+            candidates.append(raw)
+        if normalized and normalized not in candidates:
+            candidates.append(normalized)
+        tokens = normalized.split()
+        if tokens:
+            for start in range(1, len(tokens)):
+                candidate = " ".join(tokens[start:])
+                if candidate and candidate not in candidates:
+                    candidates.append(candidate)
+        return candidates
+
+    @staticmethod
+    def _normalise_query(name: str) -> str:
+        return re.sub(r"[_\s]+", " ", name.strip().lower())
 
     @classmethod
     @debug_log
@@ -281,12 +308,8 @@ class IconManager:
             cls.list_icons()
 
         # Resolve name similar to get_pixmap
-        name_list = cls.search_icons(name, cls._icon_list)
-        if name_list:
-            resolved_name = name_list[0]
-        elif name in cls._icon_list:
-            resolved_name = name
-        else:
+        resolved_name = cls._resolve_icon_name(name)
+        if not resolved_name:
             raise FileNotFoundError(f"[IconManager] Icon not found: {name}")
 
         cache_key = f"{resolved_name}|{color.lower()}|{size}"
@@ -304,7 +327,7 @@ class IconManager:
 
         file_path = os.path.join(cls._images_path, f"{resolved_name}.svg")
         if not os.path.exists(file_path):
-            print(f"[IconManager] Missing icon file: {file_path}")
+            qt_logger.warning(f"[IconManager] Missing icon file: {file_path}")
             return ""
 
         if async_load:

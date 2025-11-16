@@ -197,7 +197,7 @@ class IconBrowserWidget(QWidget):
     # -------------------------------
     def _on_search(self, text: str):
         self.current_icons = IconManager.search_icons(text, self.all_icons)
-        # self._populate_icons()
+        self._populate_icons()
 
     def _on_color_change(self, key: str):
         color_map = self.qt_pop.style.colour_map()
