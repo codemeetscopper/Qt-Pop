@@ -1,0 +1,18 @@
+{
+  "system_monitor": {
+    "enabled": true,
+    "favorite": true,
+    "installed_at": "2026-02-19T13:27:05",
+    "run_count": 8,
+    "last_run": "2026-02-19T14:03:18",
+    "crash_count": 1
+  },
+  "clock_widget": {
+    "enabled": true,
+    "favorite": true,
+    "installed_at": "2026-02-19T14:00:50",
+    "run_count": 3,
+    "last_run": "2026-02-19T14:03:18",
+    "crash_count": 0
+  }
+}

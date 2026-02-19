@@ -1,27 +1,30 @@
 /*
  * Nova — Futuristic Light Theme
- * Uses qtpop colour tokens: <accent>, <bg>, <bg1>, <bg2>, <fg>, <fg1>, <fg2>
- * and lightness variants: <accent_l1..l3>, <accent_d1..d3>
  *
- * Token reference:
- *   <bg>       = white / main surface
- *   <bg1>      = sidebar / card background
- *   <bg2>      = border / elevated surface
- *   <fg>       = near-black primary text
- *   <fg1>      = secondary text
- *   <fg2>      = muted / disabled text
- *   <accent>   = vibrant accent (blue)
- *   <accent_l1..l3> = lighter shades
- *   <accent_d1..d3> = darker shades
- *   <accent_ln>     = very light tint for active backgrounds
+ * Colour token reference (resolved by QSSManager at runtime):
+ *   <bg>        white main surface
+ *   <bg1>       sidebar / card fill   (~#F5F5F5)
+ *   <bg2>       border / divider      (~#EFEFEF)
+ *   <fg>        primary text          (near-black)
+ *   <fg1>       secondary text        (~#444)
+ *   <fg2>       muted / disabled      (~#888)
+ *   <accent>    vibrant accent blue   (#0088CC default)
+ *   <accent_ln> very light tint       (90 % toward white) — use for hover/active bg
+ *   <accent_l1> light tint  (15 %)
+ *   <accent_l2> medium tint (30 %)
+ *   <accent_l3> strong tint (45 %)
+ *   <accent_d1> dark shade  (15 %)
+ *   <accent_d2> dark shade  (30 %)
  */
 
-/* ── Global reset ─────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────
+   Global reset
+───────────────────────────────────────────────────────── */
 * {
     font-family: "Segoe UI", "Roboto", sans-serif;
     font-size: 13px;
-    color: <fg>;
     outline: none;
+    box-sizing: border-box;
 }
 
 QWidget {
@@ -30,27 +33,38 @@ QWidget {
     border: none;
 }
 
+/* ─────────────────────────────────────────────────────────
+   Scroll bars
+───────────────────────────────────────────────────────── */
 QScrollBar:vertical {
-    background: <bg1>;
+    background: transparent;
     width: 6px;
     margin: 0;
-    border-radius: 3px;
 }
 QScrollBar::handle:vertical {
     background: <bg2>;
     min-height: 24px;
     border-radius: 3px;
 }
-QScrollBar::handle:vertical:hover {
-    background: <accent_l1>;
-}
+QScrollBar::handle:vertical:hover { background: <accent_l1>; }
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0; }
-QScrollBar:horizontal { height: 6px; background: <bg1>; }
-QScrollBar::handle:horizontal { background: <bg2>; min-width: 24px; border-radius: 3px; }
+
+QScrollBar:horizontal {
+    background: transparent;
+    height: 6px;
+    margin: 0;
+}
+QScrollBar::handle:horizontal {
+    background: <bg2>;
+    min-width: 24px;
+    border-radius: 3px;
+}
 QScrollBar::handle:horizontal:hover { background: <accent_l1>; }
 QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal { width: 0; }
 
-/* ── Main window / central ─────────────────────────────── */
+/* ─────────────────────────────────────────────────────────
+   Main window
+───────────────────────────────────────────────────────── */
 QMainWindow, #NovaMainWindow {
     background-color: <bg>;
 }
@@ -58,22 +72,23 @@ QMainWindow, #NovaMainWindow {
     background-color: <bg>;
 }
 
-/* ── Sidebar ───────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────
+   Sidebar
+───────────────────────────────────────────────────────── */
 #Sidebar {
     background-color: <bg1>;
     border-right: 1px solid <bg2>;
-    min-width: 64px;
-    max-width: 240px;
 }
 #SidebarHeader {
     background-color: <bg1>;
     border-bottom: 1px solid <bg2>;
 }
 #SidebarLogo {
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 700;
     color: <accent>;
     letter-spacing: 2px;
+    background: transparent;
 }
 #HamburgerButton {
     background: transparent;
@@ -81,92 +96,86 @@ QMainWindow, #NovaMainWindow {
     font-size: 18px;
     border: none;
     border-radius: 8px;
+    padding: 4px;
     min-width: 0;
     min-height: 0;
-    padding: 4px;
 }
 #HamburgerButton:hover {
-    background: <accent_l3>;
+    background: <accent_ln>;
     color: <accent>;
 }
-#SidebarScroll {
+#SidebarScroll, #SidebarScroll > QWidget > QWidget {
     background: transparent;
 }
+
+/* Separator between sidebar sections */
 #SidebarSeparator {
-    background: <bg2>;
-    margin: 4px 12px;
+    background-color: <bg2>;
+    border: none;
+    margin: 4px 8px;
 }
 
 /* ── Sidebar items ─────────────────────────────────────── */
+/* NOTE: active-state colours for icon/text labels are applied
+   programmatically in sidebar.py::SidebarItem.set_active()
+   because Qt QSS cannot reliably propagate dynamic-property
+   selectors to descendant widgets. */
+
 #SidebarItem {
     background: transparent;
-    border-radius: 8px;
+    border-left: 3px solid transparent;
+    border-radius: 0;
     margin: 1px 0;
 }
 #SidebarItem:hover {
-    background: <accent_l3>;
+    background: <accent_ln>;
 }
 #SidebarItem[active="true"] {
-    background: <accent_l3>;
+    background: <accent_ln>;
     border-left: 3px solid <accent>;
 }
-#SidebarItemIcon {
-    font-size: 16px;
-    color: <fg1>;
-    background: transparent;
-}
-#SidebarItem[active="true"] #SidebarItemIcon {
-    color: <accent>;
-}
-#SidebarItemText {
-    font-size: 13px;
-    color: <fg1>;
-    background: transparent;
-}
-#SidebarItem[active="true"] #SidebarItemText {
-    color: <accent>;
-    font-weight: 500;
-}
 
-/* ── Page header ───────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────
+   Content area + page header
+───────────────────────────────────────────────────────── */
+#ContentArea, #PageStack {
+    background: <bg>;
+}
 #PageHeader {
     background: <bg>;
     border-bottom: 1px solid <bg2>;
 }
 #PageHeaderTitle {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     color: <fg>;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
 }
 
-/* ── Content area ──────────────────────────────────────── */
-#ContentArea, #PageStack {
-    background: <bg>;
-}
-
-/* ── Section titles ────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────
+   Shared section title
+───────────────────────────────────────────────────────── */
 #SectionTitle {
     font-size: 20px;
     font-weight: 600;
     color: <fg>;
-    margin-bottom: 8px;
 }
 
-/* ── Home page ─────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────
+   Home page
+───────────────────────────────────────────────────────── */
 #HomePage, #HomeContainer {
     background: <bg>;
 }
 #HomeGreeting {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 300;
     color: <fg>;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
 }
 #HomeSubtitle {
     font-size: 13px;
     color: <fg2>;
-    margin-bottom: 8px;
 }
 #HomeDescription {
     font-size: 13px;
@@ -179,48 +188,64 @@ QMainWindow, #NovaMainWindow {
     background: <bg1>;
     border: 1px solid <bg2>;
     border-radius: 12px;
-    min-height: 100px;
 }
 #StatValue {
-    font-size: 36px;
+    font-size: 34px;
     font-weight: 700;
     color: <accent>;
+    background: transparent;
 }
 #StatTitle {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     color: <fg2>;
-    letter-spacing: 1.5px;
+    letter-spacing: 1.2px;
+    background: transparent;
 }
 
-/* ── Settings page ─────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────
+   Settings page
+───────────────────────────────────────────────────────── */
 #SettingsPage, #SettingsContainer {
     background: <bg>;
 }
-#SettingGroup {
-    background: <bg1>;
+QGroupBox#SettingGroup {
+    background-color: <bg1>;
     border: 1px solid <bg2>;
     border-radius: 10px;
-    font-size: 12px;
+    margin-top: 10px;
+    padding-top: 6px;
+    font-size: 11px;
     font-weight: 600;
     color: <fg2>;
     letter-spacing: 0.5px;
 }
+QGroupBox#SettingGroup::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    left: 14px;
+    padding: 0 6px;
+    color: <fg2>;
+}
 #SettingRow {
     background: transparent;
-    border-bottom: 1px solid <bg2>;
 }
-#SettingRow:last-child {
-    border-bottom: none;
+#SettingRowSep {
+    background: <bg2>;
+    border: none;
+    max-height: 1px;
+    margin: 0 12px;
 }
 #SettingName {
     font-size: 13px;
     font-weight: 500;
     color: <fg>;
+    background: transparent;
 }
 #SettingDesc {
     font-size: 11px;
     color: <fg2>;
+    background: transparent;
 }
 #SettingEdit {
     background: <bg>;
@@ -229,24 +254,43 @@ QMainWindow, #NovaMainWindow {
     padding: 4px 8px;
     color: <fg>;
     min-height: 28px;
+    selection-background-color: <accent_ln>;
 }
 #SettingEdit:focus {
     border-color: <accent>;
 }
-#BrowseButton, #ColorPickerButton {
-    background: <bg2>;
+#SettingCombo {
+    background: <bg>;
+    border: 1px solid <bg2>;
+    border-radius: 6px;
+    padding: 4px 8px;
+    min-height: 28px;
     color: <fg>;
-    border: none;
+}
+#SettingCombo:hover, #SettingCombo:focus {
+    border-color: <accent>;
+}
+#BrowseButton {
+    background: <bg>;
+    color: <fg1>;
+    border: 1px solid <bg2>;
     border-radius: 6px;
     padding: 4px 8px;
     min-height: 28px;
     min-width: 0;
+    font-size: 12px;
 }
-#BrowseButton:hover, #ColorPickerButton:hover {
-    background: <accent_l2>;
+#BrowseButton:hover {
+    background: <accent_ln>;
+    border-color: <accent_l1>;
+}
+#BrowseContainer {
+    background: transparent;
 }
 
-/* ── About page ────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────
+   About page
+───────────────────────────────────────────────────────── */
 #AboutPage {
     background: <bg>;
 }
@@ -256,30 +300,37 @@ QMainWindow, #NovaMainWindow {
     border-radius: 16px;
 }
 #AboutAppName {
-    font-size: 36px;
+    font-size: 34px;
     font-weight: 700;
     color: <accent>;
     letter-spacing: 4px;
+    background: transparent;
 }
 #AboutVersion {
     font-size: 13px;
     color: <fg2>;
+    background: transparent;
 }
 #AboutSeparator {
     background: <bg2>;
+    border: none;
     max-height: 1px;
 }
 #AboutDescription {
     font-size: 13px;
     color: <fg1>;
     line-height: 1.7;
+    background: transparent;
 }
 #AboutLicense {
-    font-size: 12px;
+    font-size: 11px;
     color: <fg2>;
+    background: transparent;
 }
 
-/* ── Plugins page ──────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────
+   Plugins page
+───────────────────────────────────────────────────────── */
 #PluginsPage, #PluginsContainer {
     background: <bg>;
 }
@@ -287,154 +338,165 @@ QMainWindow, #NovaMainWindow {
     background: <bg1>;
     border: 1px solid <bg2>;
     border-radius: 12px;
-    min-height: 160px;
+    min-height: 150px;
 }
 #PluginCard:hover {
-    border-color: <accent_d1>;
+    border-color: <accent_l1>;
 }
 #PluginCardName {
     font-size: 14px;
     font-weight: 600;
     color: <fg>;
+    background: transparent;
 }
 #PluginCardVersion {
     font-size: 11px;
     color: <fg2>;
+    background: transparent;
 }
 #PluginCardDesc {
     font-size: 12px;
     color: <fg1>;
-    line-height: 1.5;
+    background: transparent;
 }
 #PluginCardAuthor {
     font-size: 11px;
     color: <fg2>;
     font-style: italic;
+    background: transparent;
 }
 
 /* Status dots */
-#StatusDotActive {
-    color: #22c55e;
-    font-size: 14px;
-}
-#StatusDotInactive {
-    color: <bg2>;
-    font-size: 14px;
-}
-#StatusDotCrashed {
-    color: #ef4444;
-    font-size: 14px;
-}
+#StatusDotActive   { color: #22C55E; background: transparent; }
+#StatusDotInactive { color: <bg2>;   background: transparent; }
+#StatusDotCrashed  { color: #EF4444; background: transparent; }
 
-/* Plugin buttons */
+/* Plugin action buttons */
 #PluginStartButton {
     background: <accent>;
     color: white;
     border: none;
     border-radius: 6px;
-    padding: 5px 10px;
+    padding: 5px 12px;
     font-weight: 500;
     min-height: 0;
     min-width: 0;
 }
-#PluginStartButton:hover {
-    background: <accent_d1>;
-}
-#PluginStartButton:disabled {
-    background: <bg2>;
-    color: <fg2>;
-}
+#PluginStartButton:hover   { background: <accent_d1>; }
+#PluginStartButton:disabled { background: <bg2>; color: <fg2>; }
+
 #PluginStopButton {
     background: transparent;
-    color: #ef4444;
-    border: 1px solid #ef4444;
+    color: #EF4444;
+    border: 1px solid #EF4444;
     border-radius: 6px;
-    padding: 5px 10px;
+    padding: 5px 12px;
     font-weight: 500;
     min-height: 0;
     min-width: 0;
 }
-#PluginStopButton:hover {
-    background: #fef2f2;
-}
-#PluginStopButton:disabled {
-    color: <fg2>;
-    border-color: <bg2>;
-    background: transparent;
-}
+#PluginStopButton:hover    { background: #FEF2F2; }
+#PluginStopButton:disabled { color: <fg2>; border-color: <bg2>; background: transparent; }
+
 #PluginViewButton {
     background: transparent;
     color: <accent>;
-    border: 1px solid <accent_l1>;
+    border: 1px solid <accent_l2>;
     border-radius: 6px;
-    padding: 5px 10px;
+    padding: 5px 12px;
     font-weight: 500;
     min-height: 0;
     min-width: 0;
 }
-#PluginViewButton:hover {
-    background: <accent_l3>;
-}
-#PluginViewButton:disabled {
-    color: <fg2>;
-    border-color: <bg2>;
-}
+#PluginViewButton:hover    { background: <accent_ln>; border-color: <accent_l1>; }
+#PluginViewButton:disabled { color: <fg2>; border-color: <bg2>; }
 
-/* ── Plugin pages ──────────────────────────────────────── */
-#ClockFrame, #SysMonFrame {
-    background: <bg>;
-}
-#ClockLabel {
-    color: <fg>;
-}
-#ClockSubtitle {
-    color: <fg2>;
-}
-#SysMonTitle {
-    font-size: 18px;
-    font-weight: 600;
-    color: <fg>;
-}
-#StatBarName {
-    font-size: 13px;
-    color: <fg>;
-}
-#StatBarPct {
-    font-size: 13px;
-    font-weight: 600;
-    color: <accent>;
-}
+/* ─────────────────────────────────────────────────────────
+   Plugin widget pages
+───────────────────────────────────────────────────────── */
+#ClockFrame, #SysMonFrame { background: <bg>; }
+#ClockLabel    { color: <fg>; background: transparent; }
+#ClockSubtitle { color: <fg2>; background: transparent; }
+#SysMonTitle   { font-size: 18px; font-weight: 600; color: <fg>; background: transparent; }
+#StatBarName   { font-size: 13px; color: <fg>; background: transparent; }
+#StatBarPct    { font-size: 13px; font-weight: 600; color: <accent>; background: transparent; }
 #StatProgressBar {
     background: <bg2>;
     border-radius: 4px;
     border: none;
+    max-height: 8px;
+    min-height: 8px;
 }
 #StatProgressBar::chunk {
     background: <accent>;
     border-radius: 4px;
 }
 
-/* ── Generic controls ──────────────────────────────────── */
-QPushButton {
-    background: <accent_l3>;
-    color: <accent_d2>;
+/* ─────────────────────────────────────────────────────────
+   Plugins page toolbar buttons
+───────────────────────────────────────────────────────── */
+#ToolbarButton {
+    background: <accent_ln>;
+    color: <accent>;
+    border: 1px solid <accent_l2>;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-weight: 500;
+    min-height: 30px;
+    min-width: 80px;
+}
+#ToolbarButton:hover   { background: <accent_l1>; border-color: <accent>; }
+#ToolbarButton:pressed { background: <accent_l2>; }
+
+/* Small icon-only buttons (Reload, Export, Delete, Info, Favorite) */
+#IconButton {
+    background: transparent;
     border: none;
+    border-radius: 6px;
+    padding: 2px;
+    min-width: 0;
+    min-height: 0;
+}
+#IconButton:hover { background: <accent_ln>; }
+
+/* Favorite button — active (starred) gets accent tint */
+#FavoriteButton {
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 2px;
+    min-width: 0;
+    min-height: 0;
+}
+#FavoriteButton:hover { background: <accent_ln>; }
+
+/* Delete button — red hover */
+#DeleteButton {
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 2px;
+    min-width: 0;
+    min-height: 0;
+}
+#DeleteButton:hover { background: #FEF2F2; }
+
+/* ─────────────────────────────────────────────────────────
+   Generic controls (fallback styles)
+───────────────────────────────────────────────────────── */
+QPushButton {
+    background: <accent_ln>;
+    color: <accent_d2>;
+    border: 1px solid <accent_l2>;
     border-radius: 6px;
     padding: 5px 14px;
     min-height: 28px;
     min-width: 60px;
     font-weight: 500;
 }
-QPushButton:hover {
-    background: <accent_l2>;
-}
-QPushButton:pressed {
-    background: <accent_l1>;
-}
-QPushButton:disabled {
-    background: <bg2>;
-    color: <fg2>;
-}
+QPushButton:hover   { background: <accent_l3>; border-color: <accent_l1>; }
+QPushButton:pressed { background: <accent_l2>; }
+QPushButton:disabled { background: <bg2>; color: <fg2>; border-color: <bg2>; }
 
 QComboBox {
     background: <bg1>;
@@ -444,20 +506,15 @@ QComboBox {
     min-height: 28px;
     color: <fg>;
 }
-QComboBox:hover {
-    border-color: <accent>;
-}
-QComboBox::drop-down {
-    border: none;
-    width: 20px;
-}
+QComboBox:hover, QComboBox:focus { border-color: <accent>; }
+QComboBox::drop-down { border: none; width: 20px; }
 QComboBox QAbstractItemView {
     background: <bg1>;
     border: 1px solid <bg2>;
-    border-radius: 6px;
-    selection-background-color: <accent_l3>;
+    selection-background-color: <accent_ln>;
     selection-color: <accent>;
     color: <fg>;
+    outline: none;
 }
 
 QLineEdit {
@@ -468,26 +525,25 @@ QLineEdit {
     min-height: 28px;
     color: <fg>;
 }
-QLineEdit:focus {
-    border-color: <accent>;
-}
+QLineEdit:focus { border-color: <accent>; }
+QLineEdit:disabled { background: <bg2>; color: <fg2>; }
 
 QGroupBox {
     background: <bg1>;
     border: 1px solid <bg2>;
     border-radius: 8px;
     margin-top: 10px;
-    padding-top: 8px;
-    color: <fg1>;
+    padding-top: 6px;
     font-weight: 600;
+    color: <fg1>;
 }
 QGroupBox::title {
     subcontrol-origin: margin;
+    subcontrol-position: top left;
     left: 12px;
     padding: 0 6px;
     color: <fg2>;
     font-size: 11px;
-    letter-spacing: 0.5px;
 }
 
 QToolTip {

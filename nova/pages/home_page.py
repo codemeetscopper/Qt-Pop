@@ -8,37 +8,36 @@ from PySide6.QtWidgets import (
 
 
 class StatCard(QFrame):
-    """A single stat card displaying a value and label."""
+    """A stat card with a large value and an uppercase label."""
 
     def __init__(self, title: str, value: str = "0", parent: QWidget | None = None):
         super().__init__(parent)
         self.setObjectName("StatCard")
         self.setFrameShape(QFrame.StyledPanel)
+        self.setMinimumHeight(110)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(20, 20, 20, 20)
-        layout.setSpacing(8)
+        layout.setContentsMargins(20, 18, 20, 18)
+        layout.setSpacing(6)
 
         self._value_label = QLabel(value)
         self._value_label.setObjectName("StatValue")
-        self._value_label.setAlignment(Qt.AlignLeft)
+        self._value_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
         self._title_label = QLabel(title.upper())
         self._title_label.setObjectName("StatTitle")
-        self._title_label.setAlignment(Qt.AlignLeft)
+        self._title_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
         layout.addWidget(self._value_label)
         layout.addWidget(self._title_label)
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
     def set_value(self, value: str):
         self._value_label.setText(value)
 
 
 class HomePage(QWidget):
-    """
-    Home page with at-a-glance stat cards.
-    """
+    """Home page with at-a-glance stat cards."""
 
     def __init__(self, qt_pop, parent: QWidget | None = None):
         super().__init__(parent)
@@ -64,7 +63,7 @@ class HomePage(QWidget):
         subtitle.setObjectName("HomeSubtitle")
         root.addWidget(subtitle)
 
-        # ── Stat cards row ───────────────────────────────────
+        # ── Stat cards ────────────────────────────────────────
         cards_row = QWidget()
         cards_layout = QHBoxLayout(cards_row)
         cards_layout.setContentsMargins(0, 0, 0, 0)
@@ -99,5 +98,10 @@ class HomePage(QWidget):
     def update_stats(self, loaded: int, active: int):
         self._card_loaded.set_value(str(loaded))
         self._card_active.set_value(str(active))
-        status = "Running" if active > 0 else ("Idle" if loaded == 0 else "Ready")
+        if active > 0:
+            status = "Running"
+        elif loaded > 0:
+            status = "Ready"
+        else:
+            status = "Idle"
         self._card_status.set_value(status)
