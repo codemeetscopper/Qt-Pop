@@ -26,15 +26,33 @@ def run(qt_pop) -> None:
     else:
         _log.warning("nova.qss not found at %s — running unstyled", nova_qss)
 
+    # ── Logging ──────────────────────────────────────────────
+    from PySide6.QtCore import qInstallMessageHandler, QtMsgType
+
+    def _qt_message_handler(mode, context, message):
+        if mode == QtMsgType.QtInfoMsg:
+            _log.info("[Qt] %s", message)
+        elif mode == QtMsgType.QtWarningMsg:
+            _log.warning("[Qt] %s", message)
+        elif mode == QtMsgType.QtCriticalMsg:
+            _log.error("[Qt] %s", message)
+        elif mode == QtMsgType.QtFatalMsg:
+            _log.critical("[Qt] %s", message)
+        else:
+            _log.debug("[Qt] %s", message)
+
+    qInstallMessageHandler(_qt_message_handler)
+    # ─────────────────────────────────────────────────────────
+
     # Plugin manager — no QObject parent here; we keep it alive via window._pm
     # and via the 'pm' local variable that lives for the full duration of app.exec().
     plugins_dir = Path(__file__).parent.parent / "plugins"
-    pm = PluginManager(qt_pop.data, plugins_dir)
+    pm = PluginManager(qt_pop.data, qt_pop.config, plugins_dir)
 
     # Pages
     home = HomePage(qt_pop)
     plugins_pg = PluginsPage(pm)
-    settings = SettingsPage(qt_pop)
+    settings = SettingsPage(qt_pop, pm)
     about = AboutPage(qt_pop)
 
     # Main window

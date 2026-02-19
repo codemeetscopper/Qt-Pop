@@ -24,7 +24,6 @@
     font-family: "Segoe UI", "Roboto", sans-serif;
     font-size: 13px;
     outline: none;
-    box-sizing: border-box;
 }
 
 QWidget {

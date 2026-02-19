@@ -15,7 +15,7 @@ from PySide6.QtWidgets import (
     QFrame, QLabel, QProgressBar, QVBoxLayout, QWidget,
 )
 
-from nova.core.plugin_base import PluginBase
+from nova.core.plugin_base import PluginBase, PluginSetting
 
 
 def _get_stats() -> dict:
@@ -79,12 +79,39 @@ class Plugin(PluginBase):
         self._disk_bar: _StatBar | None = None
 
     # ── HOST side ────────────────────────────────────────────
+    def get_settings(self) -> list[PluginSetting]:
+        from nova.core.plugin_base import PluginSetting
+        return [
+            PluginSetting(
+                key="compact_mode",
+                name="Compact Mode",
+                type="bool",
+                default=False,
+                description="Use less spacing between bars."
+            ),
+            PluginSetting(
+                key="show_disk",
+                name="Show Disk Usage",
+                type="bool",
+                default=True,
+                description="Toggle visibility of the Disk usage bar."
+            )
+        ]
+
     def create_widget(self, parent: QWidget | None = None) -> QWidget:
         frame = QFrame(parent)
         frame.setObjectName("SysMonFrame")
+        
+        compact = self.get_setting("compact_mode")
+        if compact is None: compact = False
+        if not isinstance(compact, bool): compact = str(compact).lower() == "true"
+        
+        spacing = 8 if compact else 24
+        margin = 16 if compact else 32
+        
         v = QVBoxLayout(frame)
-        v.setContentsMargins(32, 32, 32, 32)
-        v.setSpacing(24)
+        v.setContentsMargins(margin, margin, margin, margin)
+        v.setSpacing(spacing)
 
         title = QLabel("System Monitor")
         title.setObjectName("SysMonTitle")
@@ -93,6 +120,11 @@ class Plugin(PluginBase):
         self._cpu_bar = _StatBar("CPU")
         self._mem_bar = _StatBar("Memory")
         self._disk_bar = _StatBar("Disk")
+        
+        show_disk = self.get_setting("show_disk")
+        if show_disk is None: show_disk = True
+        if not isinstance(show_disk, bool): show_disk = str(show_disk).lower() == "true"
+        self._disk_bar.setVisible(show_disk)
 
         v.addWidget(self._cpu_bar)
         v.addWidget(self._mem_bar)
@@ -105,11 +137,30 @@ class Plugin(PluginBase):
             val = float(value)
         except (TypeError, ValueError):
             return
+            
+        # Re-check settings for dynamic updates
+        compact = self.get_setting("compact_mode")
+        if compact is None: compact = False
+        if not isinstance(compact, bool): compact = str(compact).lower() == "true"
+        
+        # Adjust spacing dynamically if layout exists
+        if self._cpu_bar and self._cpu_bar.parentWidget().layout():
+            layout = self._cpu_bar.parentWidget().layout()
+            target_spacing = 8 if compact else 24
+            if layout.spacing() != target_spacing:
+                layout.setSpacing(target_spacing)
+                
         if key == "cpu" and self._cpu_bar:
             self._cpu_bar.set_value(val)
         elif key == "mem" and self._mem_bar:
             self._mem_bar.set_value(val)
         elif key == "disk" and self._disk_bar:
+            # Check visibility
+            show_disk = self.get_setting("show_disk")
+            if show_disk is None: show_disk = True
+            if not isinstance(show_disk, bool): show_disk = str(show_disk).lower() == "true"
+            self._disk_bar.setVisible(show_disk)
+            
             self._disk_bar.set_value(val)
 
     # ── WORKER side ──────────────────────────────────────────

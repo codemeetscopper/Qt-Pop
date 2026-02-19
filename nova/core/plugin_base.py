@@ -36,6 +36,22 @@ class PluginManifest:
         )
 
 
+    def send_data(self, key: str, value: Any) -> None:
+        """Convenience: worker side sends data to the host."""
+        if self._bridge is not None:
+            self._bridge.send_data(key, value)
+
+
+@dataclass
+class PluginSetting:
+    key: str
+    name: str
+    type: str  # "text", "bool", "colorpicker", "dropdown", "filebrowse", "folderbrowse"
+    default: Any
+    description: str = ""
+    values: list[Any] = field(default_factory=list)  # for dropdown
+
+
 class PluginBase(ABC):
     """
     Base class for all Nova plugins.
@@ -55,6 +71,28 @@ class PluginBase(ABC):
 
     def on_data(self, key: str, value: Any) -> None:
         """Called in the MAIN process when the worker sends data via IPC."""
+
+    def get_settings(self) -> list[PluginSetting]:
+        """
+        Called in the MAIN process to retrieve dynamic settings for this plugin.
+        Override this to return a list of PluginSetting objects.
+        """
+        return []
+
+    def get_setting(self, key: str) -> Any:
+        """
+        Get the current value of a setting (HOST process only).
+        Returns the value from the global configuration, or None if not set.
+        """
+        if hasattr(self, "config") and self.config:
+            full_key = f"plugins.{self.manifest.id}.{key}" if self.manifest else key
+            try:
+                return self.config.get_value(full_key)
+            except KeyError:
+                return None
+            except Exception:
+                return None
+        return None
 
     def start(self) -> None:
         """Called in the WORKER subprocess to begin plugin logic."""

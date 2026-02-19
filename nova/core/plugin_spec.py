@@ -163,7 +163,7 @@ class Plugin(PluginBase):
         super().start()
         counter = 0
         while self.is_running:
-            self.send_data("message", f"Tick #{counter}")
+            self.send_data("message", f"Tick #{{counter}}")
             counter += 1
             time.sleep(2)
 '''

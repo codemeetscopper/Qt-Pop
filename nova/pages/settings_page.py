@@ -99,6 +99,15 @@ class SettingRow(QWidget):
             edit.editingFinished.connect(lambda: self._save(edit.text()))
             return edit
 
+        if t == "bool":
+            from PySide6.QtWidgets import QCheckBox
+            chk = QCheckBox()
+            # Handle string/bool conversions just in case
+            is_checked = str(val).lower() == "true" if isinstance(val, str) else bool(val)
+            chk.setChecked(is_checked)
+            chk.stateChanged.connect(lambda state: self._save(state == 2)) # 2 = Checked
+            return chk
+
         return None
 
     def _build_browse_row(self, current: str, folder: bool) -> QWidget:
@@ -229,11 +238,14 @@ class SettingRow(QWidget):
 
 
 class SettingsPage(QWidget):
-    """Settings page — grouped rows for every user-configurable value."""
+    """
+    Settings page — grouped rows for every user-configurable value.
+    """
 
-    def __init__(self, qt_pop, parent: QWidget | None = None):
+    def __init__(self, qt_pop, plugin_manager, parent: QWidget | None = None):
         super().__init__(parent)
         self._qt_pop = qt_pop
+        self._pm = plugin_manager
         self.setObjectName("SettingsPage")
 
         scroll = QScrollArea(self)
@@ -290,3 +302,80 @@ class SettingsPage(QWidget):
                     v.addWidget(sep)
 
             self._root.addWidget(box)
+
+        if self._pm:
+            # Container for dynamic plugin settings
+            self._plugin_container = QWidget()
+            self._plugin_layout = QVBoxLayout(self._plugin_container)
+            self._plugin_layout.setContentsMargins(0, 0, 0, 0)
+            self._plugin_layout.setSpacing(20)
+            self._root.addWidget(self._plugin_container)
+
+            # Listen for new plugins
+            self._pm.plugin_imported.connect(self._on_plugin_imported)
+            
+            # Initial build
+            self._rebuild_plugin_settings()
+
+    def _on_plugin_imported(self, plugin_id: str):
+        """Rebuild settings when a new plugin is loaded."""
+        self._rebuild_plugin_settings()
+
+    def _rebuild_plugin_settings(self):
+        # Clear existing
+        while self._plugin_layout.count():
+            child = self._plugin_layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
+                
+        # We need a wrapper to mimic the config Item interface expected by SettingRow
+        class SettingWrapper:
+            def __init__(self, s, current_val):
+                self.name = s.name
+                self.description = s.description
+                self.type = s.type
+                self.value = current_val if current_val is not None else s.default
+                self.values = s.values
+
+        # Helper to safely get settings even if plugin crashed or not fully ready
+        def safe_get_settings(plugin):
+            try:
+                if hasattr(plugin, 'get_settings'):
+                    return plugin.get_settings()
+            except Exception:
+                pass
+            return []
+
+        for manifest in self._pm.manifests():
+            record = self._pm._records.get(manifest.id)
+            if not record or not record.plugin:
+                continue
+            
+            try:
+                plugin_settings = safe_get_settings(record.plugin)
+                if not plugin_settings:
+                    continue
+                
+                box = QGroupBox(manifest.name)
+                box.setObjectName("SettingGroup")
+                v = QVBoxLayout(box)
+                v.setSpacing(0)
+                v.setContentsMargins(0, 4, 0, 4)
+                
+                for idx, s in enumerate(plugin_settings):
+                    full_key = f"plugins.{manifest.id}.{s.key}"
+                    curr = self._qt_pop.config.get_value(full_key)
+                    
+                    wrapper = SettingWrapper(s, curr)
+                    row = SettingRow(full_key, wrapper, self._qt_pop)
+                    
+                    if idx > 0:
+                        sep = QFrame()
+                        sep.setObjectName("SettingRowSep")
+                        sep.setFrameShape(QFrame.HLine)
+                        v.addWidget(sep)
+                    v.addWidget(row)
+
+                self._plugin_layout.addWidget(box)
+            except Exception as exc:
+                _log.warning("SettingsPage: error loading settings for '%s': %s", manifest.id, exc)

@@ -23,16 +23,38 @@ class Plugin(PluginBase):
         self._label: QLabel | None = None
 
     # ── HOST side ────────────────────────────────────────────
+    def get_settings(self) -> list[PluginSetting]:
+        from nova.core.plugin_base import PluginSetting
+        return [
+            PluginSetting(
+                key="show_seconds",
+                name="Show Seconds",
+                type="bool",
+                default=True,
+                description="Toggle display of seconds."
+            ),
+            PluginSetting(
+                key="color",
+                name="Clock Color",
+                type="colorpicker",
+                default="#333333", # Dark gray default
+                description="Text color of the clock."
+            )
+        ]
+
     def create_widget(self, parent: QWidget | None = None) -> QWidget:
         frame = QFrame(parent)
         frame.setObjectName("ClockFrame")
         v = QVBoxLayout(frame)
         v.setAlignment(Qt.AlignCenter)
 
+        # Apply settings immediately
+        color = self.get_setting("color") or "#333333"
+
         self._label = QLabel("--:--:--")
         self._label.setObjectName("ClockLabel")
         self._label.setAlignment(Qt.AlignCenter)
-        self._label.setStyleSheet("font-size: 72px; font-weight: 200; letter-spacing: 4px;")
+        self._label.setStyleSheet(f"font-size: 72px; font-weight: 200; letter-spacing: 4px; color: {color};")
         v.addWidget(self._label)
 
         subtitle = QLabel("Live Clock via IPC")
@@ -45,7 +67,26 @@ class Plugin(PluginBase):
 
     def on_data(self, key: str, value) -> None:
         if key == "time" and self._label is not None:
-            self._label.setText(str(value))
+            # Check settings on every update (in a real app, maybe cache this or use signals)
+            show_seconds = self.get_setting("show_seconds")
+            if show_seconds is None: show_seconds = True
+            
+            # Value is HH:MM:SS. If show_seconds is false, strip last 3 chars
+            text = str(value)
+            try:
+                if not isinstance(show_seconds, bool):
+                    show_seconds = str(show_seconds).lower() == "true"
+                
+                if not show_seconds and len(text) >= 8:
+                    text = text[:5]
+            except Exception:
+                pass
+                
+            self._label.setText(text)
+            
+            # Also update color dynamically if user changes it while running
+            color = self.get_setting("color") or "#333333"
+            self._label.setStyleSheet(f"font-size: 72px; font-weight: 200; letter-spacing: 4px; color: {color};")
 
     # ── WORKER side ──────────────────────────────────────────
     def start(self) -> None:

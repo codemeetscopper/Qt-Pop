@@ -166,5 +166,10 @@ class MainWindow(QMainWindow):
     # ──────────────────────────────────────────────────────
 
     def closeEvent(self, event):
+        # Hide immediately to make the app feel responsive
+        self.hide()
+        from PySide6.QtWidgets import QApplication
+        QApplication.processEvents()
+        
         self._pm.stop_all()
         super().closeEvent(event)

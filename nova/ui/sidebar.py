@@ -14,8 +14,8 @@ COLLAPSED = 64
 ANIM_MS = 200
 
 # Horizontal padding on each side when collapsed so the icon is centred in 64px.
-# icon_width=20, padding = (64 - 20) / 2 = 22
-_COLLAPSED_PAD = (COLLAPSED - 20) // 2
+# icon_width=28, padding = (64 - 28) / 2 = 18
+_COLLAPSED_PAD = (COLLAPSED - 28) // 2
 
 
 def _accent_color() -> str:
@@ -35,7 +35,7 @@ def _fg1_color() -> str:
         return "#444444"
 
 
-def _get_icon_pixmap(icon_name: str, color: str, size: int = 20) -> Optional[QPixmap]:
+def _get_icon_pixmap(icon_name: str, color: str, size: int = 28) -> Optional[QPixmap]:
     """Return a coloured pixmap for icon_name, or None on failure."""
     try:
         from qtpop.appearance.iconmanager import IconManager
@@ -58,18 +58,19 @@ class SidebarItem(QWidget):
         self._active = False
 
         self.setObjectName("SidebarItem")
-        self.setFixedHeight(44)
+        self.setFixedHeight(48)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.setCursor(Qt.PointingHandCursor)
 
         self._layout = QHBoxLayout(self)
-        self._layout.setContentsMargins(12, 0, 12, 0)
-        self._layout.setSpacing(12)
+        # Use 18px left margin to center the 28px icon at 32px (same as collapsed state)
+        self._layout.setContentsMargins(18, 0, 12, 0)
+        self._layout.setSpacing(16)
 
         # Icon — pixmap if IconManager has it, otherwise plain text
         self._icon = QLabel()
         self._icon.setObjectName("SidebarItemIcon")
-        self._icon.setFixedSize(20, 20)
+        self._icon.setFixedSize(28, 28)
         self._icon.setAlignment(Qt.AlignCenter)
         self._icon.setScaledContents(True)
 
@@ -90,10 +91,10 @@ class SidebarItem(QWidget):
     def set_text_visible(self, visible: bool):
         self._text.setVisible(visible)
         if visible:
-            self._layout.setContentsMargins(12, 0, 12, 0)
+            self._layout.setContentsMargins(18, 0, 12, 0)
             self.setToolTip("")
         else:
-            # Centre the 20px icon within 64px by using equal side margins
+            # Centre the 28px icon within 64px by using equal side margins
             self._layout.setContentsMargins(_COLLAPSED_PAD, 0, _COLLAPSED_PAD, 0)
             self.setToolTip(self._label_text)
 
@@ -122,14 +123,59 @@ class SidebarItem(QWidget):
 
     def _set_icon_pixmap(self, color: str):
         """Set the icon QLabel pixmap with the requested colour."""
+        # Check for inline SVG
+        clean_name = self._icon_name.strip()
+        if clean_name.startswith("<") and "svg" in clean_name:
+            try:
+                from PySide6.QtCore import QByteArray
+                from PySide6.QtSvg import QSvgRenderer
+                from PySide6.QtGui import QColor, QPainter, QPixmap
+                
+                # Render SVG to pixmap
+                qbytearray = QByteArray(clean_name.encode("utf-8"))
+                renderer = QSvgRenderer(qbytearray)
+                
+                if renderer.isValid():
+                    size = 28
+                    px = QPixmap(size, size)
+                    px.fill(Qt.transparent)
+                    painter = QPainter(px)
+                    renderer.render(painter)
+                    painter.end()
+                    
+                    # Recolor
+                    colored_px = QPixmap(size, size)
+                    colored_px.fill(Qt.transparent)
+                    painter = QPainter(colored_px)
+                    painter.setRenderHint(QPainter.Antialiasing)
+                    painter.setRenderHint(QPainter.SmoothPixmapTransform)
+                    # Draw the color
+                    painter.fillRect(colored_px.rect(), QColor(color))
+                    # Apply the icon as a mask
+                    painter.setCompositionMode(QPainter.CompositionMode_DestinationIn)
+                    painter.drawPixmap(0, 0, px)
+                    painter.end()
+                    
+                    self._icon.setPixmap(colored_px)
+                    self._icon.setStyleSheet("background: transparent;")
+                    return
+            except Exception:
+                pass  # Fallback to standard handling
+
         px = _get_icon_pixmap(self._icon_name, color)
         if px is not None and not px.isNull():
             self._icon.setPixmap(px)
             self._icon.setStyleSheet("background: transparent;")
         else:
-            # Fallback: show icon_name as text (handles emoji too)
-            self._icon.setText(self._icon_name)
-            self._icon.setStyleSheet(f"color: {color}; background: transparent;")
+            # Fallback: show icon_name as text IF it's short
+            if len(self._icon_name) < 20:
+                self._icon.setText(self._icon_name)
+                self._icon.setStyleSheet(f"color: {color}; background: transparent;")
+            else:
+                # If it's a long string (broken SVG), show a placeholder or empty
+                # Here we just show a generic character or nothing
+                self._icon.setText("?")
+                self._icon.setStyleSheet(f"color: {color}; background: transparent;")
 
     def _apply_active_style(self):
         ac = _accent_color()
@@ -194,7 +240,8 @@ class Sidebar(QFrame):
         header.setObjectName("SidebarHeader")
         header.setFixedHeight(56)
         h_layout = QHBoxLayout(header)
-        h_layout.setContentsMargins(8, 0, 8, 0)
+        # Use 12px left margin to center the 40px button at 32px (32 - 20 = 12)
+        h_layout.setContentsMargins(12, 0, 8, 0)
         h_layout.setSpacing(8)
 
         self._hamburger = QPushButton()
@@ -309,7 +356,7 @@ class Sidebar(QFrame):
 
     def _set_hamburger_icon(self):
         """Set hamburger button icon via IconManager, fall back to text."""
-        px = _get_icon_pixmap("navigation_menu", _fg1_color(), 20)
+        px = _get_icon_pixmap("navigation_menu", _fg1_color(), 28)
         if px is not None and not px.isNull():
             self._hamburger.setIcon(px)
             self._hamburger.setIconSize(px.size())

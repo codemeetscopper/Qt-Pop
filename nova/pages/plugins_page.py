@@ -524,6 +524,10 @@ class PluginsPage(QWidget):
         from nova.core.plugin_spec import create_plugin_template
         try:
             created = create_plugin_template(plugin_id, name, author, desc, plugins_dir)
+            
+            # Treat creation as an import so the app loads it and creates the page
+            self._pm.plugin_imported.emit(plugin_id)
+            
             QMessageBox.information(
                 self, "Plugin Created",
                 f"Plugin template created at:\n{created}\n\n"

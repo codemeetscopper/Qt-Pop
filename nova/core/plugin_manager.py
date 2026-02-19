@@ -50,9 +50,10 @@ class PluginManager(QObject):
     plugin_deleted = Signal(str)            # plugin_id
     plugin_imported = Signal(str)           # plugin_id
 
-    def __init__(self, data_layer: Any, plugins_dir: Path, parent: QObject | None = None):
+    def __init__(self, data_layer: Any, config: Any, plugins_dir: Path, parent: QObject | None = None):
         super().__init__(parent)
         self._data = data_layer
+        self._config = config
         self._plugins_dir = plugins_dir
         self._records: Dict[str, _PluginRecord] = {}
         # Track intentional stops so we don't mistake them for crashes.
@@ -129,6 +130,7 @@ class PluginManager(QObject):
         try:
             plugin_inst = plugin_class(bridge)
             plugin_inst.manifest = manifest
+            plugin_inst.config = self._config
         except Exception as exc:
             _log.error("PluginManager: failed to instantiate plugin '%s': %s", plugin_id, exc)
             bridge.close()
