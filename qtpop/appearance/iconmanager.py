@@ -1,3 +1,4 @@
+import logging
 import os
 import threading
 import re
@@ -7,6 +8,8 @@ from PySide6.QtGui import QPixmap, QPainter, QColor, QImage
 from PySide6.QtSvg import QSvgRenderer
 
 from qtpop.qtpoplogger import debug_log
+
+_log = logging.getLogger(__name__)
 
 
 # ------------------------------
@@ -147,7 +150,7 @@ class IconManager:
 
         file_path = os.path.join(cls._images_path, f"{resolved_name}.svg")
         if not os.path.exists(file_path):
-            print(f"[IconManager] Missing icon file: {file_path}")
+            _log.warning("Missing icon file: %s", file_path)
             return QPixmap()
 
         if async_load:
@@ -298,7 +301,7 @@ class IconManager:
 
         file_path = os.path.join(cls._images_path, f"{resolved_name}.svg")
         if not os.path.exists(file_path):
-            print(f"[IconManager] Missing icon file: {file_path}")
+            _log.warning("Missing icon file: %s", file_path)
             return ""
 
         if async_load:
@@ -330,8 +333,8 @@ class IconManager:
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 svg = f.read()
-        except Exception as e:
-            print(f"[IconManager] Failed to read SVG {file_path}: {e}")
+        except OSError as e:
+            _log.warning("Failed to read SVG %s: %s", file_path, e)
             return ""
 
         # Find the opening <svg ...> tag

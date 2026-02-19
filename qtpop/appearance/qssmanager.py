@@ -1,5 +1,6 @@
 import logging
 import re
+import threading
 import time
 import uuid
 from pathlib import Path
@@ -117,12 +118,8 @@ class QSSManager:
             try:
                 return cls._styler.get_colour(key)
             except Exception:
-                try:
-                    # fallback to StyleManager static access if AppCntxt not ready
-                    return cls._styler.get_colour(key)
-                except Exception:
-                    cls._log.warning("Unknown colour key: %s", key)
-                    return "#000000"
+                cls._log.warning("Unknown colour key: %s", key)
+                return "#000000"
 
         processed = cls._colour_token_re.sub(colour_replacer, intermediate)
         return processed
@@ -156,11 +153,11 @@ class QSSManager:
             style_sheet = cls._style_sheet
 
         processed_qss = ""
-        if '<accent>' in  style_sheet:
+        if '<accent>' in style_sheet:
             processed_qss = cls.process(style_sheet)
         else:
             processed_qss = style_sheet
-        cls._stylesheet = processed_qss
+        cls._style_sheet = processed_qss
         app = QApplication.instance()
         if app:
             palette = cls._styler.get_palette()
@@ -201,14 +198,13 @@ class QSSManager:
 
         # Schedule deletion in the background after delay
         # (so Qt has time to read the file)
-        import threading
         def delete_later(path: Path):
             time.sleep(delay_delete)
             try:
                 if path.exists():
                     path.unlink()
-            except Exception as e:
-                print(f"[make_qt_svg_temp] Failed to delete {path}: {e}")
+            except OSError as e:
+                logging.warning("Failed to delete temp SVG %s: %s", path, e)
 
         threading.Thread(target=delete_later, args=(temp_file,), daemon=True).start()
 

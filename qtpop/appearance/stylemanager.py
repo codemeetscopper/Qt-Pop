@@ -1,15 +1,17 @@
 # style_manager.py
 from __future__ import annotations
 
+import logging
 from typing import Dict, Optional, Union
 
 from PySide6.QtGui import QColor, QPalette
 from PySide6.QtWidgets import QApplication
 
 from qtpop.qtpoplogger import debug_log
-from qtpop.appearance.iconmanager import IconManager
 
 ColourLike = Union[str, QColor]
+
+_log = logging.getLogger(__name__)
 
 
 class StyleManager:
@@ -28,7 +30,6 @@ class StyleManager:
 
     # ---- Singleton state -----------------------------------------------------
     _initialised: bool = False
-    _iconManager = IconManager()
     _colours: Dict[str, QColor] = {}
     _palette: Optional[QPalette] = None
     _resolved_mode: str = "light"  # "light" | "dark"
@@ -122,6 +123,7 @@ class StyleManager:
             return True
 
         except Exception as ex:
+            _log.error("StyleManager.initialise failed: %s", ex)
             cls._initialised = False
             cls._colours = {}
             cls._palette = None

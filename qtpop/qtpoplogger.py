@@ -2,7 +2,6 @@ import logging
 import functools
 import inspect
 import sys
-from multiprocessing.util import DEBUG
 
 from PySide6.QtCore import QObject, Signal
 
@@ -125,6 +124,9 @@ class QtPopLogger:
 
     def critical(self, msg, *args, **kwargs):
         self._logger.critical(msg, *args, **kwargs)
+
+    def exception(self, msg, *args, **kwargs):
+        self._logger.exception(msg, *args, **kwargs)
 
     def enable_debug(self, enable: bool):
         global DEBUG_ENABLE

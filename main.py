@@ -1,10 +1,11 @@
+from pathlib import Path
+
 import app.app
 from qtpop import QtPop
 
 if __name__ == "__main__":
-    configPath = r"D:\Development\Python\Qt-Pop\config\config.json"
+    config_path = Path(__file__).parent / "config" / "config.json"
     qt_pop = QtPop()
-    if qt_pop:
-        qt_pop.initialise(configPath)
-        qt_pop.log.info("QtPop initialized successfully.")
-        app.app.run(qt_pop)
+    qt_pop.initialise(str(config_path))
+    qt_pop.log.info("QtPop initialized successfully.")
+    app.app.run(qt_pop)

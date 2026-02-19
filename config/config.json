@@ -68,7 +68,7 @@
             "qss_path": {
                 "name": "Qss Style",
                 "shortname": "qss_path",
-                "value": "D:/Development/Python/Qt-Pop/resources/qss/test.qss",
+                "value": "resources/qss/test.qss",
                 "values": [],
                 "description": "Qss Style Sheet for the application.",
                 "type": "filebrowse",
@@ -104,7 +104,7 @@
             "sample_file_browse": {
                 "name": "Sample File Browse",
                 "shortname": "sample_file_browse",
-                "value": "D:/Development/Python/Python-Desktop-Application/config/configuration.json",
+                "value": "",
                 "values": [],
                 "description": "A sample file browse setting.",
                 "type": "filebrowse",
@@ -115,7 +115,7 @@
             "sample_folder_browse": {
                 "name": "Sample File Browse",
                 "shortname": "sample_folder_browse",
-                "value": "D:/Development/Python/Python-Desktop-Application",
+                "value": "",
                 "values": [],
                 "description": "A sample folder browse setting.",
                 "type": "folderbrowse",
