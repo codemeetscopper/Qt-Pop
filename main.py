@@ -1,6 +1,6 @@
 from pathlib import Path
 
-import app.app
+import nova.app
 from qtpop import QtPop
 
 if __name__ == "__main__":
@@ -8,4 +8,4 @@ if __name__ == "__main__":
     qt_pop = QtPop()
     qt_pop.initialise(str(config_path))
     qt_pop.log.info("QtPop initialized successfully.")
-    app.app.run(qt_pop)
+    nova.app.run(qt_pop)

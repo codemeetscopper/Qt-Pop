@@ -4,13 +4,13 @@
             "accent": {
                 "name": "Accent Colour",
                 "shortname": "accent",
-                "value": "#55aa7f",
+                "value": "#0088CC",
                 "values": [
-                    "#a52b2b",
-                    "#b52b2b",
-                    "#0c4d35",
-                    "#ccff00",
+                    "#0088CC",
+                    "#0055FF",
                     "#7d8be0",
+                    "#a52b2b",
+                    "#0c4d35",
                     "#55aa7f"
                 ],
                 "description": "A sample drop down setting.",
@@ -68,7 +68,7 @@
             "qss_path": {
                 "name": "Qss Style",
                 "shortname": "qss_path",
-                "value": "resources/qss/test.qss",
+                "value": "resources/qss/nova.qss",
                 "values": [],
                 "description": "Qss Style Sheet for the application.",
                 "type": "filebrowse",
@@ -125,7 +125,7 @@
             }
         },
         "static": {
-            "name": "QtPop Demo Application",
+            "name": "Nova",
             "version": "1.0.0",
             "license_required": false,
             "license_key": "",

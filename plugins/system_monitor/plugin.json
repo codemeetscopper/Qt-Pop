@@ -1,0 +1,9 @@
+{
+    "id": "system_monitor",
+    "name": "System Monitor",
+    "version": "1.0.0",
+    "description": "Shows CPU, memory, and disk usage updated every 1.5 seconds.",
+    "author": "Nova",
+    "icon": "◈",
+    "entry": "plugin_main.Plugin"
+}

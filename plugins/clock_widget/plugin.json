@@ -1,0 +1,9 @@
+{
+    "id": "clock_widget",
+    "name": "Clock Widget",
+    "version": "1.0.0",
+    "description": "Displays a live clock updated every second via IPC.",
+    "author": "Nova",
+    "icon": "◷",
+    "entry": "plugin_main.Plugin"
+}
