@@ -23,8 +23,8 @@ from __future__ import annotations
 
 from typing import List, Optional, Any
 
-from PySide6.QtCore import Signal
-from PySide6.QtGui import QColor
+from PySide6.QtCore import QSize, Signal
+from PySide6.QtGui import QColor, QIcon
 from PySide6.QtWidgets import (
     QCheckBox, QColorDialog, QComboBox, QFileDialog,
     QHBoxLayout, QLineEdit, QPushButton, QSizePolicy,
@@ -91,6 +91,36 @@ class DropdownSettingWidget(BaseSettingWidget):
             self._combo.setCurrentIndex(idx)
         self._combo.currentTextChanged.connect(lambda t: self.value_changed.emit(t))
         layout.addWidget(self._combo)
+
+        # Style the popup view directly — QSS child selectors on QComboBox popup
+        # are unreliable in Qt on Windows; programmatic styling is the safe path.
+        try:
+            from nova.core.style import StyleManager
+            _bg1 = StyleManager.get_colour("bg1")
+            _bg2 = StyleManager.get_colour("bg2")
+            _fg  = StyleManager.get_colour("fg")
+            _aln = StyleManager.get_colour("accent_ln")
+            _acc = StyleManager.get_colour("accent")
+            view = self._combo.view()
+            view.setAutoFillBackground(True)
+            view.setStyleSheet(
+                f"QAbstractItemView {{"
+                f"  background-color: {_bg1}; color: {_fg}; outline: none; border: none;"
+                f"}}"
+                f"QAbstractItemView::item {{"
+                f"  padding: 5px 12px; min-height: 26px;"
+                f"}}"
+                f"QAbstractItemView::item:selected {{"
+                f"  background-color: {_aln}; color: {_acc};"
+                f"}}"
+            )
+            frame = view.parentWidget()
+            if frame is not None:
+                frame.setStyleSheet(
+                    f"background-color: {_bg1}; border: 1px solid {_bg2}; border-radius: 8px;"
+                )
+        except Exception:
+            pass
 
     def get_value(self) -> str:
         return self._combo.currentText()
@@ -159,7 +189,8 @@ class ColorSettingWidget(BaseSettingWidget):
         self._btn.setText(hex_val.upper())
         self._btn.setStyleSheet(
             f"background-color: {hex_val}; color: {text_color}; "
-            "border: none; border-radius: 6px; font-weight: 600;"
+            "border: none; border-radius: 10px; font-weight: 600; "
+            "min-height: 26px; max-height: 26px;"
         )
 
     def get_value(self) -> str:
@@ -191,11 +222,22 @@ class PathSettingWidget(BaseSettingWidget):
         self._edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self._edit.editingFinished.connect(lambda: self.value_changed.emit(self._edit.text()))
 
-        btn = QPushButton("Browse…")
+        _icon_map = {"folder": "folder", "font": "font"}
+        btn = QPushButton(_icon_map.get(mode, "file").capitalize() + "…")
         btn.setObjectName("BrowseButton")
         btn.setMinimumWidth(72)
         btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         btn.clicked.connect(self._on_browse)
+        try:
+            from nova.core.icons import IconManager
+            from nova.core.style import StyleManager
+            _icon_name = _icon_map.get(mode, "file")
+            _px = IconManager.get_pixmap(_icon_name, StyleManager.get_colour("ctrl_fg"), 14)
+            if _px and not _px.isNull():
+                btn.setIcon(QIcon(_px))
+                btn.setIconSize(QSize(14, 14))
+        except Exception:
+            pass
 
         layout.addWidget(self._edit, 1)
         layout.addWidget(btn)

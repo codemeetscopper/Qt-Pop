@@ -77,12 +77,17 @@ QMainWindow, #NovaMainWindow { background-color: <bg>; }
     background: transparent;
     border-left: 3px solid transparent;
     border-radius: 0;
-    margin: 1px 0;
+    margin: 0;
 }
 #SidebarItem:hover { background: <accent_ln>; }
 #SidebarItem[active="true"] {
     background: <accent_ln>;
     border-left: 3px solid <accent>;
+}
+#SidebarItemText {
+    font-size: 14px;
+    font-weight: 400;
+    background: transparent;
 }
 
 /* ─── Content area ───────────────────────────────────────── */
@@ -152,6 +157,7 @@ QMainWindow, #NovaMainWindow { background-color: <bg>; }
 }
 
 #SettingRow { background: transparent; }
+#SettingRowRight { background: transparent; }
 #SettingRowSep {
     background: <bg2>;
     border: none;
@@ -171,34 +177,98 @@ QMainWindow, #NovaMainWindow { background-color: <bg>; }
 }
 #SettingEdit {
     background: <bg>;
-    border: 1px solid <bg2>;
-    border-radius: 5px;
-    padding: 3px 7px;
-    color: <fg>;
+    border: none;
+    border-radius: 20px;
+    padding: 3px 10px;
+    color: <fg2>;
     min-height: 26px;
-    selection-background-color: <accent_ln>;
+    max-height: 26px;
+    selection-background-color: <accent>;
+    selection-color: white;
 }
-#SettingEdit:focus { border-color: <accent>; }
+#SettingEdit:focus { background: <bg_hover>; }
+
 #SettingCombo {
     background: <bg>;
-    border: 1px solid <bg2>;
-    border-radius: 5px;
-    padding: 3px 7px;
+    border: none;
+    border-radius: 20px;
+    padding: 3px 10px;
     min-height: 26px;
-    color: <fg>;
+    max-height: 26px;
+    color: <fg2>;
 }
-#SettingCombo:hover, #SettingCombo:focus { border-color: <accent>; }
-#BrowseButton {
-    background: <bg>;
-    color: <fg1>;
-    border: 1px solid <bg2>;
-    border-radius: 5px;
-    padding: 3px 8px;
+#SettingCombo:hover { background: <bg_hover>; }
+#SettingCombo::drop-down {
+    border: none;
+    width: 30px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+#SettingCombo::down-arrow {
+    image: url(<url_down_arrow_ctrl>);
+    width: 18px;
+    height: 18px;
+}
+
+#SettingSpinbox {
+    background: <ctrl_bg>;
+    border: none;
+    border-radius: 10px;
+    padding: 3px 10px;
     min-height: 26px;
+    max-height: 26px;
+    color: <ctrl_fg>;
+}
+#SettingSpinbox:focus { background: <ctrl_bg_hover>; }
+#SettingSpinbox::up-button {
+    subcontrol-origin: border;
+    subcontrol-position: top right;
+    width: 22px;
+    border: none;
+    background: transparent;
+    border-top-right-radius: 10px;
+}
+#SettingSpinbox::down-button {
+    subcontrol-origin: border;
+    subcontrol-position: bottom right;
+    width: 22px;
+    border: none;
+    background: transparent;
+    border-bottom-right-radius: 10px;
+}
+#SettingSpinbox::up-arrow {
+    image: url(<url_up_arrow_ctrl>);
+    width: 14px;
+    height: 14px;
+}
+#SettingSpinbox::down-arrow {
+    image: url(<url_down_arrow_ctrl>);
+    width: 14px;
+    height: 14px;
+}
+
+#ColorPickerButton {
+    border: none;
+    border-radius: 10px;
+    min-height: 26px;
+    max-height: 26px;
+    min-width: 110px;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+#BrowseButton {
+    background: <ctrl_bg>;
+    color: <ctrl_fg>;
+    border: none;
+    border-radius: 10px;
+    padding: 3px 12px;
+    min-height: 26px;
+    max-height: 26px;
     min-width: 0;
     font-size: 12px;
 }
-#BrowseButton:hover { background: <accent_ln>; border-color: <accent_l1>; }
+#BrowseButton:hover { background: <ctrl_bg_hover>; }
 
 /* ─── About page ─────────────────────────────────────────── */
 #AboutPage { background: <bg>; }
@@ -389,7 +459,12 @@ QComboBox {
     color: <fg>;
 }
 QComboBox:hover, QComboBox:focus { border-color: <accent>; }
-QComboBox::drop-down { border: none; width: 18px; }
+QComboBox::drop-down { border: none; width: 24px; }
+QComboBox::down-arrow {
+    image: url(<url_down_arrow>);
+    width: 16px;
+    height: 16px;
+}
 QComboBox QAbstractItemView {
     background: <bg1>;
     border: 1px solid <bg2>;
@@ -397,6 +472,15 @@ QComboBox QAbstractItemView {
     selection-color: <accent>;
     color: <fg>;
     outline: none;
+    padding: 4px;
+}
+QComboBox QAbstractItemView::item {
+    padding: 5px 10px;
+    min-height: 26px;
+}
+QComboBox QAbstractItemView::item:selected {
+    background: <accent_ln>;
+    color: <accent>;
 }
 
 QLineEdit {
@@ -437,15 +521,23 @@ QToolTip {
     font-size: 12px;
 }
 
+QCheckBox {
+    background: transparent;
+    spacing: 6px;
+}
 QCheckBox::indicator {
     width: 16px;
     height: 16px;
-    border: 1px solid <bg2>;
-    border-radius: 3px;
+    border: 2px solid <bg2>;
+    border-radius: 4px;
     background: <bg>;
 }
-QCheckBox::indicator:checked {
-    background: <accent>;
-    border-color: <accent>;
-}
 QCheckBox::indicator:hover { border-color: <accent_l1>; }
+QCheckBox::indicator:checked {
+    width: 16px;
+    height: 16px;
+    background: <accent>;
+    border: 2px solid <accent>;
+    border-radius: 4px;
+    image: url(<url_check>);
+}

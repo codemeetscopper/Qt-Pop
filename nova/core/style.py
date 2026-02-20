@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 from typing import Dict, Union, Optional
 
 from PySide6.QtGui import QColor, QPalette
@@ -121,6 +122,21 @@ class StyleManager:
                 "bg": bg, "bg1": bg1, "bg2": bg2,
                 "fg": fg, "fg1": fg1, "fg2": fg2
             })
+
+            # High-contrast control colours (textboxes, combos, spinboxes, buttons)
+            if theme == "dark":
+                ctrl_bg       = QColor(255, 255, 255)   # white controls on dark card
+                ctrl_bg_hover = QColor(230, 230, 230)   # slightly dimmed on hover/focus
+                ctrl_fg       = QColor(17,  17,  17)    # near-black text on white
+            else:
+                ctrl_bg       = QColor(25,  25,  25)    # near-black controls on light card
+                ctrl_bg_hover = QColor(50,  50,  50)    # slightly lighter on hover/focus
+                ctrl_fg       = QColor(240, 240, 240)   # near-white text on dark
+            inst._colours.update({
+                "ctrl_bg":       ctrl_bg,
+                "ctrl_bg_hover": ctrl_bg_hover,
+                "ctrl_fg":       ctrl_fg,
+            })
             
             # Build palette (simplified)
             p = QPalette()
@@ -153,14 +169,71 @@ class StyleManager:
         return cls()._palette or QPalette()
         
     @classmethod
+    def _write_qss_icons(cls) -> Dict[str, str]:
+        """Write SVG icon files to tmp_qss_icons/ and return a token→path mapping.
+
+        Two sets of arrows are produced:
+        • url_down_arrow / url_up_arrow  — coloured fg1, used by generic QComboBox
+          which sits on bg/bg1 backgrounds.
+        • url_down_arrow_ctrl / url_up_arrow_ctrl — coloured ctrl_fg, used by
+          settings controls that sit on the high-contrast ctrl_bg background.
+        • url_check — white checkmark for the accent-coloured checkbox indicator.
+        """
+        fg1      = cls.get_colour("fg1")      # readable on theme-bg backgrounds
+        ctrl_fg  = cls.get_colour("ctrl_fg")  # readable on white/dark ctrl_bg
+
+        tmp_dir = Path(__file__).parent.parent.parent / "tmp_qss_icons"
+        tmp_dir.mkdir(exist_ok=True)
+
+        def _arrow_down(color: str) -> str:
+            return (
+                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">'
+                f'<path fill="{color}" d="M7 10l5 5 5-5z"/>'
+                '</svg>'
+            )
+
+        def _arrow_up(color: str) -> str:
+            return (
+                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">'
+                f'<path fill="{color}" d="M7 14l5-5 5 5z"/>'
+                '</svg>'
+            )
+
+        check_svg = (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">'
+            '<path fill="white" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>'
+            '</svg>'
+        )
+
+        files: Dict[str, tuple] = {
+            "url_down_arrow":      (tmp_dir / "down_arrow.svg",      _arrow_down(fg1)),
+            "url_up_arrow":        (tmp_dir / "up_arrow.svg",        _arrow_up(fg1)),
+            "url_down_arrow_ctrl": (tmp_dir / "down_arrow_ctrl.svg", _arrow_down(ctrl_fg)),
+            "url_up_arrow_ctrl":   (tmp_dir / "up_arrow_ctrl.svg",   _arrow_up(ctrl_fg)),
+            "url_check":           (tmp_dir / "check.svg",           check_svg),
+        }
+        for _path, _content in files.values():
+            _path.write_text(_content, encoding="utf-8")
+
+        return {token: path.as_posix() for token, (path, _) in files.items()}
+
+    @classmethod
     def apply_theme(cls, app: QApplication, qss_content: str):
         """Process QSS and apply to app."""
         import re
 
-        # Substitute font_family token first (not a colour)
+        # 1. Font-family token (not a colour)
         processed_qss = qss_content.replace("<font_family>", cls.get_font_family())
 
-        # Replace colour tokens <token>
+        # 2. SVG icon file paths for url() references in QSS
+        try:
+            url_map = cls._write_qss_icons()
+            for token, posix_path in url_map.items():
+                processed_qss = processed_qss.replace(f"<{token}>", posix_path)
+        except Exception as e:
+            _log.warning(f"Could not write QSS icon files: {e}")
+
+        # 3. Colour tokens <token>
         def repl(m):
             key = m.group(1)
             return cls.get_colour(key)

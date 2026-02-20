@@ -13,10 +13,11 @@ EXPANDED = 240
 COLLAPSED = 64
 ANIM_MS = 200
 
-# Horizontal padding on each side when collapsed so the icon is centred in 64px.
-# icon_width=28, padding = (64 - 28) / 2 = 18
-_COLLAPSED_PAD = (COLLAPSED - 28) // 2   # 18 — used for header (hamburger)
-_NAV_LEFT_PAD  = _COLLAPSED_PAD - 5      # 13 — nav items, slightly tighter
+# Horizontal padding so nav icon centres align with the hamburger icon centre.
+# hamburger: 28px button at left=18  → centre at 32px from sidebar edge
+# nav icon : 20px label  at left=18+4(container)=22 → centre at 32px  ✓
+_COLLAPSED_PAD = (COLLAPSED - 28) // 2   # 18 — header hamburger left pad
+_NAV_LEFT_PAD  = _COLLAPSED_PAD          # 18 — nav items, same centre as hamburger
 
 
 def _accent_color() -> str:
@@ -57,7 +58,7 @@ class SidebarItem(QWidget):
         self._active = False
 
         self.setObjectName("SidebarItem")
-        self.setFixedHeight(48)
+        self.setFixedHeight(40)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.setCursor(Qt.PointingHandCursor)
 
@@ -68,7 +69,7 @@ class SidebarItem(QWidget):
         # Icon — pixmap if IconManager has it, otherwise plain text
         self._icon = QLabel()
         self._icon.setObjectName("SidebarItemIcon")
-        self._icon.setFixedSize(28, 28)
+        self._icon.setFixedSize(20, 20)
         self._icon.setAlignment(Qt.AlignCenter)
         self._icon.setScaledContents(True)
 
@@ -128,7 +129,7 @@ class SidebarItem(QWidget):
         if clean_name.startswith("<") and "svg" in clean_name:
             try:
                 from nova.core.icons import IconManager
-                px = IconManager.render_svg_string(clean_name, color, 22)
+                px = IconManager.render_svg_string(clean_name, color, 20)
                 if px and not px.isNull():
                     self._icon.setPixmap(px)
                     self._icon.setStyleSheet("background: transparent;")
@@ -239,7 +240,7 @@ class Sidebar(QFrame):
         self._nav_container = QWidget()
         self._nav_layout = QVBoxLayout(self._nav_container)
         self._nav_layout.setContentsMargins(4, 0, 4, 0)
-        self._nav_layout.setSpacing(2)
+        self._nav_layout.setSpacing(0)
         self._nav_layout.addStretch()
 
         scroll.setWidget(self._nav_container)
@@ -325,7 +326,7 @@ class Sidebar(QFrame):
     # ──────────────────────────────────────────────────────
 
     def _set_hamburger_icon(self):
-        px = _get_icon_pixmap("menu", _fg1_color(), 30)
+        px = _get_icon_pixmap("menu", _fg1_color(), 22)
         if px is not None and not px.isNull():
             self._hamburger.setIcon(px)
             self._hamburger.setIconSize(px.size())

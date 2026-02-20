@@ -91,7 +91,10 @@ class SettingRow(QWidget):
                 layout.addWidget(self._widget, 0, Qt.AlignRight | Qt.AlignVCenter)
             else:
                 right = QWidget()
-                right.setStyleSheet("background: transparent;")
+                right.setObjectName("SettingRowRight")
+                # Explicit selector — does NOT cascade to child controls,
+                # so ctrl_bg / ctrl_fg from the app stylesheet reach them.
+                right.setStyleSheet("QWidget#SettingRowRight { background: transparent; }")
                 right.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
                 right_layout = QHBoxLayout(right)
                 right_layout.setContentsMargins(0, 0, 0, 0)

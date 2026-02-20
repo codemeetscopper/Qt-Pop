@@ -1,193 +1,170 @@
 {
-    "configuration": {
-        "user": {
-            "accent": {
-                "name": "Accent Colour",
-                "shortname": "accent",
-                "value": "#0088CC",
-                "values": [
-                    "#0088CC",
-                    "#0055FF",
-                    "#7d8be0",
-                    "#a52b2b",
-                    "#0c4d35",
-                    "#55aa7f"
-                ],
-                "description": "A sample drop down setting.",
-                "type": "colorpicker",
-                "accessibility": "user",
-                "group": "Appearance Settings",
-                "icon": "images/size.svg"
-            },
-            "support": {
-                "name": "Support Colour",
-                "shortname": "support",
-                "value": "#ff9933",
-                "values": [
-                    "#a52b2b",
-                    "#b52b2b",
-                    "#0c4d35",
-                    "#ccff00"
-                ],
-                "description": "A sample drop down setting.",
-                "type": "colorpicker",
-                "accessibility": "user",
-                "group": "Appearance Settings",
-                "icon": "images/size.svg"
-            },
-            "neutral": {
-                "name": "Neutral Colour",
-                "shortname": "neutral",
-                "value": "#00557f",
-                "values": [
-                    "#a52b2b",
-                    "#b52b2b",
-                    "#0c4d35",
-                    "#ccff00"
-                ],
-                "description": "A sample drop down setting.",
-                "type": "colorpicker",
-                "accessibility": "user",
-                "group": "Appearance Settings",
-                "icon": "images/size.svg"
-            },
-            "theme": {
-                "name": "Colour Theme",
-                "shortname": "theme",
-                "value": "light",
-                "values": [
-                    "dark",
-                    "light"
-                ],
-                "description": "A sample drop down setting.",
-                "type": "dropdown",
-                "accessibility": "user",
-                "group": "Appearance Settings",
-                "icon": "images/size.svg"
-            },
-            "qss_path": {
-                "name": "Qss Style",
-                "shortname": "qss_path",
-                "value": "resources/qss/nova.qss",
-                "values": [],
-                "description": "Qss Style Sheet for the application.",
-                "type": "filebrowse",
-                "accessibility": "user",
-                "group": "Appearance Settings",
-                "icon": "images/size.svg"
-            },
-            "sample_text_input": {
-                "name": "Sample Text Input",
-                "shortname": "sample_text_input",
-                "value": "New Value",
-                "values": [],
-                "description": "A sample text input setting.",
-                "type": "text",
-                "accessibility": "user",
-                "group": "Sample Group 1",
-                "icon": "images/size.svg"
-            },
-            "sample_dropdown_input": {
-                "name": "Sample DropDown Input",
-                "shortname": "sample_dropdown_input",
-                "value": "Option 1",
-                "values": [
-                    "Option 1",
-                    "Option 2"
-                ],
-                "description": "A sample drop down setting.",
-                "type": "dropdown",
-                "accessibility": "user",
-                "group": "Sample Group 1",
-                "icon": "images/size.svg"
-            },
-            "sample_file_browse": {
-                "name": "Sample File Browse",
-                "shortname": "sample_file_browse",
-                "value": "",
-                "values": [],
-                "description": "A sample file browse setting.",
-                "type": "filebrowse",
-                "accessibility": "user",
-                "group": "Sample Group 1",
-                "icon": "images/size.svg"
-            },
-            "sample_folder_browse": {
-                "name": "Sample File Browse",
-                "shortname": "sample_folder_browse",
-                "value": "",
-                "values": [],
-                "description": "A sample folder browse setting.",
-                "type": "folderbrowse",
-                "accessibility": "user",
-                "group": "Sample Group 1",
-                "icon": "images/size.svg"
-            }
-        },
-        "static": {
-            "name": "Nova",
-            "version": "1.0.0",
-            "license_required": false,
-            "license_key": "",
-            "sdk_ip_address": "127.0.0.1",
-            "sdk_tcp_port": 5000,
-            "sdk_tcp_timeout": 300,
-            "icon_path": "resources/images/meterialicons",
-            "font_path": "resources/fonts"
-        }
+  "configuration": {
+    "user": {
+      "appearance.accent": {
+        "name": "Accent Color",
+        "shortname": "accent",
+        "value": "#00AA7F",
+        "values": [
+          "#0088CC",
+          "#2196F3",
+          "#9C27B0",
+          "#F44336",
+          "#4CAF50",
+          "#FF9800"
+        ],
+        "description": "Primary accent colour for the application.",
+        "type": "colorpicker",
+        "accessibility": "user",
+        "group": "Appearance",
+        "icon": "palette"
+      },
+      "appearance.theme": {
+        "name": "Theme Mode",
+        "shortname": "theme",
+        "value": "light",
+        "values": [
+          "dark",
+          "light",
+          "system"
+        ],
+        "description": "Colour theme: dark, light, or follow system preference.",
+        "type": "dropdown",
+        "accessibility": "user",
+        "group": "Appearance",
+        "icon": "computer"
+      },
+      "appearance.font": {
+        "name": "Font File",
+        "shortname": "font",
+        "value": "D:/Development/Python/Qt-Pop/resources/fonts/RobotoCondensed-VariableFont_wght.ttf",
+        "values": [],
+        "description": "Path to a .ttf/.otf font file to apply globally.",
+        "type": "fontbrowse",
+        "accessibility": "user",
+        "group": "Appearance",
+        "icon": "font"
+      },
+      "system.plugins_path": {
+        "name": "Plugins Folder",
+        "shortname": "plugins_path",
+        "value": "D:/Development/Python/Qt-Pop/plugins",
+        "values": [],
+        "description": "Folder where Nova loads plugins from. Changes apply immediately (hot-reload).",
+        "type": "folderbrowse",
+        "accessibility": "user",
+        "group": "System",
+        "icon": "folder"
+      },
+      "plugins.clock_widget.show_seconds": {
+        "name": "Show Seconds",
+        "shortname": "show_seconds",
+        "value": true,
+        "values": [],
+        "description": "Toggle display of seconds.",
+        "type": "bool",
+        "accessibility": "user",
+        "group": "Clock Widget",
+        "icon": ""
+      },
+      "plugins.clock_widget.color": {
+        "name": "Clock Color",
+        "shortname": "color",
+        "value": "#550000",
+        "values": [],
+        "description": "Text color of the clock.",
+        "type": "colorpicker",
+        "accessibility": "user",
+        "group": "Clock Widget",
+        "icon": ""
+      },
+      "plugins.dummy.show_greeting": {
+        "name": "Show Greeting",
+        "shortname": "show_greeting",
+        "value": true,
+        "values": [],
+        "description": "Toggle the greeting message.",
+        "type": "bool",
+        "accessibility": "user",
+        "group": "Dummy Template",
+        "icon": ""
+      },
+      "plugins.dummy.greeting_text": {
+        "name": "Greeting Text",
+        "shortname": "greeting_text",
+        "value": "This message is coming from main settings :(",
+        "values": [],
+        "description": "The text to display.",
+        "type": "text",
+        "accessibility": "user",
+        "group": "Dummy Template",
+        "icon": ""
+      },
+      "plugins.dummy.bg_color": {
+        "name": "Background Color",
+        "shortname": "bg_color",
+        "value": "#9180AA",
+        "values": [],
+        "description": "Background color for the widget.",
+        "type": "colorpicker",
+        "accessibility": "user",
+        "group": "Dummy Template",
+        "icon": ""
+      },
+      "plugins.system_monitor.compact_mode": {
+        "name": "Compact Mode",
+        "shortname": "compact_mode",
+        "value": true,
+        "values": [],
+        "description": "Use less spacing between bars.",
+        "type": "bool",
+        "accessibility": "user",
+        "group": "System Monitor",
+        "icon": ""
+      },
+      "plugins.system_monitor.show_disk": {
+        "name": "Show Disk Usage",
+        "shortname": "show_disk",
+        "value": true,
+        "values": [],
+        "description": "Toggle visibility of the Disk usage bar.",
+        "type": "bool",
+        "accessibility": "user",
+        "group": "System Monitor",
+        "icon": ""
+      },
+      "system.log_level": "DEBUG",
+      "plugins.sample_plugin.tick_interval": {
+        "name": "Tick Interval (s)",
+        "shortname": "tick_interval",
+        "value": 2,
+        "values": [],
+        "description": "Seconds between each tick message sent to the UI.",
+        "type": "number",
+        "accessibility": "user",
+        "group": "Sample Plugin",
+        "icon": ""
+      },
+      "plugins.sample_plugin.message_prefix": {
+        "name": "Message Prefix",
+        "shortname": "message_prefix",
+        "value": "Tick tick tick...",
+        "values": [],
+        "description": "Prefix text shown before the tick counter.",
+        "type": "text",
+        "accessibility": "user",
+        "group": "Sample Plugin",
+        "icon": ""
+      }
     },
-    "page_mapping": {
-        "defaults": {
-            "Home": {
-                "widget_ref": "frontend.core.pages.home.home_c",
-                "enabled": true,
-                "index": 1,
-                "icon": "images/dashboard.svg",
-                "selectable": true,
-                "license_required": true
-            },
-            "Logs": {
-                "widget_ref": "frontend.core.pages.log.log_c",
-                "enabled": true,
-                "index": 2,
-                "icon": "images/log.svg",
-                "selectable": true,
-                "license_required": true
-            },
-            "Settings": {
-                "widget_ref": "frontend.core.pages.settings.settings_c",
-                "enabled": true,
-                "index": 4,
-                "icon": "images/settings.svg",
-                "selectable": true,
-                "license_required": true
-            },
-            "License": {
-                "widget_ref": "frontend.core.pages.license.license_c",
-                "enabled": true,
-                "index": 5,
-                "icon": "images/license.svg",
-                "selectable": true,
-                "license_required": true
-            },
-            "About": {
-                "widget_ref": "frontend.core.pages.about.about_c",
-                "enabled": true,
-                "index": 6,
-                "icon": "images/about.svg",
-                "selectable": true,
-                "license_required": true
-            }
-        },
-        "plugins": {
-            "Sample Plugin": {
-                "widget_ref": "frontend.core.pages.plugin.sample_plugin_c",
-                "enabled": true,
-                "index": 3,
-                "icon": "images/plugin.svg",
-                "selectable": true,
-                "license_required": true
-            }
-        }
+    "static": {
+      "name": "Nova",
+      "version": "1.0.0",
+      "license_required": false,
+      "sdk_ip_address": "127.0.0.1",
+      "sdk_tcp_port": 5000,
+      "sdk_tcp_timeout": 300,
+      "font_path": "resources/fonts"
     }
+  }
 }
