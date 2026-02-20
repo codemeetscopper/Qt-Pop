@@ -1,0 +1,16 @@
+{
+    "spec_version": "1.0",
+    "id": "sample_plugin",
+    "name": "Sample Plugin",
+    "version": "0.1.0",
+    "description": "Sample plugin to do nothing",
+    "author": "Aby",
+    "icon": "extension",
+    "entry": "plugin_main.Plugin",
+    "min_nova_version": "1.0.0",
+    "permissions": [
+        "ipc"
+    ],
+    "keywords": [],
+    "homepage": ""
+}

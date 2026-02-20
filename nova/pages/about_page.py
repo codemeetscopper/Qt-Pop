@@ -9,9 +9,9 @@ from PySide6.QtWidgets import (
 class AboutPage(QWidget):
     """Centered info card about the Nova application."""
 
-    def __init__(self, qt_pop, parent: QWidget | None = None):
+    def __init__(self, ctx, parent: QWidget | None = None):
         super().__init__(parent)
-        self._qt_pop = qt_pop
+        self._ctx = ctx
         self.setObjectName("AboutPage")
 
         outer = QVBoxLayout(self)
@@ -37,8 +37,14 @@ class AboutPage(QWidget):
 
         # Version
         try:
-            ver_val = qt_pop.config.get_value("version")
-            ver_str = getattr(ver_val, "value", "1.0.0") if ver_val else "1.0.0"
+            ver_val = ctx.config.get_value("version")
+            # Handle SettingItem or raw value
+            if hasattr(ver_val, "value"):
+                ver_str = ver_val.value
+            elif isinstance(ver_val, dict) and "value" in ver_val:
+                ver_str = ver_val["value"]
+            else:
+                ver_str = str(ver_val)
         except Exception:
             ver_str = "1.0.0"
 

@@ -50,10 +50,10 @@ class PluginManager(QObject):
     plugin_deleted = Signal(str)            # plugin_id
     plugin_imported = Signal(str)           # plugin_id
 
-    def __init__(self, data_layer: Any, config: Any, plugins_dir: Path, parent: QObject | None = None):
+    def __init__(self, ctx: Any, plugins_dir: Path, parent: QObject | None = None):
         super().__init__(parent)
-        self._data = data_layer
-        self._config = config
+        self._ctx = ctx
+        self._config = ctx.config
         self._plugins_dir = plugins_dir
         self._records: Dict[str, _PluginRecord] = {}
         # Track intentional stops so we don't mistake them for crashes.

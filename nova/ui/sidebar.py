@@ -15,13 +15,13 @@ ANIM_MS = 200
 
 # Horizontal padding on each side when collapsed so the icon is centred in 64px.
 # icon_width=28, padding = (64 - 28) / 2 = 18
-_COLLAPSED_PAD = (COLLAPSED - 28) // 2
+_COLLAPSED_PAD = (COLLAPSED - 28) // 2   # 18 — used for header (hamburger)
+_NAV_LEFT_PAD  = _COLLAPSED_PAD - 5      # 13 — nav items, slightly tighter
 
 
 def _accent_color() -> str:
-    """Retrieve accent hex from StyleManager if available, fall back to a safe default."""
     try:
-        from qtpop.appearance.stylemanager import StyleManager
+        from nova.core.style import StyleManager
         return StyleManager.get_colour("accent")
     except Exception:
         return "#0088CC"
@@ -29,16 +29,15 @@ def _accent_color() -> str:
 
 def _fg1_color() -> str:
     try:
-        from qtpop.appearance.stylemanager import StyleManager
+        from nova.core.style import StyleManager
         return StyleManager.get_colour("fg1")
     except Exception:
         return "#444444"
 
 
-def _get_icon_pixmap(icon_name: str, color: str, size: int = 28) -> Optional[QPixmap]:
-    """Return a coloured pixmap for icon_name, or None on failure."""
+def _get_icon_pixmap(icon_name: str, color: str, size: int = 20) -> Optional[QPixmap]:
     try:
-        from qtpop.appearance.iconmanager import IconManager
+        from nova.core.icons import IconManager
         return IconManager.get_pixmap(icon_name, color, size)
     except Exception:
         return None
@@ -63,8 +62,7 @@ class SidebarItem(QWidget):
         self.setCursor(Qt.PointingHandCursor)
 
         self._layout = QHBoxLayout(self)
-        # Use 18px left margin to center the 28px icon at 32px (same as collapsed state)
-        self._layout.setContentsMargins(18, 0, 12, 0)
+        self._layout.setContentsMargins(_NAV_LEFT_PAD, 0, 12, 0)
         self._layout.setSpacing(16)
 
         # Icon — pixmap if IconManager has it, otherwise plain text
@@ -91,28 +89,31 @@ class SidebarItem(QWidget):
     def set_text_visible(self, visible: bool):
         self._text.setVisible(visible)
         if visible:
-            self._layout.setContentsMargins(18, 0, 12, 0)
+            self._layout.setContentsMargins(_NAV_LEFT_PAD, 0, 3, 0)
             self.setToolTip("")
         else:
-            # Centre the 28px icon within 64px by using equal side margins
-            self._layout.setContentsMargins(_COLLAPSED_PAD, 0, _COLLAPSED_PAD, 0)
+            self._layout.setContentsMargins(_NAV_LEFT_PAD, 0, _NAV_LEFT_PAD, 0)
             self.setToolTip(self._label_text)
 
     def set_active(self, active: bool):
         if self._active == active:
             return
         self._active = active
-        # Update the container's QSS property (drives background + border)
         self.setProperty("active", active)
         self.style().unpolish(self)
         self.style().polish(self)
-        # Directly update child label colours because Qt QSS does not reliably
-        # resolve dynamic-property selectors on descendant widgets.
         if active:
             self._apply_active_style()
         else:
             self._apply_inactive_style()
         self.update()
+
+    def refresh_style(self):
+        """Re-apply current active/inactive colours (called after theme change)."""
+        if self._active:
+            self._apply_active_style()
+        else:
+            self._apply_inactive_style()
 
     def is_active(self) -> bool:
         return self._active
@@ -123,59 +124,26 @@ class SidebarItem(QWidget):
 
     def _set_icon_pixmap(self, color: str):
         """Set the icon QLabel pixmap with the requested colour."""
-        # Check for inline SVG
         clean_name = self._icon_name.strip()
         if clean_name.startswith("<") and "svg" in clean_name:
             try:
-                from PySide6.QtCore import QByteArray
-                from PySide6.QtSvg import QSvgRenderer
-                from PySide6.QtGui import QColor, QPainter, QPixmap
-                
-                # Render SVG to pixmap
-                qbytearray = QByteArray(clean_name.encode("utf-8"))
-                renderer = QSvgRenderer(qbytearray)
-                
-                if renderer.isValid():
-                    size = 28
-                    px = QPixmap(size, size)
-                    px.fill(Qt.transparent)
-                    painter = QPainter(px)
-                    renderer.render(painter)
-                    painter.end()
-                    
-                    # Recolor
-                    colored_px = QPixmap(size, size)
-                    colored_px.fill(Qt.transparent)
-                    painter = QPainter(colored_px)
-                    painter.setRenderHint(QPainter.Antialiasing)
-                    painter.setRenderHint(QPainter.SmoothPixmapTransform)
-                    # Draw the color
-                    painter.fillRect(colored_px.rect(), QColor(color))
-                    # Apply the icon as a mask
-                    painter.setCompositionMode(QPainter.CompositionMode_DestinationIn)
-                    painter.drawPixmap(0, 0, px)
-                    painter.end()
-                    
-                    self._icon.setPixmap(colored_px)
+                from nova.core.icons import IconManager
+                px = IconManager.render_svg_string(clean_name, color, 22)
+                if px and not px.isNull():
+                    self._icon.setPixmap(px)
                     self._icon.setStyleSheet("background: transparent;")
                     return
             except Exception:
-                pass  # Fallback to standard handling
+                pass
 
         px = _get_icon_pixmap(self._icon_name, color)
         if px is not None and not px.isNull():
             self._icon.setPixmap(px)
             self._icon.setStyleSheet("background: transparent;")
         else:
-            # Fallback: show icon_name as text IF it's short
-            if len(self._icon_name) < 20:
-                self._icon.setText(self._icon_name)
-                self._icon.setStyleSheet(f"color: {color}; background: transparent;")
-            else:
-                # If it's a long string (broken SVG), show a placeholder or empty
-                # Here we just show a generic character or nothing
-                self._icon.setText("?")
-                self._icon.setStyleSheet(f"color: {color}; background: transparent;")
+            short = self._icon_name if len(self._icon_name) < 20 else "?"
+            self._icon.setText(short)
+            self._icon.setStyleSheet(f"color: {color}; background: transparent;")
 
     def _apply_active_style(self):
         ac = _accent_color()
@@ -240,16 +208,16 @@ class Sidebar(QFrame):
         header.setObjectName("SidebarHeader")
         header.setFixedHeight(56)
         h_layout = QHBoxLayout(header)
-        # Use 12px left margin to center the 40px button at 32px (32 - 20 = 12)
-        h_layout.setContentsMargins(12, 0, 8, 0)
+        # 18px left — icon LEFT EDGE aligns with nav item icons (_COLLAPSED_PAD = 18)
+        h_layout.setContentsMargins(_COLLAPSED_PAD, 0, 2, 0)
         h_layout.setSpacing(8)
 
+        # 28×28 button — icon fills button exactly, aligning with 28px nav icons
         self._hamburger = QPushButton()
         self._hamburger.setObjectName("HamburgerButton")
-        self._hamburger.setFixedSize(40, 40)
+        self._hamburger.setFixedSize(28, 28)
         self._hamburger.setCursor(Qt.PointingHandCursor)
         self._hamburger.clicked.connect(self.toggle)
-        # Apply menu icon
         self._set_hamburger_icon()
 
         self._logo = QLabel("Nova")
@@ -270,7 +238,7 @@ class Sidebar(QFrame):
 
         self._nav_container = QWidget()
         self._nav_layout = QVBoxLayout(self._nav_container)
-        self._nav_layout.setContentsMargins(4, 8, 4, 8)
+        self._nav_layout.setContentsMargins(4, 0, 4, 0)
         self._nav_layout.setSpacing(2)
         self._nav_layout.addStretch()
 
@@ -294,7 +262,6 @@ class Sidebar(QFrame):
         """Add a standard navigation item (appended before the trailing stretch)."""
         item = SidebarItem(item_id, label, icon_name)
         item.clicked.connect(self.item_clicked)
-        # Insert before the trailing stretch
         self._nav_layout.insertWidget(self._nav_layout.count() - 1, item)
         self._items[item_id] = item
         return item
@@ -303,7 +270,6 @@ class Sidebar(QFrame):
         """
         Add a plugin navigation item, inserted BEFORE the separator so plugin
         pages appear between the main nav items and settings/about.
-        Falls back to add_item behaviour if no separator has been added yet.
         """
         if item_id in self._items:
             return self._items[item_id]
@@ -319,14 +285,12 @@ class Sidebar(QFrame):
 
         self._items[item_id] = item
 
-        # If sidebar is collapsed, hide text immediately
         if not self._expanded:
             item.set_text_visible(False)
 
         return item
 
     def remove_item(self, item_id: str):
-        """Remove a navigation item (e.g. when a plugin is de-favorited or deleted)."""
         item = self._items.pop(item_id, None)
         if item is not None:
             self._nav_layout.removeWidget(item)
@@ -334,7 +298,6 @@ class Sidebar(QFrame):
             item.deleteLater()
 
     def add_separator(self):
-        """Add a horizontal divider. The first separator is used as the plugin insertion point."""
         sep = SidebarSeparator()
         self._nav_layout.insertWidget(self._nav_layout.count() - 1, sep)
         if self._separator is None:
@@ -343,6 +306,13 @@ class Sidebar(QFrame):
     def set_active(self, item_id: str):
         for sid, item in self._items.items():
             item.set_active(sid == item_id)
+
+    def refresh_colors(self):
+        """Re-render all item icons/text with up-to-date theme colours.
+        Call this after StyleManager.initialise() to reflect accent/theme changes."""
+        self._set_hamburger_icon()
+        for item in self._items.values():
+            item.refresh_style()
 
     def toggle(self):
         if self._expanded:
@@ -355,8 +325,7 @@ class Sidebar(QFrame):
     # ──────────────────────────────────────────────────────
 
     def _set_hamburger_icon(self):
-        """Set hamburger button icon via IconManager, fall back to text."""
-        px = _get_icon_pixmap("navigation_menu", _fg1_color(), 28)
+        px = _get_icon_pixmap("menu", _fg1_color(), 30)
         if px is not None and not px.isNull():
             self._hamburger.setIcon(px)
             self._hamburger.setIconSize(px.size())

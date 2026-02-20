@@ -61,47 +61,44 @@ class Plugin(PluginBase):
         self._label = QLabel()
         self._label.setAlignment(Qt.AlignCenter)
         self._layout.addWidget(self._label)
-        
-        # Initial UI update
+
+        # Stop the timer and clear refs when the widget is destroyed (e.g. hot-reload)
+        def _on_destroyed():
+            self._timer.stop()
+            self._label = None
+            self._layout = None
+
+        frame.destroyed.connect(_on_destroyed)
+
         self._refresh_ui()
-        
-        # Poll for setting changes (since we don't have a change signal yet)
         self._timer.start(1000)
-        
-        # Ensure timer stops when widget is destroyed (handled by parenting usually, 
-        # but since self._timer is on the Plugin instance which might outlive the widget 
-        # if not careful, but Plugin instance usually lives as long as the page... 
-        # actually Plugin instance lives in PluginManager._records. 
-        # create_widget creates a view.
-        # If the user navigates away, the widget is destroyed? 
-        # Nova implementation creates the widget once and keeps it in QStackedWidget?
-        # Yes, MainWindow keeps them in _pages. So it lives forever until plugin is unloaded.
-        
         return frame
 
     def _refresh_ui(self):
         if not self._label:
             return
+        try:
+            show = self.get_setting("show_greeting")
+            if show is None:
+                show = True
+            if isinstance(show, str):
+                show = (show.lower() == "true")
 
-        # Read settings using our new get_setting helper
-        show = self.get_setting("show_greeting")
-        # Handle case where setting is not yet saved (use default)
-        if show is None: show = True
-        
-        # Check explicit False vs None
-        if isinstance(show, str): show = (show.lower() == "true")
-        
-        if show:
-            text = self.get_setting("greeting_text") or "Hello!"
-            self._label.setText(str(text))
-            self._label.setVisible(True)
-        else:
-            self._label.setVisible(False)
-            
-        bg = self.get_setting("bg_color") or "#222222"
-        # Apply background to the frame
-        if self._label.parentWidget():
-            self._label.parentWidget().setStyleSheet(f"background-color: {bg}; border-radius: 8px;")
+            if show:
+                text = self.get_setting("greeting_text") or "Hello!"
+                self._label.setText(str(text))
+                self._label.setVisible(True)
+            else:
+                self._label.setVisible(False)
+
+            bg = self.get_setting("bg_color") or "#222222"
+            parent = self._label.parentWidget()
+            if parent:
+                parent.setStyleSheet(f"background-color: {bg}; border-radius: 8px;")
+        except RuntimeError:
+            # Widget was deleted (e.g. during hot-reload) — stop polling
+            self._timer.stop()
+            self._label = None
 
     def on_data(self, key: str, value) -> None:
         pass

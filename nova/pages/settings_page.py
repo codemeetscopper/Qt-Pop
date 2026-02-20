@@ -2,249 +2,162 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Optional
 
-from PySide6.QtGui import QColor
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
-    QColorDialog, QComboBox, QFileDialog, QFrame, QGroupBox,
-    QHBoxLayout, QLabel, QLineEdit, QPushButton, QScrollArea,
+    QFrame, QHBoxLayout, QLabel, QScrollArea,
     QSizePolicy, QVBoxLayout, QWidget,
 )
+
+from nova.core.config import SettingItem
+from nova.ui.components.settings_widgets import BaseSettingWidget, BoolSettingWidget, create_setting_widget
 
 _log = logging.getLogger(__name__)
 
 
-def _hex_from_qcolor(c: QColor) -> str:
-    return "#{:02X}{:02X}{:02X}".format(c.red(), c.green(), c.blue())
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
 
+def _apply_font(path: str, app) -> None:
+    if not path:
+        return
+    p = Path(path)
+    if p.exists() and p.suffix.lower() in (".ttf", ".otf"):
+        try:
+            from PySide6.QtGui import QFont, QFontDatabase
+            from nova.core.style import StyleManager
+            fid = QFontDatabase.addApplicationFont(str(p))
+            families = QFontDatabase.applicationFontFamilies(fid)
+            if families:
+                StyleManager.set_font_family(families[0])
+                app.setFont(QFont(families[0]))
+        except Exception as exc:
+            _log.warning("Failed to apply font '%s': %s", path, exc)
+
+
+def _reapply_style(app, ctx) -> None:
+    try:
+        accent = ctx.config.get_value("appearance.accent", "#0088CC")
+        theme  = ctx.config.get_value("appearance.theme",  "dark")
+        ctx.style.initialise(accent, theme=theme)
+        qss_path = Path(__file__).parent.parent.parent / "resources" / "qss" / "nova.qss"
+        if qss_path.exists():
+            ctx.style.apply_theme(app, qss_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        _log.warning("Failed to reapply style: %s", exc)
+
+
+# ---------------------------------------------------------------------------
+# SettingRow
+# ---------------------------------------------------------------------------
 
 class SettingRow(QWidget):
-    """
-    A single setting row with a label block and a fully-wired input widget.
-    All changes are persisted immediately via ConfigurationManager.set_value().
-    Color/theme changes also re-initialise StyleManager and re-apply QSS.
-    """
-
-    def __init__(self, key: str, item, qt_pop, parent: QWidget | None = None):
+    def __init__(self, key: str, item: SettingItem, ctx,
+                 on_plugins_path_changed: Optional[Callable[[str], None]] = None,
+                 on_style_changed: Optional[Callable[[], None]] = None,
+                 parent: QWidget | None = None):
         super().__init__(parent)
-        self._key = key          # config shortname
-        self._item = item        # SettingItem dataclass
-        self._qt_pop = qt_pop
+        self._key = key
+        self._item = item
+        self._ctx = ctx
+        self._on_plugins_path_changed = on_plugins_path_changed
+        self._on_style_changed = on_style_changed
         self.setObjectName("SettingRow")
 
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(12, 8, 12, 8)
-        layout.setSpacing(20)
+        layout.setContentsMargins(14, 8, 14, 8)
+        layout.setSpacing(16)
 
-        # ── Left: name + description ───────────────────────
+        # Left: name + description (expands)
         info = QVBoxLayout()
         info.setSpacing(2)
-
         name_lbl = QLabel(item.name)
         name_lbl.setObjectName("SettingName")
         desc_lbl = QLabel(item.description)
         desc_lbl.setObjectName("SettingDesc")
         desc_lbl.setWordWrap(True)
-
         info.addWidget(name_lbl)
         info.addWidget(desc_lbl)
-
         layout.addLayout(info, 1)
 
-        # ── Right: input widget ────────────────────────────
-        self._input = self._build_input(item)
-        if self._input:
-            self._input.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-            layout.addWidget(self._input)
+        # Right side: 1:1 ratio with info side
+        self._widget: Optional[BaseSettingWidget] = create_setting_widget(item)
+        if self._widget is not None:
+            self._widget.value_changed.connect(self._on_value_changed)
+            if isinstance(self._widget, BoolSettingWidget):
+                # Add directly — skip the container QWidget so no opaque background stretches
+                layout.addWidget(self._widget, 0, Qt.AlignRight | Qt.AlignVCenter)
+            else:
+                right = QWidget()
+                right.setStyleSheet("background: transparent;")
+                right.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+                right_layout = QHBoxLayout(right)
+                right_layout.setContentsMargins(0, 0, 0, 0)
+                right_layout.setAlignment(Qt.AlignVCenter | Qt.AlignRight)
+                right_layout.addWidget(self._widget)
+                self._widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+                layout.addWidget(right, 1)
 
-    # ──────────────────────────────────────────────────────
-    #  Input builder
-    # ──────────────────────────────────────────────────────
-
-    def _build_input(self, item) -> Optional[QWidget]:
-        t = getattr(item, "type", "") or ""
-        val = getattr(item, "value", "") or ""
-        vals = getattr(item, "values", []) or []
-
-        if t == "colorpicker":
-            btn = QPushButton()
-            btn.setObjectName("ColorPickerButton")
-            btn.setFixedSize(100, 28)
-            self._update_color_button(btn, str(val))
-            btn.clicked.connect(lambda: self._on_color_clicked(btn))
-            return btn
-
-        if t == "dropdown":
-            combo = QComboBox()
-            combo.setObjectName("SettingCombo")
-            combo.setFixedWidth(160)
-            for v in vals:
-                combo.addItem(str(v))
-            idx = combo.findText(str(val))
-            if idx >= 0:
-                combo.setCurrentIndex(idx)
-            combo.currentTextChanged.connect(self._save)
-            return combo
-
-        if t == "filebrowse":
-            return self._build_browse_row(str(val), folder=False)
-
-        if t == "folderbrowse":
-            return self._build_browse_row(str(val), folder=True)
-
-        if t == "text":
-            edit = QLineEdit(str(val))
-            edit.setObjectName("SettingEdit")
-            edit.setFixedWidth(200)
-            edit.editingFinished.connect(lambda: self._save(edit.text()))
-            return edit
-
-        if t == "bool":
-            from PySide6.QtWidgets import QCheckBox
-            chk = QCheckBox()
-            # Handle string/bool conversions just in case
-            is_checked = str(val).lower() == "true" if isinstance(val, str) else bool(val)
-            chk.setChecked(is_checked)
-            chk.stateChanged.connect(lambda state: self._save(state == 2)) # 2 = Checked
-            return chk
-
-        return None
-
-    def _build_browse_row(self, current: str, folder: bool) -> QWidget:
-        container = QWidget()
-        container.setObjectName("BrowseContainer")
-        h = QHBoxLayout(container)
-        h.setContentsMargins(0, 0, 0, 0)
-        h.setSpacing(6)
-
-        edit = QLineEdit(current)
-        edit.setObjectName("SettingEdit")
-        edit.setFixedWidth(200)
-        edit.editingFinished.connect(lambda: self._save(edit.text()))
-
-        btn = QPushButton("Browse…")
-        btn.setObjectName("BrowseButton")
-        btn.setFixedWidth(72)
-        if folder:
-            btn.clicked.connect(lambda: self._on_folder_browse(edit))
-        else:
-            btn.clicked.connect(lambda: self._on_file_browse(edit))
-
-        h.addWidget(edit)
-        h.addWidget(btn)
-        return container
-
-    # ──────────────────────────────────────────────────────
-    #  Handlers
-    # ──────────────────────────────────────────────────────
-
-    def _on_color_clicked(self, btn: QPushButton):
-        current_val = getattr(self._item, "value", "#000000") or "#000000"
-        initial = QColor(str(current_val))
-        if not initial.isValid():
-            initial = QColor("#000000")
-        chosen = QColorDialog.getColor(initial, self, f"Choose {self._item.name}")
-        if chosen.isValid():
-            hex_val = _hex_from_qcolor(chosen)
-            self._item.value = hex_val
-            self._update_color_button(btn, hex_val)
-            self._save(hex_val)
-
-    def _on_file_browse(self, edit: QLineEdit):
-        path, _ = QFileDialog.getOpenFileName(
-            self, f"Select file for {self._item.name}", edit.text()
-        )
-        if path:
-            edit.setText(path)
-            self._save(path)
-
-    def _on_folder_browse(self, edit: QLineEdit):
-        path = QFileDialog.getExistingDirectory(
-            self, f"Select folder for {self._item.name}", edit.text()
-        )
-        if path:
-            edit.setText(path)
-            self._save(path)
-
-    # ──────────────────────────────────────────────────────
-    #  Save + style propagation
-    # ──────────────────────────────────────────────────────
-
-    def _save(self, value: Any):
+    def _on_value_changed(self, value: Any) -> None:
         try:
-            self._qt_pop.config.set_value(self._key, value)
+            self._ctx.config.set_value(self._key, value)
         except Exception as exc:
             _log.warning("SettingRow: failed to save '%s': %s", self._key, exc)
             return
 
-        # Re-apply styling for appearance-affecting keys
-        if self._key in ("accent", "support", "neutral", "theme"):
-            self._reapply_style()
-        elif self._key == "qss_path":
-            self._reload_qss(str(value))
+        from PySide6.QtWidgets import QApplication
+        app = QApplication.instance()
 
-    def _reapply_style(self):
-        """Re-initialise StyleManager with current config and re-apply QSS."""
-        try:
-            cfg = self._qt_pop.config
-            accent = cfg.get_value("accent")
-            support = cfg.get_value("support")
-            neutral = cfg.get_value("neutral")
-            theme = cfg.get_value("theme")
+        if self._key in ("appearance.accent", "appearance.theme"):
+            if app:
+                _reapply_style(app, self._ctx)
+            if self._on_style_changed:
+                self._on_style_changed()
+        elif self._key == "appearance.font":
+            if app:
+                _apply_font(str(value), app)
+                _reapply_style(app, self._ctx)
+        elif self._key == "system.plugins_path":
+            if self._on_plugins_path_changed is not None:
+                self._on_plugins_path_changed(str(value))
 
-            def _val(x):
-                return x.value if hasattr(x, "value") else x
 
-            self._qt_pop.style.initialise(
-                _val(accent), _val(support), _val(neutral), _val(theme)
-            )
+# ---------------------------------------------------------------------------
+# SettingsPage
+# ---------------------------------------------------------------------------
 
-            qss_path = cfg.get_value("qss_path")
-            qss_str = _val(qss_path)
-            p = Path(qss_str) if qss_str else None
-            if p and not p.is_absolute():
-                p = Path(cfg.json_path).parent.parent / p
-            if p and p.exists():
-                self._qt_pop.qss.set_style(p.read_text(encoding="utf-8"))
-        except Exception as exc:
-            _log.warning("SettingRow: failed to reapply style: %s", exc)
+_APP_SETTINGS: list[tuple[str, str, str, str, list]] = [
+    ("appearance.accent", "Accent Color",
+     "Primary accent colour for the application.",
+     "colorpicker", ["#0088CC", "#2196F3", "#9C27B0", "#F44336", "#4CAF50", "#FF9800"]),
+    ("appearance.theme", "Theme Mode",
+     "Colour theme: dark, light, or follow system preference.",
+     "dropdown", ["dark", "light", "system"]),
+    ("appearance.font", "Font File",
+     "Path to a .ttf/.otf font file to apply globally.",
+     "fontbrowse", []),
+    ("system.plugins_path", "Plugins Folder",
+     "Folder where Nova loads plugins from. Changes apply immediately.",
+     "folderbrowse", []),
+]
 
-    def _reload_qss(self, path: str):
-        try:
-            p = Path(path)
-            if not p.is_absolute():
-                p = Path(self._qt_pop.config.json_path).parent.parent / p
-            if p.exists():
-                self._qt_pop.qss.set_style(p.read_text(encoding="utf-8"))
-        except Exception as exc:
-            _log.warning("SettingRow: failed to reload QSS: %s", exc)
-
-    # ──────────────────────────────────────────────────────
-    #  Helpers
-    # ──────────────────────────────────────────────────────
-
-    @staticmethod
-    def _update_color_button(btn: QPushButton, hex_val: str):
-        """Update button text and background to reflect chosen colour."""
-        btn.setText(hex_val.upper())
-        # Pick contrasting text colour so it's always readable
-        c = QColor(hex_val)
-        luminance = (0.299 * c.red() + 0.587 * c.green() + 0.114 * c.blue()) / 255
-        text_color = "#000000" if luminance > 0.5 else "#FFFFFF"
-        btn.setStyleSheet(
-            f"background-color: {hex_val}; color: {text_color}; "
-            f"border-radius: 6px; font-weight: 600;"
-        )
+_APP_GROUPS: dict[str, str] = {
+    "appearance.accent":   "Appearance",
+    "appearance.theme":    "Appearance",
+    "appearance.font":     "Appearance",
+    "system.plugins_path": "System",
+}
 
 
 class SettingsPage(QWidget):
-    """
-    Settings page — grouped rows for every user-configurable value.
-    """
+    plugins_path_changed = Signal(str)
+    style_changed = Signal()
 
-    def __init__(self, qt_pop, plugin_manager, parent: QWidget | None = None):
+    def __init__(self, ctx, plugin_manager, parent: QWidget | None = None):
         super().__init__(parent)
-        self._qt_pop = qt_pop
+        self._ctx = ctx
         self._pm = plugin_manager
         self.setObjectName("SettingsPage")
 
@@ -255,127 +168,136 @@ class SettingsPage(QWidget):
         container = QWidget()
         container.setObjectName("SettingsContainer")
         self._root = QVBoxLayout(container)
-        self._root.setContentsMargins(32, 32, 32, 32)
-        self._root.setSpacing(20)
+        self._root.setContentsMargins(20, 20, 20, 20)
+        self._root.setSpacing(16)
 
-        title = QLabel("Settings")
-        title.setObjectName("SectionTitle")
-        self._root.addWidget(title)
+        self._build_app_settings()
 
-        self._build_settings()
+        self._plugin_container = QWidget()
+        self._plugin_layout = QVBoxLayout(self._plugin_container)
+        self._plugin_layout.setContentsMargins(0, 0, 0, 0)
+        self._plugin_layout.setSpacing(16)
+        self._root.addWidget(self._plugin_container)
+
+        if self._pm:
+            self._pm.plugin_imported.connect(lambda _: self._rebuild_plugin_settings())
+            self._pm.plugin_loaded.connect(lambda _: self._rebuild_plugin_settings())
+            self._rebuild_plugin_settings()
+
         self._root.addStretch()
-
         scroll.setWidget(container)
         outer = QVBoxLayout(self)
         outer.setContentsMargins(0, 0, 0, 0)
         outer.addWidget(scroll)
 
-    def _build_settings(self):
-        try:
-            user_items = list(self._qt_pop.config.data.configuration.user.items())
-        except Exception as exc:
-            _log.warning("SettingsPage: failed to read config: %s", exc)
-            user_items = []
+    # ── Public API ────────────────────────────────────────────
 
-        # Group by the SettingItem.group field
-        groups: Dict[str, List[Any]] = {}
-        for key, item in user_items:
-            group = getattr(item, "group", None) or "General"
-            groups.setdefault(group, []).append((key, item))
-
-        for group_name, items in groups.items():
-            box = QGroupBox(group_name)
-            box.setObjectName("SettingGroup")
-            v = QVBoxLayout(box)
-            v.setSpacing(0)
-            v.setContentsMargins(0, 4, 0, 4)
-
-            for idx, (key, item) in enumerate(items):
-                row = SettingRow(key, item, self._qt_pop)
-                if idx < len(items) - 1:
-                    # Separator line between rows
-                    sep = QFrame()
-                    sep.setObjectName("SettingRowSep")
-                    sep.setFrameShape(QFrame.HLine)
-                v.addWidget(row)
-                if idx < len(items) - 1:
-                    v.addWidget(sep)
-
-            self._root.addWidget(box)
-
-        if self._pm:
-            # Container for dynamic plugin settings
-            self._plugin_container = QWidget()
-            self._plugin_layout = QVBoxLayout(self._plugin_container)
-            self._plugin_layout.setContentsMargins(0, 0, 0, 0)
-            self._plugin_layout.setSpacing(20)
-            self._root.addWidget(self._plugin_container)
-
-            # Listen for new plugins
-            self._pm.plugin_imported.connect(self._on_plugin_imported)
-            
-            # Initial build
-            self._rebuild_plugin_settings()
-
-    def _on_plugin_imported(self, plugin_id: str):
-        """Rebuild settings when a new plugin is loaded."""
+    def update_plugin_manager(self, pm) -> None:
+        self._pm = pm
+        if pm:
+            pm.plugin_imported.connect(lambda _: self._rebuild_plugin_settings())
+            pm.plugin_loaded.connect(lambda _: self._rebuild_plugin_settings())
         self._rebuild_plugin_settings()
 
-    def _rebuild_plugin_settings(self):
-        # Clear existing
+    # ── App settings ──────────────────────────────────────────
+
+    def _build_app_settings(self) -> None:
+        groups: dict[str, list[tuple[str, SettingItem]]] = {}
+        for key, name, desc, typ, values in _APP_SETTINGS:
+            group = _APP_GROUPS.get(key, "General")
+            try:
+                raw_value = self._ctx.config.get_value(key, "")
+            except Exception:
+                raw_value = ""
+            item = SettingItem(
+                name=name, shortname=key.split(".")[-1], value=raw_value,
+                values=values, description=desc, type=typ,
+                accessibility="user", group=group, icon="",
+            )
+            groups.setdefault(group, []).append((key, item))
+        for group_name, rows in groups.items():
+            self._root.addWidget(self._build_section(group_name, rows))
+
+    def _build_section(self, title: str,
+                       rows: list[tuple[str, SettingItem]]) -> QWidget:
+        """Return a section widget: small title label above a card frame."""
+        wrapper = QWidget()
+        wrapper.setObjectName("SettingSectionWrapper")
+        v = QVBoxLayout(wrapper)
+        v.setContentsMargins(0, 0, 0, 0)
+        v.setSpacing(4)
+
+        # Section title — sits ABOVE the card
+        title_lbl = QLabel(title.upper())
+        title_lbl.setObjectName("SectionGroupTitle")
+
+        # Card frame
+        card = QFrame()
+        card.setObjectName("SettingCard")
+        card.setFrameShape(QFrame.NoFrame)
+        card_v = QVBoxLayout(card)
+        card_v.setContentsMargins(0, 0, 0, 0)
+        card_v.setSpacing(0)
+
+        for idx, (key, item) in enumerate(rows):
+            if idx > 0:
+                sep = QFrame()
+                sep.setObjectName("SettingRowSep")
+                sep.setFrameShape(QFrame.HLine)
+                card_v.addWidget(sep)
+            row = SettingRow(key, item, self._ctx,
+                             on_plugins_path_changed=self._on_plugins_path_changed,
+                             on_style_changed=self._emit_style_changed)
+            card_v.addWidget(row)
+
+        v.addWidget(title_lbl)
+        v.addWidget(card)
+        return wrapper
+
+    def _on_plugins_path_changed(self, new_path: str) -> None:
+        self.plugins_path_changed.emit(new_path)
+
+    def _emit_style_changed(self) -> None:
+        self.style_changed.emit()
+
+    # ── Plugin settings ───────────────────────────────────────
+
+    def _rebuild_plugin_settings(self) -> None:
         while self._plugin_layout.count():
             child = self._plugin_layout.takeAt(0)
             if child.widget():
                 child.widget().deleteLater()
-                
-        # We need a wrapper to mimic the config Item interface expected by SettingRow
-        class SettingWrapper:
-            def __init__(self, s, current_val):
-                self.name = s.name
-                self.description = s.description
-                self.type = s.type
-                self.value = current_val if current_val is not None else s.default
-                self.values = s.values
-
-        # Helper to safely get settings even if plugin crashed or not fully ready
-        def safe_get_settings(plugin):
-            try:
-                if hasattr(plugin, 'get_settings'):
-                    return plugin.get_settings()
-            except Exception:
-                pass
-            return []
-
+        if not self._pm:
+            return
         for manifest in self._pm.manifests():
             record = self._pm._records.get(manifest.id)
             if not record or not record.plugin:
                 continue
-            
             try:
-                plugin_settings = safe_get_settings(record.plugin)
-                if not plugin_settings:
-                    continue
-                
-                box = QGroupBox(manifest.name)
-                box.setObjectName("SettingGroup")
-                v = QVBoxLayout(box)
-                v.setSpacing(0)
-                v.setContentsMargins(0, 4, 0, 4)
-                
-                for idx, s in enumerate(plugin_settings):
-                    full_key = f"plugins.{manifest.id}.{s.key}"
-                    curr = self._qt_pop.config.get_value(full_key)
-                    
-                    wrapper = SettingWrapper(s, curr)
-                    row = SettingRow(full_key, wrapper, self._qt_pop)
-                    
-                    if idx > 0:
-                        sep = QFrame()
-                        sep.setObjectName("SettingRowSep")
-                        sep.setFrameShape(QFrame.HLine)
-                        v.addWidget(sep)
-                    v.addWidget(row)
-
-                self._plugin_layout.addWidget(box)
-            except Exception as exc:
-                _log.warning("SettingsPage: error loading settings for '%s': %s", manifest.id, exc)
+                plugin_settings = []
+                if hasattr(record.plugin, "get_settings"):
+                    plugin_settings = record.plugin.get_settings() or []
+            except Exception:
+                continue
+            if not plugin_settings:
+                continue
+            rows: list[tuple[str, SettingItem]] = []
+            for s in plugin_settings:
+                full_key = f"plugins.{manifest.id}.{s.key}"
+                try:
+                    raw_value = self._ctx.config.get_value(full_key, s.default)
+                except Exception:
+                    raw_value = s.default
+                item = SettingItem(
+                    name=s.name, shortname=s.key, value=raw_value,
+                    values=getattr(s, "values", []) or [],
+                    description=getattr(s, "description", ""),
+                    type=s.type, accessibility="user", group=manifest.name, icon="",
+                )
+                try:
+                    self._ctx.config.get_value(full_key)
+                except KeyError:
+                    self._ctx.config.add_user_setting(full_key, item)
+                rows.append((full_key, item))
+            if rows:
+                self._plugin_layout.addWidget(self._build_section(manifest.name, rows))

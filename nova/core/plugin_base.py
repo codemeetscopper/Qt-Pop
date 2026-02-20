@@ -36,12 +36,6 @@ class PluginManifest:
         )
 
 
-    def send_data(self, key: str, value: Any) -> None:
-        """Convenience: worker side sends data to the host."""
-        if self._bridge is not None:
-            self._bridge.send_data(key, value)
-
-
 @dataclass
 class PluginSetting:
     key: str
@@ -73,17 +67,11 @@ class PluginBase(ABC):
         """Called in the MAIN process when the worker sends data via IPC."""
 
     def get_settings(self) -> list[PluginSetting]:
-        """
-        Called in the MAIN process to retrieve dynamic settings for this plugin.
-        Override this to return a list of PluginSetting objects.
-        """
+        """Return a list of PluginSetting for this plugin's configurable options."""
         return []
 
     def get_setting(self, key: str) -> Any:
-        """
-        Get the current value of a setting (HOST process only).
-        Returns the value from the global configuration, or None if not set.
-        """
+        """Get the current value of a setting (HOST process only)."""
         if hasattr(self, "config") and self.config:
             full_key = f"plugins.{self.manifest.id}.{key}" if self.manifest else key
             try:
@@ -93,6 +81,13 @@ class PluginBase(ABC):
             except Exception:
                 return None
         return None
+
+    def on_theme_changed(self, style_manager) -> None:
+        """
+        Called in the MAIN process when the application theme/accent changes.
+        Override to re-apply dynamic colours to plugin widgets.
+        The style_manager argument is the nova.core.style.StyleManager class.
+        """
 
     def start(self) -> None:
         """Called in the WORKER subprocess to begin plugin logic."""

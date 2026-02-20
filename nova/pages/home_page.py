@@ -39,9 +39,9 @@ class StatCard(QFrame):
 class HomePage(QWidget):
     """Home page with at-a-glance stat cards."""
 
-    def __init__(self, qt_pop, parent: QWidget | None = None):
+    def __init__(self, ctx, parent: QWidget | None = None):
         super().__init__(parent)
-        self._qt_pop = qt_pop
+        self._ctx = ctx
         self.setObjectName("HomePage")
 
         scroll = QScrollArea(self)

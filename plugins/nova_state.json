@@ -3,24 +3,32 @@
     "enabled": true,
     "favorite": true,
     "installed_at": "2026-02-19T13:27:05",
-    "run_count": 24,
-    "last_run": "2026-02-19T17:25:30",
-    "crash_count": 1
+    "run_count": 57,
+    "last_run": "2026-02-20T00:04:01",
+    "crash_count": 11
   },
   "clock_widget": {
     "enabled": true,
     "favorite": true,
     "installed_at": "2026-02-19T14:00:50",
-    "run_count": 19,
-    "last_run": "2026-02-19T17:25:30",
-    "crash_count": 0
+    "run_count": 54,
+    "last_run": "2026-02-20T00:04:00",
+    "crash_count": 10
   },
   "dummy": {
     "enabled": true,
     "favorite": true,
     "installed_at": "2026-02-19T16:23:55",
-    "run_count": 14,
-    "last_run": "2026-02-19T17:25:30",
-    "crash_count": 0
+    "run_count": 50,
+    "last_run": "2026-02-20T00:04:00",
+    "crash_count": 9
+  },
+  "sample_plugin": {
+    "enabled": true,
+    "favorite": false,
+    "installed_at": "2026-02-19T21:14:19",
+    "run_count": 27,
+    "last_run": "2026-02-20T00:04:00",
+    "crash_count": 11
   }
 }
