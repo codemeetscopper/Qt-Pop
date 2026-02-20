@@ -177,27 +177,22 @@ QMainWindow, #NovaMainWindow { background-color: <bg>; }
 }
 #SettingEdit {
     background: <bg>;
-    border: none;
+    border: 0px solid <bg2>;
     border-radius: 20px;
-    padding: 3px 10px;
+    padding: 3px 1px;
     color: <fg2>;
-    min-height: 26px;
-    max-height: 26px;
-    selection-background-color: <accent>;
-    selection-color: white;
+    max-height: 20px;
 }
-#SettingEdit:focus { background: <bg_hover>; }
 
 #SettingCombo {
     background: <bg>;
-    border: none;
+    border: 0px solid <bg2>;
     border-radius: 20px;
-    padding: 3px 10px;
-    min-height: 26px;
-    max-height: 26px;
+    padding: 3px 1px;
     color: <fg2>;
+    max-height: 26px;
 }
-#SettingCombo:hover { background: <bg_hover>; }
+
 #SettingCombo::drop-down {
     border: none;
     width: 30px;
@@ -205,16 +200,16 @@ QMainWindow, #NovaMainWindow { background-color: <bg>; }
     border-bottom-right-radius: 10px;
 }
 #SettingCombo::down-arrow {
-    image: url(<url_down_arrow_ctrl>);
-    width: 18px;
-    height: 18px;
+    image: url("<url_down_arrow_ctrl>");
+    width: 25px;
+    height: 25px;
 }
 
 #SettingSpinbox {
     background: <ctrl_bg>;
     border: none;
     border-radius: 10px;
-    padding: 3px 10px;
+    padding: 3px 1px;
     min-height: 26px;
     max-height: 26px;
     color: <ctrl_fg>;
@@ -249,23 +244,19 @@ QMainWindow, #NovaMainWindow { background-color: <bg>; }
 
 #ColorPickerButton {
     border: none;
-    border-radius: 10px;
-    min-height: 26px;
-    max-height: 26px;
-    min-width: 110px;
-    font-weight: 600;
-    font-size: 12px;
+    border-radius: 20px;
+    max-height: 20px;
+    min-width: 80px;
 }
 
 #BrowseButton {
-    background: <ctrl_bg>;
-    color: <ctrl_fg>;
+    background: <accent>;
+    color: white;
     border: none;
     border-radius: 10px;
     padding: 3px 12px;
-    min-height: 26px;
+    min-width: 80px;
     max-height: 26px;
-    min-width: 0;
     font-size: 12px;
 }
 #BrowseButton:hover { background: <ctrl_bg_hover>; }

@@ -208,8 +208,8 @@ class StyleManager:
         files: Dict[str, tuple] = {
             "url_down_arrow":      (tmp_dir / "down_arrow.svg",      _arrow_down(fg1)),
             "url_up_arrow":        (tmp_dir / "up_arrow.svg",        _arrow_up(fg1)),
-            "url_down_arrow_ctrl": (tmp_dir / "down_arrow_ctrl.svg", _arrow_down(ctrl_fg)),
-            "url_up_arrow_ctrl":   (tmp_dir / "up_arrow_ctrl.svg",   _arrow_up(ctrl_fg)),
+            "url_down_arrow_ctrl": (tmp_dir / "down_arrow_ctrl.svg", _arrow_down(fg1)),
+            "url_up_arrow_ctrl":   (tmp_dir / "up_arrow_ctrl.svg",   _arrow_up(fg1)),
             "url_check":           (tmp_dir / "check.svg",           check_svg),
         }
         for _path, _content in files.values():
