@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python -c:*)"
+      "Bash(python -c:*)",
+      "Bash(D:DevelopmentPythonMasterVenvScriptspython.exe:*)",
+      "Bash(\"D:\\\\Development\\\\Python\\\\MasterVenv\\\\Scripts\\\\python.exe\" -m py_compile:*)",
+      "Bash(\"D:\\\\Development\\\\Python\\\\MasterVenv\\\\Scripts\\\\python.exe\" -m py_compile nova/pages/settings_page.py nova/ui/sidebar.py plugins/dummy/plugin_main.py plugins/sample_plugin/plugin_main.py)"
     ]
   }
 }

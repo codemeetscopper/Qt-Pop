@@ -197,7 +197,7 @@ def run(ctx) -> None:
                     manifest.icon or "extension", widget,
                     in_sidebar=pm.is_favorite(manifest.id),
                 )
-            pm.start(manifest.id)
+            # pm.start(manifest.id)
 
     plugins_pg.refresh()
     _wire_pm_signals(pm, home, window, plugins_pg, settings)
